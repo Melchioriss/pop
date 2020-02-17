@@ -1,0 +1,27 @@
+change_pick:
+    methods: PUT
+    path: /api/pickers/{pickerUuid}/picks/{pickUuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPicker\ChangePick\ChangePickCommand
+
+make_pick:
+    methods: POST
+    path: /api/pickers/{pickerUuid}/picks
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPicker\MakePick\MakePickCommand
+
+replace_event_picker:
+    methods: PUT
+    path: /api/pickers/{pickerUuid}/user
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPicker\UpdateUser\UpdateEventPickerUserCommand
+
+add_comment:
+    methods: POST
+    path: /api/pickers/{pickerUuid}/comments
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPicker\AddComment\AddEventPickerCommentCommand

@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PlayOrPay\Application\Query;
+
+use PlayOrPay\Domain\Exception\NotFoundException;
+
+class Collection
+{
+    /**
+     * @var int
+     */
+    public $page;
+
+    /**
+     * @var int
+     */
+    public $limit;
+
+    /**
+     * @var int
+     */
+    public $total;
+
+    /** @var int */
+    public $pages;
+
+    /**
+     * @var object[]
+     */
+    public $data;
+
+    /**
+     * @param int $page
+     * @param int $limit
+     * @param int $total
+     * @param array $data
+     * @throws NotFoundException
+     */
+    public function __construct(int $page, int $limit, int $total, array $data)
+    {
+        $this->exists($page, $limit, $total);
+        $this->page = $page;
+        $this->limit = $limit;
+        $this->total = $total;
+        $this->data = $data;
+        $this->calcPages();
+    }
+
+    private function calcPages()
+    {
+        $this->pages = $this->limit === 0 ? 1 : ceil($this->total / $this->limit);
+    }
+
+    /**
+     * @param int $page
+     * @param int $limit
+     * @param int $total
+     * @throws NotFoundException
+     */
+    private function exists(int $page, int $limit, int $total): void
+    {
+        if ($limit === 0) {
+            return;
+        }
+
+        if (($limit * ($page - 1)) >= $total) {
+            throw new NotFoundException();
+        }
+    }
+}

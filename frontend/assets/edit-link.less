@@ -1,0 +1,42 @@
+@import "_colors";
+
+.edit-link{
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1.1;
+  text-decoration: none;
+  color: @color-dark-orange;
+  border-bottom: 1px dotted;
+  cursor: pointer;
+  position: relative;
+  margin-left: 20px;
+
+  &:not(:first-child){
+    margin-left: 30px;
+  }
+
+  &:before{
+    content: '\f303';
+    display: inline-block;
+    width: 18px;
+    //noinspection CssNoGenericFontName
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    left: -19px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &:hover{
+    color: @color-dark-orange-hover;
+  }
+
+  &--comments-show:before{
+    content: '\f7f5';
+  }
+
+  &--comments-hide:before{
+    content: '\f4b3';
+  }
+}

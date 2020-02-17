@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="PlayOrPay\Domain\Event\EventParticipant" table="participants">
+        <id name="uuid" type="uuid" />
+        <many-to-one field="event" target-entity="PlayOrPay\Domain\Event\Event" inversed-by="participants">
+            <join-column referenced-column-name="uuid" />
+        </many-to-one>
+        <many-to-one field="user" target-entity="PlayOrPay\Domain\User\User">
+            <join-column referenced-column-name="steam_id" />
+        </many-to-one>
+        <field name="active" type="boolean" />
+        <field name="groupWins" />
+        <field name="blaeoGames" />
+        <field name="extraRules" />
+        <one-to-many field="pickers" target-entity="PlayOrPay\Domain\Event\EventPicker" mapped-by="participant">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+        </one-to-many>
+    </entity>
+</doctrine-mapping>

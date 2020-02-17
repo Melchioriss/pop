@@ -1,0 +1,13 @@
+api_controllers:
+    resource: '../backend/UI/Http/Rest/Controller/'
+    type: annotation
+    prefix: /api
+
+home:
+    path: /{path}/{id?}
+    controller: PlayOrPay\UI\Http\Rest\Controller\StaticController
+    defaults:
+        template:  '../public/index.html'
+        path: ~
+    requirements:
+        any: .*

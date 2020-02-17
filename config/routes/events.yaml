@@ -1,0 +1,55 @@
+get_event:
+    methods: GET
+    path: /api/events/{uuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\Event\Event\Get\GetEventQuery
+
+get_events:
+    methods: GET
+    path: /api/events
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\Event\Event\GetAll\GetAllEventsQuery
+
+create_event:
+    methods: POST
+    path: /api/events
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\Event\Create\CreateEventCommand
+
+update_event:
+    methods: PUT
+    path: /api/events/{uuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\Event\Update\UpdateEventCommand
+
+get_potential_participants:
+    methods: GET
+    path: /api/events/{eventUuid}/potential_participants
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\Event\Event\GetPotentialParticipants\GetEventPotentialParticipantsQuery
+
+generate_event_pickers:
+    methods: POST
+    path: /api/execute/generate_pickers
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\Event\GeneratePickers\GenerateEventPickersCommand
+
+add_participant:
+    methods: POST
+    path: /api/events/{eventUuid}/participants
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\Event\AddParticipant\AddEventParticipantCommand
+
+import_playing_states:
+    methods: GET
+    path: /api/execute/import_playing_states
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\Event\ImportPlaystats\ImportPlayingStatesCommand

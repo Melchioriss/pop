@@ -1,0 +1,24 @@
+@import "_colors";
+
+.user-tile{
+  display: flex;
+  align-items: center;
+  align-self: start;
+  margin-bottom: 8px;
+
+  &__pic-block{
+    width: 40px;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+
+  &__pic{
+    width: 100%;
+    display: block;
+    border: 1px solid @color-cobalt;
+  }
+
+  &__info{
+    flex-grow: 1;
+  }
+}

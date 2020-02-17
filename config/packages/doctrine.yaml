@@ -1,0 +1,38 @@
+parameters:
+
+doctrine:
+    dbal:
+        driver:   pdo_mysql
+        host:     "%env(DATABASE_HOST)%"
+        port:     "%env(DATABASE_PORT)%"
+        dbname:   "%env(DATABASE_NAME)%"
+        user:     "%env(DATABASE_USER)%"
+        password: "%env(DATABASE_PASS)%"
+        charset:  utf8mb4
+        server_version: '8.0'
+        types:
+          uuid_binary: Ramsey\Uuid\Doctrine\UuidBinaryType
+          bigint: PlayOrPay\Infrastructure\Storage\Doctrine\Type\BigIntType
+          role_enum: PlayOrPay\Infrastructure\Storage\Doctrine\Type\RoleEnumType
+          steam_id: PlayOrPay\Infrastructure\Storage\Doctrine\Type\Steam\SteamIdType
+          event_picker_type: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickerType
+          event_pick_type: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickType
+          event_pick_played_status: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickPlayedStatusType
+        mapping_types:
+          uuid_binary: binary
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            Domain:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/config/mapping/orm/domain'
+                prefix: 'PlayOrPay\Domain'
+                alias: Domain
+            LeaguePeriod:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/config/mapping/orm/league'
+                prefix: 'League\Period'

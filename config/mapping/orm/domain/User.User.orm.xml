@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="PlayOrPay\Domain\User\User" table="users">
+        <id name="steamId" type="steam_id">
+            <options>
+                <option name="unsigned">true</option>
+            </options>
+        </id>
+        <field name="createdAt" type="datetime" />
+        <field name="updatedAt" type="datetime" />
+        <field name="communityVisibilityState" type="integer" nullable="true" />
+        <field name="profileState" type="integer" nullable="true" />
+        <field name="profileName" />
+        <field name="lastLogOff" type="datetime" nullable="true" />
+        <field name="commentPermission" type="integer" nullable="true" />
+        <field name="profileUrl" />
+        <field name="avatar" />
+        <field name="personaState" type="integer" nullable="true" />
+        <field name="primaryClanId" type="bigint" nullable="true">
+            <options>
+                <option name="unsigned">true</option>
+            </options>
+        </field>
+        <field name="joinDate" type="datetime" nullable="true" />
+        <field name="countryCode" nullable="true" />
+        <field name="blaeoName" nullable="true" />
+        <field name="active" type="boolean" />
+        <field name="extraRules" nullable="true" />
+
+        <many-to-many field="roles" target-entity="PlayOrPay\Domain\Role\Role">
+            <join-table name="user_roles">
+                <join-columns>
+                    <join-column name="user" referenced-column-name="steam_id" />
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="role" referenced-column-name="name" />
+                </inverse-join-columns>
+            </join-table>
+        </many-to-many>
+
+        <many-to-many field="groups" target-entity="PlayOrPay\Domain\Steam\Group" mapped-by="members" />
+    </entity>
+</doctrine-mapping>

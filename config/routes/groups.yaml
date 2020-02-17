@@ -1,0 +1,13 @@
+get_groups:
+    methods: GET
+    path: /api/groups
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\Steam\Group\GetAll\GetAllGroupsQuery
+
+import_group:
+    methods: GET
+    path: /api/execute/import_group/{code}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Steam\Group\Import\ImportGroupCommand

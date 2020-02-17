@@ -1,0 +1,13 @@
+get_block:
+    methods: GET
+    path: /api/blocks/{code}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\Content\Block\GetBlockQuery
+
+put_block:
+    methods: PUT
+    path: /api/blocks/{code}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Content\Block\PutBlockCommand

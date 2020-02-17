@@ -1,0 +1,6 @@
+get_profile:
+    methods: GET
+    path: /api/profile
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\User\User\FindByProfileName\FindUserByProfileNameQuery

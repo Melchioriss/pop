@@ -1,0 +1,104 @@
+@import "_colors";
+
+.text{
+  font-size: 14px;
+
+  p{
+    margin: 0 0 10px;
+  }
+
+  h1, h2, h3, h4, h5, h6{
+    color: @color-text;
+    font-weight: bold;
+    margin: 0 0 14px;
+  }
+
+  h1{
+    font-size: 24px;
+  }
+
+  h2{
+    font-size: 22px;
+  }
+
+  h3{
+    font-size: 18px;
+  }
+
+
+  table{
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 1500px;
+
+    th, td{
+      border: 1px solid @color-cobalt;
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+
+    th{
+      background: @color-bg-light;
+      font-weight: bold;
+    }
+  }
+
+  pre{
+    white-space: pre-wrap;
+    background: @color-bg-light;
+    border-left: 3px solid @color-cobalt;
+    padding: 8px 10px;
+    margin: 0 0 10px;
+  }
+
+  code{
+    background: @color-bg-light;
+    padding: 2px 4px;
+  }
+
+  blockquote{
+    color: fade(@color-text, 60%);
+    padding: 10px 10px 10px 20px;
+    margin: 0 0 12px;
+    position: relative;
+    border: 1px solid fade(@color-cobalt, 50%);
+    border-left-width: 3px;
+    background-color: fade(@color-bg-light, 50%);
+
+    &:before{
+      content: open-quote;
+      display: block;
+      font-size: 44px;
+      line-height: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    > p:last-child{
+      margin-bottom: 0;
+    }
+  }
+
+  ul, ol{
+    margin: 0 20px 14px;
+    padding: 0 0 0 1px;
+
+    li{
+      margin-bottom: 3px;
+    }
+  }
+
+  ul ol, ul ul , ol ul, ol ol{
+    margin-bottom: 5px;
+  }
+
+  hr{
+    color: @color-cobalt-hover;
+    border: 1px solid @color-cobalt-hover;
+    margin: 10px 0;
+  }
+
+}

@@ -1,0 +1,11 @@
+#go_aop:
+#    cache_warmer: true
+#    doctrine_support: false
+#    options:
+#        debug: "%kernel.debug%"
+#        app_dir: "%kernel.root_dir%/../"
+#        cache_dir: "%kernel.cache_dir%/aspect"
+#        include_paths: []
+#        exclude_paths: []
+#        # container_class: ~
+#        features: []

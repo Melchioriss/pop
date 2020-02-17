@@ -1,0 +1,13 @@
+import_games:
+    methods: GET
+    path: /api/execute/import_games
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Steam\Game\ImportGamesCommand
+
+search_games:
+    methods: GET
+    path: /api/games
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\SearchPaginatedQuery

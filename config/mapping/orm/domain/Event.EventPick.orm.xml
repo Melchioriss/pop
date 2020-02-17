@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="PlayOrPay\Domain\Event\EventPick" table="event_picks">
+        <id name="uuid" type="uuid" />
+        <many-to-one field="picker" target-entity="PlayOrPay\Domain\Event\EventPicker" inversed-by="picks">
+            <join-column referenced-column-name="uuid" />
+        </many-to-one>
+        <many-to-one field="game" target-entity="PlayOrPay\Domain\Steam\Game" fetch="EAGER" />
+        <field name="type" type="event_pick_type" />
+        <field name="playedStatus" type="event_pick_played_status" />
+        <embedded name="playingState" class="PlayOrPay\Domain\Event\PlayingState" />
+    </entity>
+</doctrine-mapping>

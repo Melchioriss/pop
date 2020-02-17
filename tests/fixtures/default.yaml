@@ -1,0 +1,60 @@
+parameters:
+    profileUrl: 'https://steamcommunity.com/id/#username#/'
+
+PlayOrPay\Domain\Role\RoleName:
+    role_admin_name:
+        __construct:
+            0: 'ADMIN'
+
+PlayOrPay\Domain\Role\Role:
+    role_admin:
+        __construct:
+            0: '@role_admin_name'
+
+League\Period\Period:
+    default_active_period:
+        __construct:
+            0: 'now'
+            1: 'now + 1 week'
+
+PlayOrPay\Domain\User\User:
+    admin:
+        steamId (unique): '<numberBetween(90000000000000000, 99999999999999999)>'
+        communityVisibilityState: '50%? <numberBetween(1, 3)>'
+        profileState: '50%? 1'
+        profileName: '<username()>'
+        profileUrl: '<str_replace("#username#", <username()>, <{profileUrl}>)>'
+        avatar: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/ab/aba403793768ab999442d82e4f26644f26ea3941_full.jpg'
+        roles: '[@role_admin]'
+
+    user_{1..20}:
+        steamId (unique): '<numberBetween(90000000000000000, 99999999999999999)>'
+        communityVisibilityState: '50%? <numberBetween(1, 3)>'
+        profileState: '50%? 1'
+        profileName: '<username()>'
+        profileUrl: '<str_replace("#username#", <username()>, <{profileUrl}>)>'
+        avatar: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/ab/aba403793768ab999442d82e4f26644f26ea3941_full.jpg'
+
+PlayOrPay\Domain\Steam\Group:
+    group_1:
+        __construct:
+            id (unique): '<numberBetween(90000000000000000, 99999999999999999)>'
+            code (unique): '<username()>'
+            name: '<name()>'
+            logoUrl: 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/32/3262c28764672bfe03ed9710cefb9cb76ba688ee_full.jpg'
+        members: '<numberBetween(1, 15)>x @user_*'
+
+PlayOrPay\Domain\Event\Event:
+    event:
+        __construct:
+            uuid (unique): '<call_user_func("Ramsey\Uuid\Uuid::uuid4")>'
+            name: '<username()>'
+            activePeriod: '@default_active_period'
+            description: 'blablabla'
+            group: '@group_1'
+
+PlayOrPay\Domain\Steam\Game:
+    game_{1..30}:
+        __construct:
+            id (unique): '<numberBetween(1000, 9000)>'
+            name: '<name()>'

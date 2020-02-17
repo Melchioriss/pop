@@ -1,0 +1,100 @@
+{
+    "name": "ardiffaz/pop",
+    "description": "Play or Pay event management tool",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^7.2",
+        "ext-iconv": "*",
+        "ext-json": "*",
+        "beberlei/assert": "^3.0",
+        "broadway/broadway": "^2.1",
+        "broadway/broadway-bundle": "^0.4.2",
+        "broadway/event-store-dbal": "^0.3",
+        "doctrine/doctrine-cache-bundle": "^1.4",
+        "ducks-project/spl-types": "^1.1",
+        "elasticsearch/elasticsearch": "^6.0",
+        "fabpot/goutte": "^4.0",
+        "goaop/goaop-symfony-bundle": "^2.1",
+        "knojector/steam-authentication-bundle": "dev-master",
+        "league/period": "^4.9",
+        "league/tactician-bundle": "^1.1",
+        "mark-gerarts/automapper-plus-bundle": "^1.2",
+        "nelmio/api-doc-bundle": "^3.4",
+        "ramsey/uuid": "^3.8",
+        "ramsey/uuid-doctrine": "^1.5",
+        "sensio/framework-extra-bundle": "^5.2",
+        "symfony/asset": "^4.3",
+        "symfony/console": "^4.3",
+        "symfony/dom-crawler": "^4.3",
+        "symfony/flex": "^1.2.5",
+        "symfony/framework-bundle": "^4.3",
+        "symfony/orm-pack": "^1.0",
+        "symfony/security-bundle": "^4.3",
+        "symfony/serializer": "^4.3",
+        "symfony/translation-contracts": "^1.1",
+        "symfony/twig-bundle": "^4.3",
+        "symfony/yaml": "^4.3"
+    },
+    "require-dev": {
+        "dama/doctrine-test-bundle": "^5.0",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "nelmio/alice": "^3.5",
+        "phpstan/phpstan": "^0.11",
+        "phpunit/phpunit": "^8.1",
+        "roave/security-advisories": "dev-master",
+        "symfony/browser-kit": "^4.3",
+        "symfony/css-selector": "^4.3",
+        "symfony/dotenv": "^4.3",
+        "symfony/phpunit-bridge": "^4.3",
+        "symfony/profiler-pack": "^1.0"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "PlayOrPay\\": "backend/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PlayOrPay\\Tests\\": "tests/"
+        }
+    },
+    "replace": {
+        "symfony/polyfill-iconv": "*"
+    },
+    "scripts": {
+        "test": "phpunit",
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "require": "^4.3",
+            "id": "01DZFJMG2PR04MFG8MMY5X6HBS"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "vendor_fork/*/*",
+            "symlink": true
+        }
+    ]
+}

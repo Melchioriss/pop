@@ -1,0 +1,38 @@
+@import "_colors";
+
+.checkbox{
+  display: none;
+
+  & + label:before{
+    content: '\f00c';
+    //noinspection CssNoGenericFontName
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: transparent;
+    font-size: 14px;
+    line-height: 16px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid @color-dark-orange;
+    background: @color-bg-light;
+    box-sizing: border-box;
+    padding-left: 1px;
+    overflow: hidden;
+    cursor: pointer;
+    margin-right: 6px;
+    transform: translateY(5px);
+  }
+
+  &:checked + label:before{
+    color: @color-dark-orange;
+  }
+
+  &:disabled + label{
+    opacity: 0.5;
+
+    &:before{
+      cursor: default;
+    }
+  }
+}

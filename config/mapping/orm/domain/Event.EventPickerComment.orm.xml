@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="PlayOrPay\Domain\Event\EventPickerComment" table="comments">
+        <id name="uuid" type="uuid" />
+        <many-to-one field="picker" target-entity="PlayOrPay\Domain\Event\EventPicker" inversed-by="comments">
+            <join-column referenced-column-name="uuid" />
+        </many-to-one>
+        <many-to-one field="user" target-entity="PlayOrPay\Domain\User\User">
+            <join-column referenced-column-name="steam_id" />
+        </many-to-one>
+        <field name="text" type="text" />
+        <field name="createdAt" type="datetime_immutable" />
+    </entity>
+</doctrine-mapping>

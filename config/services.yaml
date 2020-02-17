@@ -1,0 +1,95 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    date_format: !php/const DateTimeInterface::RFC3339
+    steam_api_key: '%env(resolve:STEAM_API_KEY)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $queryBus: '@tactician.commandbus.query'
+            $commandBus: '@tactician.commandbus.command'
+            $securityBus: '@tactician.commandbus.security'
+            $eventBus: '@broadway.event_handling.event_bus'
+            $eventStore: '@Broadway\EventStore\Dbal\DBALEventStore'
+            $dateFormat: '%date_format%'
+            $steamApiKey: '%steam_api_key%'
+
+    _instanceof:
+        AutoMapperPlus\AutoMapperPlusBundle\AutoMapperConfiguratorInterface:
+            autowire: false
+
+        PlayOrPay\Application\Command\CommandHandlerInterface:
+            public: true
+            tags:
+                - { name: tactician.handler, typehints: true, bus: command }
+
+        PlayOrPay\Application\Query\QueryHandlerInterface:
+            public: true
+            tags:
+                - { name: tactician.handler, typehints: true, bus: query }
+
+        PlayOrPay\Security\SecurityHandlerInterface:
+            public: true
+            tags:
+                - { name: tactician.handler, typehints: true, bus: security }
+
+        Broadway\EventHandling\EventListener:
+            public: true
+            tags:
+                - { name: broadway.domain.event_listener }
+
+        Go\Aop\Aspect:
+            tags:
+                - { name: goaop.aspect }
+
+    PlayOrPay\:
+        resource: '../backend/*'
+        exclude: '../backend/**/{Migrations}'
+
+    ### Event Store
+    Broadway\EventStore\Dbal\DBALEventStore:
+        public: true
+        arguments:
+            - '@doctrine.dbal.default_connection'
+            - '@broadway.serializer.payload'
+            - '@broadway.serializer.metadata'
+            - 'events'
+            - true
+            - '@broadway.uuid.converter'
+
+    ### UI
+    PlayOrPay\UI\Cli\Command\:
+        resource: '../backend/UI/Cli/Command'
+
+    PlayOrPay\UI\Http\Rest\Controller\:
+        resource: '../backend/UI/Http/Rest/Controller/*'
+        tags: [ 'controller.service_arguments' ]
+
+    ### UI Listeners
+    PlayOrPay\UI\Http\Rest\EventSubscriber\ExceptionSubscriber:
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.exception' }
+
+    PlayOrPay\UI\Http\Rest\EventSubscriber\JsonBodyParserSubscriber:
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 100 }
+
+    # External
+    Knojector\SteamAuthenticationBundle\Http\SteamApiClient:
+        alias: knojector.steam_authentication.http.steam_api_client
+
+    Knojector\SteamAuthenticationBundle\Factory\UserFactory:
+        alias: knojector.steam_authentication.factory.user_factory
+
+    GuzzleHttp\Client:
+    GuzzleHttp\ClientInterface:
+        alias: GuzzleHttp\Client
+
+    Goutte\Client:
+
+    PlayOrPay\Infrastructure\Storage\Steam\GameRemoteRepository:
+       public: true

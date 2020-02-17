@@ -1,0 +1,354 @@
+<template>
+    <div class="event">
+
+        <loading-indicator v-if="isLoading"></loading-indicator>
+
+        <not-found v-else-if="isNotFoundError"></not-found>
+
+        <template v-else>
+
+            <h1 class="title">{{event.name}}</h1>
+
+            <div class="event__params">
+                <div class="event__params-item event__dates">
+                    <i class="fa-icon fa-fw fas fa-calendar-alt color-dark-orange"></i>{{$getExactDate(event.activePeriod.startDate)}} &mdash; {{$getExactDate(event.activePeriod.endDate)}}
+                </div>
+            </div>
+
+            <div
+                v-if="event.description"
+                v-html="$getMarkedResult(event.description)"
+                class="event__description text"
+            ></div>
+
+            <div class="event__buttons">
+                <button
+                    v-if="!isShowingOnlyMine"
+                    @click="showOnlyMineParticipations"
+                    type="button"
+                    class="button button--space-right"
+                >Show only Mine</button>
+                <button
+                    v-if="isShowingOnlyMine"
+                    @click="showAllParticipations"
+                    type="button"
+                    class="button button--space-right"
+                >Show All</button>
+                <button
+                    @click="hideAllComments"
+                    type="button"
+                    class="button button--space-right"
+                >Hide all comments</button>
+                <button
+                    @click="togglePPTable"
+                    type="button"
+                    class="button button--space-right"
+                >{{isShowingPPTable ? 'Hide' : 'Show'}} Pickers table</button>
+                <router-link
+                    v-if="isAdmin"
+                    :to="{name: 'edit_event', params: {eventUuid: event.uuid}}"
+                    class="button button--cobalt button--space-right"
+                >Edit</router-link>
+                <button
+                    v-if="!isShowingGeneratePickersButton"
+                    @click="generatePickers"
+                    type="button"
+                    class="button button--cobalt button--space-right"
+                >Generate pickers</button>
+                <button
+                    v-if="isAdmin && !isShowingPotentialParticipants && potentialParticipants.length > 0"
+                    @click="showPotentialParticipants"
+                    type="button"
+                    class="button button--cobalt button--space-right"
+                >Add new participant</button>
+                <button
+                    v-if="isAdmin"
+                    @click="importPlaystats"
+                    type="button"
+                    class="button button--cobalt button--space-right"
+                >Update playing stats</button>
+            </div>
+
+            <loading-indicator
+                v-if="isUpdatingPlaystats"
+            >updating playing stats, it may take a while...</loading-indicator>
+
+            <div
+                v-if="isShowingPotentialParticipants"
+                class="event__potential"
+            >
+                <div class="event__potential-heading">Add new participant:</div>
+                <div
+                    class="event__potential-item"
+                    v-for="user in potentialParticipants"
+                >
+                    <a
+                        :href="user.profileUrl"
+                        target="_blank"
+                    >{{user.profileName}}</a>
+                    <button
+                        @click="addNewParticipant(user.steamId)"
+                        type="button"
+                        class="button button--cobalt button--space-left"
+                    >Add</button>
+                </div>
+            </div>
+
+            <error-box
+                v-if="generationError"
+            >{{generationError}}</error-box>
+
+            <div
+                v-if="isShowingPPTable"
+                class="text"
+            >
+                <table class="event__pickers-table">
+                    <tr>
+                        <th>Participant</th>
+                        <th>Major Picker</th>
+                        <th>Minor Picker</th>
+                    </tr>
+                    <tr
+                        v-for="ppTableItem in participantPickerTable"
+                    >
+                        <td>{{ppTableItem['participant']}}</td>
+                        <td>{{ppTableItem[MAJOR]}}</td>
+                        <td>{{ppTableItem[MINOR]}}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="event__participants">
+
+                <participation-item
+                    v-for="participant in shownParticipants"
+                    :key="'p_'+participant.uuid"
+                    :participant="participant"
+                    :is-hiding-all-comments="isHidingAllComments"
+                />
+
+            </div>
+
+        </template>
+
+    </div>
+</template>
+
+<script>
+    import uuid from 'uuid';
+    import {mapState, mapGetters} from 'vuex';
+    import ParticipationItem from "../components/ParticipationItem";
+    import LoadingIndicator from "../components/LoadingIndicator";
+    import NotFound from "./NotFound";
+    import ErrorBox from "../components/ErrorBox";
+    export default {
+        name: "Event",
+        components: {ErrorBox, NotFound, LoadingIndicator, ParticipationItem},
+        props: {},
+        data() {
+            return {
+                isLoading: false,
+                generationError: '',
+                isNotFoundError: false,
+                isHidingAllComments: false,
+                isShowingOnlyMine: false,
+                isShowingPPTable: false,
+                potentialParticipants: [],
+                isShowingPotentialParticipants: false,
+                isUpdatingPlaystats: false
+            };
+        },
+        computed: {
+            ...mapState([
+                'MAJOR',
+                'MINOR'
+            ]),
+
+            ...mapGetters({
+                participants: 'getSortedParticipants',
+                isAdmin: 'loggedUserIsAdmin',
+                loggedUserSteamId: 'loggedUserSteamId'
+            }),
+            uuid: function () {
+                return this.$route.params.eventUuid;
+            },
+            event: function () {
+                return this.$store.state.events[this.uuid];
+            },
+            isShowingGeneratePickersButton: function () {
+                if (!this.isAdmin)
+                    return true;
+
+                if (!this.participants.length)
+                    return true;
+
+                let generated = false;
+
+                for (let i = 0; i < this.participants.length; i++ )
+                {
+                    if (Object.values(this.participants[i].pickers).length > 0)
+                    {
+                        generated = true;
+                        break;
+                    }
+                }
+
+                return generated;
+            },
+            shownParticipants: function () {
+                if (!this.isShowingOnlyMine)
+                    return this.participants;
+
+                return this.participants.filter(participant => {
+                    if (participant.user === this.loggedUserSteamId)
+                        return true;
+
+                    let majorPicker = this.$store.getters.getPicker(participant.pickers[this.MAJOR]);
+                    let minorPicker = this.$store.getters.getPicker(participant.pickers[this.MINOR]);
+
+                    if (this.$store.getters.getUser(majorPicker.user).steamId === this.loggedUserSteamId)
+                        return true;
+
+                    if (this.$store.getters.getUser(minorPicker.user).steamId === this.loggedUserSteamId)
+                        return true;
+
+                    return false;
+                })
+            },
+            participantPickerTable: function () {
+                let ppTable = [];
+                Object.values(this.participants).forEach(participant => {
+                    let ppTableItem = {};
+                    ppTableItem['participant'] = this.$store.getters.getUser(participant.user).profileName;
+
+                    Object.keys(participant.pickers).forEach(pickerType => {
+                        let pickerUuid = participant.pickers[pickerType];
+                        let userId = this.$store.getters.getPicker(pickerUuid).user;
+                        ppTableItem[pickerType] = this.$store.getters.getUser(userId).profileName;
+                    });
+                    ppTable.push(ppTableItem);
+                });
+                return ppTable;
+            }
+        },
+        methods: {
+            hideAllComments () {
+                this.isHidingAllComments = !this.isHidingAllComments;
+            },
+            showOnlyMineParticipations () {
+                this.isShowingOnlyMine = true;
+            },
+            showAllParticipations () {
+                this.isShowingOnlyMine = false;
+            },
+            generatePickers () {
+                this.$store.dispatch('generateEventPickers', this.event)
+                    .then(() => {
+                        // reloading page, cause generatePickers leads to too many changes
+                        location.reload();
+                    })
+                    .catch(e => {
+                        this.generationError = 'There was an error generating pickers.';
+                    });
+            },
+            togglePPTable () {
+                this.isShowingPPTable = !this.isShowingPPTable;
+            },
+            showPotentialParticipants () {
+                this.isShowingPotentialParticipants = true;
+            },
+            addNewParticipant (userId) {
+                this.$store.dispatch('addEventParticipant', {
+                        event: this.event,
+                        participantUuid: uuid.v4(),
+                        steamId: userId
+                    })
+                    .then(() => {
+                        // todo: temp
+                        location.reload();
+                        //this.potentialParticipants = this.potentialParticipants.filter(participant => participant.steamId !== userId);
+                    })
+            },
+            importPlaystats () {
+                this.isUpdatingPlaystats = true;
+                this.$store.dispatch('importEventPlaystats', {event: this.event})
+                    .then(() => {
+                        location.reload();
+                    });
+            }
+        },
+        created() {
+            this.isLoading = true;
+            this.$store.dispatch('loadEvent', this.uuid)
+                .then(() => {
+
+                    setTimeout(() => {
+                        if (this.isAdmin)
+                        {
+                            this.$store.dispatch('loadEventPotentialParticipants', this.event)
+                                .then((potentialParticipants) => {
+                                    this.potentialParticipants = potentialParticipants;
+                                });
+                        }
+                    }, 250);
+
+                })
+                .catch(e => {
+                    console.log(e);
+                    this.isNotFoundError = true;
+                })
+                .finally(() => this.isLoading = false);
+        }
+    }
+</script>
+
+<style lang="less">
+    @import "../assets/_colors";
+
+    .event{
+
+        &__params{
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        &__params-item{
+            margin-right: 20px;
+        }
+
+        &__description{
+            padding: 4px 0 4px 10px;
+            border-left: 2px solid @color-cobalt;
+            margin-bottom: 20px;
+
+            & > p:last-child{
+                margin-bottom: 0;
+            }
+        }
+
+        &__buttons{
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        &__potential{
+            margin-bottom: 20px;
+            padding: 20px 20px 10px;
+            background: @color-bg-light;
+        }
+
+        &__potential-heading{
+            font-size: 16px;
+            font-weight: bold;
+            color: @color-cobalt;
+            margin-bottom: 16px;
+        }
+
+        &__potential-item{
+            margin-bottom: 10px;
+        }
+    }
+
+</style>

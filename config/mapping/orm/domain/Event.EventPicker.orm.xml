@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="PlayOrPay\Domain\Event\EventPicker" table="event_pickers">
+        <unique-constraints>
+            <unique-constraint columns="participant_id,type" />
+        </unique-constraints>
+        <id name="uuid" type="uuid" />
+        <many-to-one field="participant" target-entity="PlayOrPay\Domain\Event\EventParticipant" inversed-by="pickers">
+            <join-column referenced-column-name="uuid" />
+        </many-to-one>
+        <many-to-one field="user" target-entity="PlayOrPay\Domain\User\User">
+            <join-column referenced-column-name="steam_id" />
+        </many-to-one>
+        <field name="type" type="event_picker_type" />
+        <one-to-many field="picks" target-entity="PlayOrPay\Domain\Event\EventPick" mapped-by="picker">
+            <cascade><cascade-persist /></cascade>
+        </one-to-many>
+        <one-to-many field="comments" target-entity="PlayOrPay\Domain\Event\EventPickerComment" mapped-by="picker">
+            <cascade><cascade-persist /></cascade>
+            <order-by>
+                <order-by-field name="createdAt" />
+            </order-by>
+        </one-to-many>
+    </entity>
+</doctrine-mapping>

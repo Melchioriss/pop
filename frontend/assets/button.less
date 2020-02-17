@@ -1,0 +1,35 @@
+@import "_colors";
+
+.button{
+  display: inline-block;
+  border: none;
+  background: @color-dark-orange;
+  color: @color-light-orange;
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover{
+    background: @color-dark-orange-hover;
+    color: @color-light-orange-hover;
+  }
+
+  &--space-left{
+    margin-left: 10px;
+  }
+
+  &--space-right{
+    margin-right: 10px;
+  }
+
+  &--cobalt{
+    background-color: @color-cobalt;
+
+    &:hover{
+      background-color: @color-cobalt-hover;
+    }
+  }
+}

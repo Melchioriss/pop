@@ -1,0 +1,6 @@
+change_pick_status:
+    methods: PUT
+    path: /api/picks/{pickUuid}/status
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPick\ChangeStatus\ChangeEventPickStatusCommand

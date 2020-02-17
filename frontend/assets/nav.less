@@ -1,0 +1,28 @@
+@import './_colors';
+
+.nav{
+  display: flex;
+  align-items: stretch;
+
+  &__link{
+    color: @color-light-orange;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 5px 15px;
+    border-right: 2px solid @color-light-orange;
+
+    &:first-child{
+      border-left: 2px solid @color-light-orange;
+    }
+    
+    &:hover{
+      color: @color-light-orange-hover;
+    }
+
+    &.router-link-active{
+      background: @color-cobalt-hover;
+    }
+  }
+}

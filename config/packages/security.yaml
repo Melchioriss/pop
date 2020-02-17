@@ -1,0 +1,27 @@
+security:
+    encoders:
+        bcrypt:
+            algorithm: bcrypt
+            cost: 12
+    providers:
+        steam_user_provider:
+            id: Knojector\SteamAuthenticationBundle\Security\User\SteamUserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: ~
+            pattern: ^/
+            provider: steam_user_provider
+            steam: true
+
+        api_healthz:
+            pattern:  ^/api/healthz
+            stateless: true
+            anonymous: true
+
+    access_control:
+        - { path: ^/api/healthz, roles: IS_AUTHENTICATED_ANONYMOUSLY }

@@ -1,0 +1,27 @@
+update_event_participant_extra_rules:
+    methods: PUT
+    path: /api/participants/{participantUuid}/extraRules
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventParticipant\UpdateExtraRules\UpdateEventParticipantExtraRulesCommand
+
+update_event_participant_blaeo_games:
+    methods: PUT
+    path: /api/participants/{participantUuid}/blaeoGames
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventParticipant\UpdateBlaeoGames\UpdateEventParticipantBlaeoGamesCommand
+
+update_event_participant_group_wins:
+    methods: PUT
+    path: /api/participants/{participantUuid}/groupWins
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventParticipant\UpdateGroupWins\UpdateEventParticipantGroupWinsCommand
+
+add_participant_picker:
+    methods: POST
+    path: /api/participants/{participantUuid}/pickers/{pickerUuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventParticipant\AddPicker\AddEventParticipantPickerCommand

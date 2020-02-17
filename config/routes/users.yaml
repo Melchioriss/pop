@@ -1,0 +1,48 @@
+set_user_extra_rules:
+    methods: PUT
+    path: /api/users/{steamId}/extraRules
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\User\User\SetExtraRules\SetUserExtraRulesCommand
+
+set_user_blaeo_name:
+    methods: PUT
+    path: /api/users/{steamId}/blaeoName
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\User\User\SetBlaeoName\SetUserBlaeoNameCommand
+
+revoke_user_admin_role:
+    methods: DELETE
+    path: /api/users/{steamId}/admin
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\User\User\RevokeAdminRole\RevokeUserAdminRoleCommand
+
+grant_user_admin_role:
+    methods: PUT
+    path: /api/users/{steamId}/admin
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\User\User\GrantAdminRole\GrantUserAdminRoleCommand
+
+activate_user:
+    methods: PUT
+    path: /api/users/{steamId}/activity
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\User\User\Activate\ActivateUserCommand
+
+deactivate_user:
+    methods: DELETE
+    path: /api/users/{steamId}/activity
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\User\User\Deactivate\DeactivateUserCommand
+
+get_users:
+    methods: GET
+    path: /api/users
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
+    defaults:
+        query: PlayOrPay\Application\Query\User\User\GetAll\GetAllUsersQuery

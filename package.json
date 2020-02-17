@@ -1,5 +1,13 @@
 {
+  "name": "@ardiffaz/pop",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Ardiffaz",
+      "role": "maintainer",
+      "email": "ardiffaz@gmail.com"
+    }
+  ],
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",
     "@symfony/webpack-encore": "^0.28.2",

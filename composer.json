@@ -1,6 +1,18 @@
 {
     "name": "ardiffaz/pop",
     "description": "Play or Pay event management tool",
+    "authors": [
+        {
+            "name": "Ardiffaz",
+            "role": "maintainer",
+            "email": "ardiffaz@gmail.com"
+        },
+        {
+            "name": "inside",
+            "role": "backend developer",
+            "email": "xim.nenko@gmail.com"
+        }
+    ],
     "type": "project",
     "license": "MIT",
     "require": {

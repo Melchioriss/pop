@@ -43,7 +43,7 @@
                         target="_blank"
                         class="nav__link"
                     >Steam Group</a>
-                    <a href="https://github.com/" target="_blank" class="nav__link">Bugs & Suggestions</a>
+                    <a href="https://github.com/Ardiffaz/pop" target="_blank" class="nav__link">Bugs & Suggestions</a>
                     <router-link :to="{name: 'text_formatting'}" class="nav__link">Text Formatting</router-link>
                 </nav>
             </div>

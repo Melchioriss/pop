@@ -22,13 +22,16 @@ export default new Vuex.Store({
         COMPLETED: 30,
         ABANDONED: 40,
 
+        MAIN_PAGE_CONTENT_CODE: 'main_page',
+
         users: {},
         loggedUser: {},
         groups: {},
         events: {},
         participants: {},
         pickers: {},
-        picks: {}
+        picks: {},
+        blocks: {},
     },
     getters: {
         getMainGroup: (state) => state.groups[0],
@@ -68,7 +71,9 @@ export default new Vuex.Store({
 
         getPicker: (state) => (pickerUuid) => state.pickers[pickerUuid],
 
-        getPick: (state) => (pickUuid) => state.picks[pickUuid]
+        getPick: (state) => (pickUuid) => state.picks[pickUuid],
+
+        getMainPageContent: (state) => state.blocks[ state.MAIN_PAGE_CONTENT_CODE ],
     },
     actions: {
         loadGroups: function({commit, state}) {
@@ -376,6 +381,21 @@ export default new Vuex.Store({
                     picker.comments.push(comment);
                     commit('setPicker', picker);
                 });
+        },
+
+        loadMainPageContent: function({commit, state}) {
+            return api.content.getBlock(state.MAIN_PAGE_CONTENT_CODE)
+                .then(({data: contentResult}) => {
+                    commit('setBlock', {code: state.MAIN_PAGE_CONTENT_CODE, content: contentResult.data.content});
+                })
+                .catch(e => console.log(e.response.data.errors.detail));
+        },
+
+        setMainPageContent: function ({commit, state}, content) {
+            return api.content.setBlock(state.MAIN_PAGE_CONTENT_CODE, content)
+                .then(() => {
+                    commit('setBlock', {code: state.MAIN_PAGE_CONTENT_CODE, content})
+                })
         }
     },
     mutations: {
@@ -399,7 +419,8 @@ export default new Vuex.Store({
 
         setPicks: (state, picks) => state.picks = picks,
 
-        setPick: (state, pick) => Vue.set(state.picks, pick.uuid, pick)
+        setPick: (state, pick) => Vue.set(state.picks, pick.uuid, pick),
 
+        setBlock: (state, block) => Vue.set(state.blocks, block.code, block.content)
     }
 });

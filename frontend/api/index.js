@@ -1,5 +1,6 @@
 import axios from 'axios';
 import profile from './profile';
+import content from './content'
 import users from './users';
 import events from './events';
 import participants from './participants';
@@ -16,6 +17,7 @@ Object.assign(axios.defaults, {
 
 export default {
     profile,
+    content,
     users,
     events,
     participants,

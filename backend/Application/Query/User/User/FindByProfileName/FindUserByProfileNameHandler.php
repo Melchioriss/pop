@@ -6,9 +6,9 @@ use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
+use PlayOrPay\Application\Schema\User\User\Common;
 use PlayOrPay\Application\Schema\User\User\Common\CommonUserMappingConfigurator;
 use PlayOrPay\Domain\User\User;
-use PlayOrPay\Application\Schema\User\User\Common;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -32,8 +32,10 @@ class FindUserByProfileNameHandler implements QueryHandlerInterface
 
     /**
      * @param FindUserByProfileNameQuery $query
-     * @return Common\CommonUserView|null
+     *
      * @throws UnregisteredMappingException
+     *
+     * @return Common\CommonUserView|null
      */
     public function __invoke(FindUserByProfileNameQuery $query): ?Common\CommonUserView
     {
@@ -49,7 +51,8 @@ class FindUserByProfileNameHandler implements QueryHandlerInterface
             return null;
         }
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
+
         return (new AutoMapper($config))->map($user, Common\CommonUserView::class);
     }
 }

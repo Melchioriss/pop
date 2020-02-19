@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinderInterface;
@@ -29,10 +30,10 @@ class UpdateEventParticipantGroupWinsHandler implements CommandHandlerInterface
     }
 
     /**
-     * @param UpdateEventParticipantGroupWinsCommand $command
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(UpdateEventParticipantGroupWinsCommand $command)
     {

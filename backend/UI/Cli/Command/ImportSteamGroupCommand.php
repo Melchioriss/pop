@@ -33,7 +33,7 @@ class ImportSteamGroupCommand extends Command
                     'groupCode',
                     InputArgument::REQUIRED,
                     'The group code you wanted to import'
-                )
+                ),
             ]);
     }
 
@@ -47,10 +47,12 @@ class ImportSteamGroupCommand extends Command
             $this->commandBus->handle($importGroupCommand);
         } catch (NotFoundException $e) {
             $ss->error("Steam doesn't know such a group");
+
             return -1;
         }
 
         $ss->success('Group successfully imported');
+
         return 0;
     }
 }

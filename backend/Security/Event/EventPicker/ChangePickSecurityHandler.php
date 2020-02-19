@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Security\Event\EventPicker;
 
-
 use Doctrine\ORM\EntityNotFoundException;
 use PlayOrPay\Application\Command\Event\EventPicker\ChangePick\ChangePickCommand;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
@@ -23,6 +22,7 @@ class ChangePickSecurityHandler extends CommonSecurityHandler
 
     /**
      * @param ChangePickCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

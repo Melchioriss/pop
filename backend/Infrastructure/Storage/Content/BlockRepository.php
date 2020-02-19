@@ -10,11 +10,6 @@ use PlayOrPay\Infrastructure\Storage\Doctrine\Repository\ServiceEntityRepository
  */
 class BlockRepository extends ServiceEntityRepository
 {
-    public function isSaveAllowed(): bool
-    {
-        return true;
-    }
-
     public function getEntityClass(): string
     {
         return Block::class;

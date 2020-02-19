@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace PlayOrPay\UI\Http\Rest\Controller;
 
+use League\Tactician\CommandBus;
 use League\Tactician\Exception\MissingHandlerException;
 use PlayOrPay\Application\Query\Collection;
 use PlayOrPay\Security\SecuriryException;
 use PlayOrPay\UI\Http\Rest\Response\JsonApiFormatter;
-use League\Tactician\CommandBus;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use function count;
 
 abstract class QueryController
 {
@@ -19,6 +18,7 @@ abstract class QueryController
 
     /**
      * @param object $action
+     *
      * @throws SecuriryException
      */
     protected function confirm(object $action)
@@ -61,6 +61,11 @@ abstract class QueryController
         );
     }
 
+    /**
+     * @param string $name
+     * @param array<string, string|int|float> $params
+     * @return string
+     */
     protected function route(string $name, array $params = []): string
     {
         return $this->router->generate($name, $params);

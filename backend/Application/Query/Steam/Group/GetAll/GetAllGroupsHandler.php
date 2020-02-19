@@ -27,16 +27,18 @@ class GetAllGroupsHandler implements QueryHandlerInterface
 
     /**
      * @param GetAllGroupsQuery $query
-     * @return Common\GroupView[]
+     *
      * @throws InvalidArgumentException
+     *
+     * @return Common\GroupView[]
      */
     public function __invoke(GetAllGroupsQuery $query): array
     {
         $domainGroups = $this->groupRepo->findBy([], [
-            'id' => Criteria::DESC
+            'id' => Criteria::DESC,
         ]);
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
 
         return (new AutoMapper($config))->mapMultiple($domainGroups, Common\GroupView::class);
     }

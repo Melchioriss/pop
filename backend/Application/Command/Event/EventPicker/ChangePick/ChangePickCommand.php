@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Command\Event\EventPicker\ChangePick;
 
-
 use Assert\Assert;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

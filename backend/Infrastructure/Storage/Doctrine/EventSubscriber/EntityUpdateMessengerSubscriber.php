@@ -2,10 +2,10 @@
 
 namespace PlayOrPay\Infrastructure\Storage\Doctrine\EventSubscriber;
 
-use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
+use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 
 class EntityUpdateMessengerSubscriber implements EventSubscriber
 {

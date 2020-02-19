@@ -14,11 +14,12 @@ class MakePickTest extends FunctionalTest
 {
     /**
      * @test
+     *
      * @throws Exception
      */
     public function make_new_pick_shoud_be_successful()
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/default.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
 
         /** @var Event $event */
         $event = $fixtures->getOneOf(Event::class);
@@ -37,10 +38,10 @@ class MakePickTest extends FunctionalTest
 
         $this->authorizeAsAdmin();
         $this->request('make_pick', [
-            'pickUuid' => Uuid::uuid4(),
-            'pickerUuid' => (string)$picker->getUuid(),
-            'type' => (string)$pickType,
-            'gameId' => $game->getId(),
+            'pickUuid'   => Uuid::uuid4(),
+            'pickerUuid' => (string) $picker->getUuid(),
+            'type'       => (string) $pickType,
+            'gameId'     => $game->getId(),
         ]);
 
         $this->assertSuccessfulResponse();

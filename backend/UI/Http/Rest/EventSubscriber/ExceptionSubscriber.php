@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PlayOrPay\UI\Http\Rest\EventSubscriber;
 
+use Broadway\Repository\AggregateNotFoundException;
+use Exception;
+use InvalidArgumentException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\User\Exception\ForbiddenException;
 use PlayOrPay\Domain\User\Exception\InvalidCredentialsException;
-use Broadway\Repository\AggregateNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,16 +31,16 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $event->setResponse($response);
     }
 
-    private function getStatusCode(\Exception $exception): int
+    private function getStatusCode(Exception $exception): int
     {
         return $this->determineStatusCode($exception);
     }
 
-    private function getErrorMessage(\Exception $exception, Response $response): array
+    private function getErrorMessage(Exception $exception, Response $response): array
     {
         $error = [
             'errors'=> [
-                'title'     => str_replace('\\', '.', \get_class($exception)),
+                'title'     => str_replace('\\', '.', get_class($exception)),
                 'detail'    => $this->getExceptionMessage($exception),
                 'code'      => $exception->getCode(),
                 'status'    => $response->getStatusCode(),
@@ -63,12 +65,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
         return $error;
     }
 
-    private function getExceptionMessage(\Exception $exception): string
+    private function getExceptionMessage(Exception $exception): string
     {
         return $exception->getMessage();
     }
 
-    private function determineStatusCode(\Exception $exception): int
+    private function determineStatusCode(Exception $exception): int
     {
         // Default status code is always 500
         $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -90,7 +92,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 $statusCode = Response::HTTP_NOT_FOUND;
 
                 break;
-            case $exception instanceof \InvalidArgumentException:
+            case $exception instanceof InvalidArgumentException:
                 $statusCode = Response::HTTP_BAD_REQUEST;
 
                 break;

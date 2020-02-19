@@ -1,19 +1,19 @@
 paths:
-  - ./src
+  - ./backend
 exclude_files:
 layers:
   - name: Domain
     collectors:
       - type: className
-        regex: App\\Domain\\.*
+        regex: PlayOrPay\\Domain\\.*
   - name: Application
     collectors:
       - type: className
-        regex: App\\Application\\.*
+        regex: PlayOrPay\\Application\\.*
   - name: Infrastructure
     collectors:
       - type: className
-        regex: App\\Infrastructure\\.*
+        regex: PlayOrPay\\Infrastructure\\.*
 ruleset:
   Domain:
   Application:

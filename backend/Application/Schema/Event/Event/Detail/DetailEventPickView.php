@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\Event\Event\Detail;
 
-
 use PlayOrPay\Domain\Event\PlayingState;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickPlayedStatusType;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickType;

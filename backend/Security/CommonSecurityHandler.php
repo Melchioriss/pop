@@ -18,8 +18,9 @@ abstract class CommonSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * @return User
      * @throws SecuriryException
+     *
+     * @return User
      */
     public function getActor(): User
     {
@@ -55,6 +56,7 @@ abstract class CommonSecurityHandler implements SecurityHandlerInterface
 
     /**
      * @param User $user
+     *
      * @throws SecuriryException
      */
     public function assertActor(User $user)
@@ -69,6 +71,7 @@ abstract class CommonSecurityHandler implements SecurityHandlerInterface
 
     /**
      * @param Group $group
+     *
      * @throws SecuriryException
      */
     public function assertBeingInGroup(Group $group)
@@ -83,10 +86,11 @@ abstract class CommonSecurityHandler implements SecurityHandlerInterface
 
     /**
      * @param User[] $users
-     * @param bool $acceptAdmin
+     * @param bool   $acceptAdmin
+     *
      * @throws SecuriryException
      */
-    public function assertBeingOneOf(array $users, bool $acceptAdmin = false)
+    public function assertBeingOneOf(array $users, bool $acceptAdmin = false): void
     {
         $actor = $this->getActor();
         if ($acceptAdmin && $actor->isAdmin()) {

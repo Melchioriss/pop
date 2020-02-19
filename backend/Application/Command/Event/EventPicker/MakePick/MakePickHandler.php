@@ -31,6 +31,7 @@ class MakePickHandler implements CommandHandlerInterface
 
     /**
      * @param MakePickCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException

@@ -32,6 +32,7 @@ class ChangePickHandler implements CommandHandlerInterface
 
     /**
      * @param ChangePickCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException

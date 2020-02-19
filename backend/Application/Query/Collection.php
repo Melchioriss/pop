@@ -32,10 +32,11 @@ class Collection
     public $data;
 
     /**
-     * @param int $page
-     * @param int $limit
-     * @param int $total
-     * @param array $data
+     * @param int   $page
+     * @param int   $limit
+     * @param int   $total
+     * @param object[] $data
+     *
      * @throws NotFoundException
      */
     public function __construct(int $page, int $limit, int $total, array $data)
@@ -57,6 +58,7 @@ class Collection
      * @param int $page
      * @param int $limit
      * @param int $total
+     *
      * @throws NotFoundException
      */
     private function exists(int $page, int $limit, int $total): void

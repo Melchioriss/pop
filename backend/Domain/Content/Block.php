@@ -4,9 +4,10 @@ namespace PlayOrPay\Domain\Content;
 
 use Assert\Assert;
 use DateTimeImmutable;
+use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 
-class Block implements OnUpdateEventListenerInterface
+class Block implements OnUpdateEventListenerInterface, AggregateInterface
 {
     /** @var string */
     private $code;
@@ -25,19 +26,20 @@ class Block implements OnUpdateEventListenerInterface
         Assert::thatAll([$code, $content])->minLength(1);
         $this->code = $code;
         $this->content = $content;
-        $this->createdAt = new DateTimeImmutable;
-        $this->updatedAt = new DateTimeImmutable;
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function updateContent(string $content): self
     {
         $this->content = $content;
+
         return $this;
     }
 
     public function onUpdate(): void
     {
-        $this->updatedAt = new DateTimeImmutable;
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function getCode(): string

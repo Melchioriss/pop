@@ -22,6 +22,7 @@ class UpdateEventParticipantGroupWinsHandler extends CommonSecurityHandler
 
     /**
      * @param UpdateEventParticipantGroupWinsCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

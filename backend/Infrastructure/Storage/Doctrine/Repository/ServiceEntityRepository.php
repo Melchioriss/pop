@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Infrastructure\Storage\Doctrine\Repository;
 
+use Assert\Assert;
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use PlayOrPay\Application\Query\PaginatedQuery;
+use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -18,7 +20,8 @@ use Ramsey\Uuid\UuidInterface;
 abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
     /**
-     * Should tell us which class this repository serves
+     * Should tell us which class this repository serves.
+     *
      * @return string
      */
     abstract public function getEntityClass(): string;
@@ -32,8 +35,10 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      * @param $id
      * @param null $lockMode
      * @param null $lockVersion
-     * @return object
+     *
      * @throws EntityNotFoundException
+     *
+     * @return object
      */
     public function get($id, $lockMode = null, $lockVersion = null): object
     {
@@ -45,22 +50,25 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
         return $entity;
     }
 
-    public function isSaveAllowed(): bool
+    public function isItForAnAggregate(): bool
     {
-        return false;
+        return is_a($this->getEntityClass(), AggregateInterface::class, true);
     }
 
     /**
      * @param object ...$entities
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
     public function save(object ...$entities)
     {
-        if (!$this->isSaveAllowed()) {
+        if (!$this->isItForAnAggregate()) {
             throw UnallowedOperationException::becauseSavingIsAvailableOnlyOnAggregate($this->getClassName());
         }
+
+        Assert::thatAll($entities)->isInstanceOf($this->getEntityClass());
 
         foreach ($entities as $entity) {
             $this->_em->persist($entity);
@@ -77,8 +85,9 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
     }
 
     /**
-     * @return UuidInterface
      * @throws Exception
+     *
+     * @return UuidInterface
      */
     public function nextUuid()
     {

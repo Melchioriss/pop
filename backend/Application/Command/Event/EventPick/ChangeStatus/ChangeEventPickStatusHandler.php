@@ -26,6 +26,7 @@ class ChangeEventPickStatusHandler implements CommandHandlerInterface
 
     /**
      * @param ChangeEventPickStatusCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -36,6 +37,6 @@ class ChangeEventPickStatusHandler implements CommandHandlerInterface
         $pick = $this->pickRepo->get($command->getPickUuid());
         $pick->changePlayedStatus($command->getStatus());
 
-        $this->eventRepo->save( $pick->getPicker()->getParticipant()->getEvent() );
+        $this->eventRepo->save($pick->getPicker()->getParticipant()->getEvent());
     }
 }

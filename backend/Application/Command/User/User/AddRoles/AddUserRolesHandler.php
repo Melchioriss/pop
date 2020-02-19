@@ -6,7 +6,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Exception\NotFoundException;
-use PlayOrPay\Domain\Role\RoleName;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\User\RoleRepository;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 
@@ -26,18 +26,16 @@ class AddUserRolesHandler implements CommandHandlerInterface
 
     /**
      * @param AddUserRolesCommand $command
+     *
      * @throws NotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnexpectedRoleException
+     * @throws UnallowedOperationException
      */
     public function __invoke(AddUserRolesCommand $command)
     {
-        $user = $this->userRepo->find($command->getSteamId());
-        if (!$user) {
-            throw new NotFoundException;
-        }
-
+        $user = $this->userRepo->get($command->getSteamId());
         $newRoles = $command->getRoleNames();
         foreach ($newRoles as $newRole) {
             if ($user->hasRole($newRole)) {

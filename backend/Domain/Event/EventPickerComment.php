@@ -29,7 +29,7 @@ class EventPickerComment
         $this->picker = $picker;
         $this->user = $user;
         $this->text = $text;
-        $this->createdAt = new DateTimeImmutable;
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getUser(): User

@@ -4,6 +4,7 @@ namespace PlayOrPay\Application\Query\Event\Event\GetAll;
 
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
+use AutoMapperPlus\Exception\InvalidArgumentException;
 use Doctrine\Common\Collections\Criteria;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
 use PlayOrPay\Application\Schema\Event\Event\Collection;
@@ -26,8 +27,10 @@ class GetAllEventsHandler implements QueryHandlerInterface
 
     /**
      * @param GetAllEventsQuery $query
+     *
+     * @throws InvalidArgumentException
+     *
      * @return Collection\CollectionEventView[]
-     * @throws \AutoMapperPlus\Exception\InvalidArgumentException
      */
     public function __invoke(GetAllEventsQuery $query): array
     {
@@ -35,7 +38,7 @@ class GetAllEventsHandler implements QueryHandlerInterface
             'activePeriod.endDate' => Criteria::DESC,
         ]);
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
 
         return (new AutoMapper($config))->mapMultiple($domainEvents, Collection\CollectionEventView::class);
     }

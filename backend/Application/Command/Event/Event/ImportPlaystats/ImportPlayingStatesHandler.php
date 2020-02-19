@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Application\Command\Event\Event\ImportPlaystats;
 
+use function array_key_exists;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -11,6 +12,7 @@ use PlayOrPay\Application\Query\Steam\PlayerService\GetOwnedGamesQuery;
 use PlayOrPay\Application\Query\Steam\UserStatsQuery;
 use PlayOrPay\Domain\Event\EventParticipant;
 use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\Steam\Exception\UnexpectedResponseException;
 use PlayOrPay\Infrastructure\Storage\Steam\OwnedGameRemoteRepository;
@@ -36,8 +38,7 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
         OwnedGameRemoteRepository $ownedGameRemoteRepo,
         RecentlyPlayedRemoteRepository $recentlyPlayedRemoteRepository,
         PlayerAchievementsRemoteRepository $playerAchievementsRemoteRepo
-    )
-    {
+    ) {
         $this->eventRepo = $eventRepo;
         $this->ownedGameRemoteRepo = $ownedGameRemoteRepo;
         $this->recentlyPlayedRemoteRepository = $recentlyPlayedRemoteRepository;
@@ -46,13 +47,15 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param ImportPlayingStatesCommand $command
+     *
      * @throws GuzzleException
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnexpectedResponseException
+     * @throws UnallowedOperationException
      */
-    public function __invoke(ImportPlayingStatesCommand $command)
+    public function __invoke(ImportPlayingStatesCommand $command): void
     {
         $event = $this->eventRepo->get($command->getEventUuid());
         foreach ($event->getParticipants() as $participant) {
@@ -64,9 +67,11 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param EventParticipant $participant
-     * @return self
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
+     *
+     * @return self
      */
     private function updateParticipantPlayingStates(EventParticipant $participant): self
     {
@@ -77,33 +82,39 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param EventParticipant $participant
-     * @return self
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
+     *
+     * @return self
      */
     private function updatePlaytime(EventParticipant $participant): self
     {
         $unresolvedPlaytimeGames = $this->makeUnresolvedMap($participant->getGames());
         $this->importPlaytimeFromGetOwned($participant, $unresolvedPlaytimeGames);
         $this->importPlaytimeFromRecentlyPlayed($participant, $unresolvedPlaytimeGames);
+
         return $this;
     }
 
     /**
      * @param EventParticipant $participant
-     * @return ImportPlayingStatesHandler
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
+     *
+     * @return ImportPlayingStatesHandler
      */
     private function updateAchievements(EventParticipant $participant): self
     {
         foreach ($participant->getGames() as $game) {
-            $userStatsQuery = new UserStatsQuery((int)(string)$participant->getUserSteamId(), $game->getId());
+            $userStatsQuery = new UserStatsQuery((int) (string) $participant->getUserSteamId(), $game->getId());
             $achievementsState = $this->playerAchievementsRemoteRepo->find($userStatsQuery);
 
             $totalGameAchievementsCount = $achievementsState->count();
-            if ($totalGameAchievementsCount)
+            if ($totalGameAchievementsCount) {
                 $this->updateGameAchievements($game, $achievementsState->count());
+            }
 
             $participant->updateAchievementsForGame($game->getId(), $achievementsState->countAchieved());
         }
@@ -112,15 +123,20 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
     }
 
     /**
-     * TODO: It's simpler to keep it here though it's not import playing states concern
-     * @param Game $game
-     * @param int $achievements
+     * TODO: It's simpler to keep it here though it's not import playing states concern.
+     *
+     * @param Game     $game
+     * @param int|null $achievements
      */
-    private function updateGameAchievements(Game $game, ?int $achievements)
+    private function updateGameAchievements(Game $game, ?int $achievements): void
     {
         $game->updateAchievements($achievements);
     }
 
+    /**
+     * @param Game[] $games
+     * @return array<int, Game>
+     */
     private function makeUnresolvedMap(array $games): array
     {
         return array_combine(
@@ -131,11 +147,12 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param EventParticipant $participant
-     * @param Game[] $unresolvedGames
+     * @param array<int, Game> $unresolvedGames
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
      */
-    private function importPlaytimeFromGetOwned(EventParticipant $participant, array &$unresolvedGames)
+    private function importPlaytimeFromGetOwned(EventParticipant $participant, array &$unresolvedGames): void
     {
         if (!$unresolvedGames || !$participant->hasPicks()) {
             return;
@@ -150,18 +167,19 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param EventParticipant $participant
-     * @param array $unresolvedGames
+     * @param array<int, Game> $unresolvedGames
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
      */
-    private function importPlaytimeFromRecentlyPlayed(EventParticipant $participant, array &$unresolvedGames)
+    private function importPlaytimeFromRecentlyPlayed(EventParticipant $participant, array &$unresolvedGames): void
     {
         if (!$unresolvedGames || !$participant->hasPicks()) {
             return;
         }
 
         $recentlyPlayedList = $this->recentlyPlayedRemoteRepository->findBySteamId(
-            (int)(string)$participant->getUserSteamId()
+            (int) (string) $participant->getUserSteamId()
         );
 
         foreach ($recentlyPlayedList as $recentlyPlayedGame) {
@@ -174,9 +192,15 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
         }
     }
 
+    /**
+     * @param int $steamId
+     * @param int[] $apps
+     * @return GetOwnedGamesQuery
+     */
     private function makeQuery(int $steamId, array $apps): GetOwnedGamesQuery
     {
         $getOwnedGamesQuery = new GetOwnedGamesQuery($steamId);
+
         return $getOwnedGamesQuery
             ->includePlayedFreeGames()
             ->includeAppInfo()

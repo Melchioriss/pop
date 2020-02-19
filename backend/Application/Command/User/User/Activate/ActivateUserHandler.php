@@ -5,6 +5,7 @@ namespace PlayOrPay\Application\Command\User\User\Activate;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 
 class ActivateUserHandler implements CommandHandlerInterface
@@ -19,12 +20,14 @@ class ActivateUserHandler implements CommandHandlerInterface
 
     /**
      * @param ActivateUserCommand $command
+     *
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(ActivateUserCommand $command)
     {
-        $user = $this->userRepo->find($command->getSteamId());
+        $user = $this->userRepo->get($command->getSteamId());
         $user->activate();
         $this->userRepo->save($user);
     }

@@ -10,6 +10,7 @@ class AddEventParticipantSecurityHandler extends CommonSecurityHandler
 {
     /**
      * @param AddEventParticipantCommand $command
+     *
      * @throws SecuriryException
      */
     public function __invoke(AddEventParticipantCommand $command)

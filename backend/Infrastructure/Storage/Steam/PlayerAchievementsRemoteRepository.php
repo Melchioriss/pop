@@ -29,18 +29,20 @@ class PlayerAchievementsRemoteRepository
 
     /**
      * @param UserStatsQuery $query
-     * @return int|null
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
+     *
+     * @return int|null
      */
     public function find(UserStatsQuery $query): PlayerAchievementsResponse
     {
         $response = $this->httpClient->request(
             Request::METHOD_GET,
-            $this->endpoint.'?'.http_build_query([
-                'key' => $this->steamApiKey,
-                'steamId' => (int)(string)$query->steamId,
-                'appid' => $query->appId,
+            $this->endpoint . '?' . http_build_query([
+                'key'     => $this->steamApiKey,
+                'steamId' => (int) (string) $query->steamId,
+                'appid'   => $query->appId,
             ]),
             ['http_errors' => false]
         );

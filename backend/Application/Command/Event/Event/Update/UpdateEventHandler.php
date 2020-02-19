@@ -8,6 +8,7 @@ use Doctrine\ORM\ORMException;
 use League\Period\Exception;
 use League\Period\Period;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 
 class UpdateEventHandler implements CommandHandlerInterface
@@ -21,11 +22,11 @@ class UpdateEventHandler implements CommandHandlerInterface
     }
 
     /**
-     * @param UpdateEventCommand $command
      * @throws EntityNotFoundException
      * @throws Exception
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(UpdateEventCommand $command)
     {

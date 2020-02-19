@@ -5,6 +5,7 @@ namespace PlayOrPay\Application\Command\User\User\SetBlaeoName;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 
 class SetUserBlaeoNameHandler implements CommandHandlerInterface
@@ -19,12 +20,14 @@ class SetUserBlaeoNameHandler implements CommandHandlerInterface
 
     /**
      * @param SetUserBlaeoNameCommand $command
+     *
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(SetUserBlaeoNameCommand $command)
     {
-        $user = $this->userRepo->find($command->getSteamId());
+        $user = $this->userRepo->get($command->getSteamId());
         $user->setBlaeoName($command->getBlaeoName());
         $this->userRepo->save($user);
     }

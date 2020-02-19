@@ -13,7 +13,7 @@ class PotentialParticipantUserMappingConfigurator implements AutoMapperConfigura
     {
         $config->registerMapping(User::class, PotentialParticipantUserView::class)
             ->forMember('steamId', Operation::mapFrom(function (User $user) {
-                return (string)$user->getSteamId();
+                return (string) $user->getSteamId();
             }));
     }
 }

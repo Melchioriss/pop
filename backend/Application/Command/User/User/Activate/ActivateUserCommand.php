@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PlayOrPay\Application\Command\User\User\Activate;
 
 use PlayOrPay\Domain\Steam\SteamId;

@@ -27,15 +27,18 @@ class GetBlockHandler implements QueryHandlerInterface
 
     /**
      * @param GetBlockQuery $query
-     * @return mixed|null
+     *
      * @throws EntityNotFoundException
      * @throws UnregisteredMappingException
+     *
+     * @return BlockView
      */
     public function __invoke(GetBlockQuery $query)
     {
         $block = $this->blockRepo->get($query->code);
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
+
         return (new AutoMapper($config))->map($block, BlockView::class);
     }
 }

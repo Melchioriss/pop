@@ -26,6 +26,7 @@ class AddEventParticipantHandler implements CommandHandlerInterface
 
     /**
      * @param AddEventParticipantCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException

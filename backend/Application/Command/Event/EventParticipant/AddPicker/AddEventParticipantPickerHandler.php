@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Command\Event\EventParticipant\AddPicker;
 
-
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -33,6 +32,7 @@ class AddEventParticipantPickerHandler implements CommandHandlerInterface
 
     /**
      * @param AddEventParticipantPickerCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException

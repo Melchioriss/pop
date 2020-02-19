@@ -2,10 +2,11 @@
 
 namespace PlayOrPay\Domain\Steam;
 
-use PlayOrPay\Domain\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
+use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\User\User;
 
-class Group
+class Group implements AggregateInterface
 {
     /** @var int */
     private $id;
@@ -31,7 +32,7 @@ class Group
             ->setName($name)
             ->setLogoUrl($logoUrl);
 
-        $this->members = new ArrayCollection;
+        $this->members = new ArrayCollection();
     }
 
     public function getId(): int
@@ -47,6 +48,7 @@ class Group
     public function setCode(string $code): self
     {
         $this->code = $code;
+
         return $this;
     }
 
@@ -58,6 +60,7 @@ class Group
     public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -69,6 +72,7 @@ class Group
     public function setLogoUrl(string $logoUrl): self
     {
         $this->logoUrl = $logoUrl;
+
         return $this;
     }
 
@@ -86,12 +90,14 @@ class Group
     public function removeMember(User $member): self
     {
         $this->members->removeElement($member);
+
         return $this;
     }
 
     public function clearMembers(): self
     {
         $this->members->clear();
+
         return $this;
     }
 
@@ -110,10 +116,10 @@ class Group
 
     public function hasMemberOfId(SteamId $steamId): bool
     {
-        $steamIdValue = (string)$steamId;
+        $steamIdValue = (string) $steamId;
 
-        return $this->members->exists(function (User $member) use($steamIdValue) {
-            return (string)$member->getSteamId() === $steamIdValue;
+        return $this->members->exists(function (User $member) use ($steamIdValue) {
+            return (string) $member->getSteamId() === $steamIdValue;
         });
     }
 

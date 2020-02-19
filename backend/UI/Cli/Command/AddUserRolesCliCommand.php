@@ -35,11 +35,9 @@ class AddUserRolesCliCommand extends Command
             ->getDefinition()
             ->addArguments([
                 new InputArgument('profileName', InputArgument::REQUIRED, 'Which user you want to be granted'),
-                new InputArgument('roles', InputArgument::REQUIRED|InputArgument::IS_ARRAY, 'Which roles you want to add'),
+                new InputArgument('roles', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Which roles you want to add'),
             ]);
     }
-
-
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -51,7 +49,7 @@ class AddUserRolesCliCommand extends Command
         $user = $this->queryBus->handle($userQuery);
 
         if (!$user) {
-            $ss->error(sprintf("There is no user with profile name %s", $userQuery->getProfileName()));
+            $ss->error(sprintf("There is no user with profile name '%s'", $userQuery->getProfileName()));
         }
 
         $ss->note('User was found. Trying to grant them');

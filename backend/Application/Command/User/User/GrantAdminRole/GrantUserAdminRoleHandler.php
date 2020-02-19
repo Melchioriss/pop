@@ -8,7 +8,7 @@ use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Role\Role;
 use PlayOrPay\Domain\Role\RoleName;
-use PlayOrPay\Domain\User\User;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\User\RoleRepository;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 
@@ -27,19 +27,15 @@ class GrantUserAdminRoleHandler implements CommandHandlerInterface
     }
 
     /**
-     * @param GrantUserAdminRoleCommand $command
      * @throws NotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(GrantUserAdminRoleCommand $command)
     {
         $steamId = $command->getSteamId();
-        $user = $this->userRepo->find($steamId);
-        if (!$user) {
-            throw NotFoundException::forObject(User::class, (string)$steamId);
-        }
-
+        $user = $this->userRepo->get($steamId);
         $adminRole = $this->roleRepo->find(RoleName::ADMIN);
         if (!$adminRole) {
             throw NotFoundException::forObject(Role::class, RoleName::ADMIN);

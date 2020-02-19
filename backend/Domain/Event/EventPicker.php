@@ -35,8 +35,8 @@ class EventPicker
         $this->participant = $participant;
         $this->user = $user;
         $this->type = $type;
-        $this->picks = new ArrayCollection;
-        $this->comments = new ArrayCollection;
+        $this->picks = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getUuid(): UuidInterface
@@ -62,13 +62,14 @@ class EventPicker
     public function replaceUser(User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
     public function findPickByType(EventPickType $type): ?EventPick
     {
         foreach ($this->picks as $pick) {
-            if ((string)$pick->getType() === (string)$type) {
+            if ((string) $pick->getType() === (string) $type) {
                 return $pick;
             }
         }
@@ -88,15 +89,13 @@ class EventPicker
     }
 
     /**
-     * @param UuidInterface $pickUuid
-     * @return EventPick
      * @throws NotFoundException
      */
     public function getPick(UuidInterface $pickUuid): EventPick
     {
         $pick = $this->findPick($pickUuid);
         if (!$pick) {
-            throw NotFoundException::forObject(EventPick::class, (string)$pickUuid);
+            throw NotFoundException::forObject(EventPick::class, (string) $pickUuid);
         }
 
         return $pick;
@@ -104,8 +103,10 @@ class EventPicker
 
     /**
      * @param EventPickType $type
-     * @return EventPick
+     *
      * @throws NotFoundException
+     *
+     * @return EventPick
      */
     public function getPickOfType(EventPickType $type): EventPick
     {
@@ -114,13 +115,13 @@ class EventPicker
             return $pick;
         }
 
-        throw NotFoundException::forObject(EventPick::class, (string)$type);
+        throw NotFoundException::forObject(EventPick::class, (string) $type);
     }
 
     public function makePick(UuidInterface $pickUuid, EventPickType $type, Game $game)
     {
         if ($this->findPickByType($type)) {
-            throw new DomainException(sprintf("Pick of '%s' type aready exists", (string)$type));
+            throw new DomainException(sprintf("Pick of '%s' type aready exists", (string) $type));
         }
 
         $pick = new EventPick(
@@ -129,10 +130,11 @@ class EventPicker
             $game,
             $type,
             new EventPickPlayedStatus(EventPickPlayedStatus::NOT_PLAYED),
-            new PlayingState
+            new PlayingState()
         );
 
         $this->picks->add($pick);
+
         return $pick;
     }
 
@@ -158,6 +160,7 @@ class EventPicker
     {
         $comment = new EventPickerComment($uuid, $this, $user, $text);
         $this->comments->add($comment);
+
         return $this;
     }
 

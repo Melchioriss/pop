@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\Event\Event\Detail;
 
-
 use League\Period\Period;
 
 class DetailEventView

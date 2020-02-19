@@ -22,6 +22,7 @@ class AddEventPickerCommentSecurityHandler extends CommonSecurityHandler
 
     /**
      * @param AddEventPickerCommentCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

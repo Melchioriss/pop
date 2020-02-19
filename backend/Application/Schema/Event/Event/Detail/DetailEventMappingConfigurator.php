@@ -28,17 +28,17 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
         $config
             ->registerMapping(EventParticipant::class, DetailEventParticipantView::class)
             ->forMember('user', function (EventParticipant $participant) {
-                return (string)$participant->getUser()->getSteamId();
+                return (string) $participant->getUser()->getSteamId();
             })
             ->forMember('pickers', Operation::mapCollectionTo(DetailEventPickerView::class));
 
         $config
             ->registerMapping(EventPicker::class, DetailEventPickerView::class)
             ->forMember('user', function (EventPicker $picker) {
-                return (string)$picker->getUser()->getSteamId();
+                return (string) $picker->getUser()->getSteamId();
             })
             ->forMember('type', function (EventPicker $picker) {
-                return (int)(string)$picker->getType();
+                return (int) (string) $picker->getType();
             })
             ->forMember('picks', Operation::mapCollectionTo(DetailEventPickView::class))
             ->forMember('comments', Operation::mapCollectionTo(DetailEventPickerComment::class));
@@ -46,19 +46,19 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
         $config
             ->registerMapping(User::class, DetailEventUserView::class)
             ->forMember('steamId', function (User $user) {
-                return (string)$user->getSteamId();
+                return (string) $user->getSteamId();
             });
 
         $config
             ->registerMapping(EventPick::class, DetailEventPickView::class)
             ->forMember('type', function (EventPick $pick) {
-                return (int)(string)$pick->getType();
+                return (int) (string) $pick->getType();
             })
             ->forMember('game', function (EventPick $pick, AutoMapperInterface $mapper) {
                 return $mapper->map($pick->getGame(), DetailGameView::class);
             })
             ->forMember('playedStatus', function (EventPick $pick) {
-                return (int)(string)$pick->getPlayedStatus();
+                return (int) (string) $pick->getPlayedStatus();
             });
 
         $config
@@ -67,7 +67,7 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
         $config
             ->registerMapping(EventPickerComment::class, DetailEventPickerComment::class)
             ->forMember('user', function (EventPickerComment $comment) {
-                return (string)$comment->getUser()->getSteamId();
+                return (string) $comment->getUser()->getSteamId();
             });
     }
 }

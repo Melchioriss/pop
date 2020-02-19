@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PlayOrPay\UI\Http\Rest\Controller;
 
-use PlayOrPay\UI\Http\Rest\Response\JsonApiFormatter;
 use League\Tactician\CommandBus;
+use PlayOrPay\UI\Http\Rest\Response\JsonApiFormatter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 abstract class CommandQueryController extends QueryController

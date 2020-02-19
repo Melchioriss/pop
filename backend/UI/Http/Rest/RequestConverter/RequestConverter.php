@@ -9,27 +9,32 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestConverter
 {
-
     /**
      * @param Request $request
-     * @param string $targetClass
-     * @return mixed
+     * @param string  $targetClass
+     *
      * @throws RequiredParameterNotFound
+     *
+     * @return mixed
      */
     public function convert(Request $request, string $targetClass)
     {
         Assert::that($targetClass)->classExists();
 
         $constructParameters = $this->getConstructParameters($request, $targetClass);
+
         return new $targetClass(...$constructParameters);
     }
 
     /** @noinspection PhpDocMissingThrowsInspection */
+
     /**
      * @param Request $request
-     * @param string $targetClass
-     * @return array
+     * @param string  $targetClass
+     *
      * @throws RequiredParameterNotFound
+     *
+     * @return array
      */
     private function getConstructParameters(Request $request, string $targetClass): array
     {

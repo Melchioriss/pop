@@ -33,8 +33,7 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
         EventRepository $eventRepo,
         EventPickerCommentRepository $commentRepo,
         ActorFinder $actorFinder
-    )
-    {
+    ) {
         $this->pickerRepo = $pickerRepo;
         $this->eventRepo = $eventRepo;
         $this->commentRepo = $commentRepo;
@@ -43,6 +42,7 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
 
     /**
      * @param AddEventPickerCommentCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException

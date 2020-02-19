@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\Steam\Game\Common;
 
-
 class GameView
 {
     /** @var string */

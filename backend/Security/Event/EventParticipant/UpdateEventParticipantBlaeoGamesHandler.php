@@ -22,6 +22,7 @@ class UpdateEventParticipantBlaeoGamesHandler extends CommonSecurityHandler
 
     /**
      * @param UpdateEventParticipantBlaeoGamesCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

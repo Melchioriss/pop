@@ -2,7 +2,7 @@
 
 namespace PlayOrPay\Application\Command\Event\Event\GeneratePickers;
 
-
+use Exception;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 
@@ -18,7 +18,8 @@ class GenerateEventPickersHandler implements CommandHandlerInterface
 
     /**
      * @param GenerateEventPickersCommand $command
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function __invoke(GenerateEventPickersCommand $command)
     {
@@ -27,6 +28,5 @@ class GenerateEventPickersHandler implements CommandHandlerInterface
         $event->generatePickers();
 
         $this->eventRepo->save($event);
-
     }
 }

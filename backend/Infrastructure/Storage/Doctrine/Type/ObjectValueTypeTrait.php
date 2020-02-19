@@ -8,13 +8,15 @@ use Ducks\Component\SplTypes\SplType;
 
 trait ObjectValueTypeTrait
 {
-    abstract function getClass(): string;
+    abstract public function getClass(): string;
 
     /**
      * @param $value
      * @param AbstractPlatform $platform
-     * @return int|mixed|null
+     *
      * @throws ConversionException
+     *
+     * @return int|mixed|null
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -32,10 +34,12 @@ trait ObjectValueTypeTrait
     }
 
     /**
-     * @param mixed $value
+     * @param mixed            $value
      * @param AbstractPlatform $platform
-     * @return mixed
+     *
      * @throws ConversionException
+     *
+     * @return mixed
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -47,7 +51,7 @@ trait ObjectValueTypeTrait
             throw ConversionException::conversionFailedUnserialization(get_class($value), 'must be SplType');
         }
 
-        /** @noinspection PhpUndefinedClassInspection */
+        // @noinspection PhpUndefinedClassInspection
         return parent::convertToDatabaseValue($value->__default, $platform);
     }
 }

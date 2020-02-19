@@ -10,18 +10,19 @@ class PutBlockTest extends FunctionalTest
 {
     /**
      * @test
+     *
      * @throws Exception
      */
     public function should_successfully_create_a_new_one()
     {
-        $this->applyFixtures(__DIR__.'/../../fixtures/default.yaml');
+        $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
 
-        $code = (string)Uuid::uuid4();
+        $code = (string) Uuid::uuid4();
         $content = 'hello world';
 
         $this->authorizeAsAdmin();
         $this->request('put_block', [
-            'code' => $code,
+            'code'    => $code,
             'content' => $content,
         ]);
 

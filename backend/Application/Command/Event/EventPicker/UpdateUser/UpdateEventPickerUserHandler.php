@@ -31,6 +31,7 @@ class UpdateEventPickerUserHandler implements CommandHandlerInterface
 
     /**
      * @param UpdateEventPickerUserCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException

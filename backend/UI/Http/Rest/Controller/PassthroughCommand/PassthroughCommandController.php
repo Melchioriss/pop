@@ -31,16 +31,19 @@ class PassthroughCommandController extends CommandQueryController
 
     /**
      * @param Request $request
-     * @param string $command
-     * @return JsonResponse
+     * @param string  $command
+     *
      * @throws RequiredParameterNotFound
      * @throws SecuriryException
+     *
+     * @return JsonResponse
      */
     public function __invoke(Request $request, string $command)
     {
         $commandInstance = $this->requestConverter->convert($request, $command);
         $this->confirm($commandInstance);
         $this->exec($commandInstance);
+
         return JsonResponse::create();
     }
 }

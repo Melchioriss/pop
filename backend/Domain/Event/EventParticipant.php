@@ -2,11 +2,11 @@
 
 namespace PlayOrPay\Domain\Event;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use PlayOrPay\Domain\Steam\Game;
 use PlayOrPay\Domain\Steam\SteamId;
 use PlayOrPay\Domain\User\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Ramsey\Uuid\UuidInterface;
 
 class EventParticipant
@@ -44,7 +44,7 @@ class EventParticipant
         $this->blaeoGames = $blaeoGames;
         $this->extraRules = $extraRules;
         $this->active = $active;
-        $this->pickers = new ArrayCollection;
+        $this->pickers = new ArrayCollection();
     }
 
     public function getUser(): User
@@ -65,18 +65,21 @@ class EventParticipant
     public function updateGroupWins(string $groupWins): self
     {
         $this->groupWins = $groupWins;
+
         return $this;
     }
 
     public function updateBlaeoGames(string $blaeoGames): self
     {
         $this->blaeoGames = $blaeoGames;
+
         return $this;
     }
 
     public function updateExtraRules(string $extraRules): self
     {
         $this->extraRules = $extraRules;
+
         return $this;
     }
 
@@ -87,13 +90,15 @@ class EventParticipant
 
     /**
      * @param EventPicker[] $pickers
+     *
      * @return EventParticipant
      */
-    public function addPickers(array $pickers): EventParticipant
+    public function addPickers(array $pickers): self
     {
         foreach ($pickers as $picker) {
             $this->pickers->add($picker);
         }
+
         return $this;
     }
 
@@ -120,7 +125,7 @@ class EventParticipant
 
     public function getGameIds(): array
     {
-        return array_map(function(Game $game) {
+        return array_map(function (Game $game) {
             return $game->getId();
         }, $this->getGames());
     }
@@ -138,24 +143,20 @@ class EventParticipant
             }
         }
 
-        throw new DomainException(
-            sprintf(
-                "Participant '%s' doesn't have pick for game '%s'",
-                $this->getUser()->getProfileName(),
-                $gameId
-            )
-        );
+        throw new DomainException(sprintf("Participant '%s' doesn't have pick for game '%s'", $this->getUser()->getProfileName(), $gameId));
     }
 
     public function updatePlaytimeForGame(int $gameId, int $playtime): self
     {
         $this->getPickForGame($gameId)->updatePlaytime($playtime);
+
         return $this;
     }
 
     public function updateAchievementsForGame(int $gameId, int $achievements): self
     {
         $this->getPickForGame($gameId)->updateAchievements($achievements);
+
         return $this;
     }
 }

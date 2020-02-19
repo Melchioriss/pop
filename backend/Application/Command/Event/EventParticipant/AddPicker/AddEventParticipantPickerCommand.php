@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Command\Event\EventParticipant\AddPicker;
 
-
 use Assert\Assert;
 use PlayOrPay\Domain\Event\EventPickerType;
 use PlayOrPay\Domain\Steam\SteamId;
@@ -29,7 +28,7 @@ class AddEventParticipantPickerCommand
         Assert::that($pickerUuid)->uuid();
         $this->participantUuid = Uuid::fromString($participantUuid);
         $this->pickerUuid = Uuid::fromString($pickerUuid);
-        $this->userId = new SteamId((int)$userId);
+        $this->userId = new SteamId((int) $userId);
         $this->pickerType = new EventPickerType($type);
     }
 
@@ -52,5 +51,4 @@ class AddEventParticipantPickerCommand
     {
         return $this->pickerType;
     }
-
 }

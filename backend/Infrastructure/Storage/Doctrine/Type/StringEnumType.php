@@ -11,6 +11,6 @@ abstract class StringEnumType extends StringType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return (string)$value;
+        return (string) $value;
     }
 }

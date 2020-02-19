@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace PlayOrPay\Domain\User;
 
-use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
-use PlayOrPay\Domain\Role\Role;
-use PlayOrPay\Domain\Role\RoleName;
-use PlayOrPay\Domain\Steam\Group;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Knojector\SteamAuthenticationBundle\User\SteamUserInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
+use PlayOrPay\Domain\Role\Role;
+use PlayOrPay\Domain\Role\RoleName;
+use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\Steam\SteamId;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerInterface
+class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerInterface, AggregateInterface
 {
     /** @var SteamId */
     private $steamId;
@@ -76,9 +77,9 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function __construct()
     {
-        $this->updatedAt = $this->createdAt = new DateTime;
-        $this->roles = new ArrayCollection;
-        $this->groups = new ArrayCollection;
+        $this->updatedAt = $this->createdAt = new DateTime();
+        $this->roles = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function addGroup(Group $group)
@@ -89,6 +90,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
         $this->groups->add($group);
         $group->addMember($this);
+
         return $this;
     }
 
@@ -105,28 +107,31 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setSteamId(int $id): self
     {
         $this->steamId = new SteamId($id);
+
         return $this;
     }
 
     public function getCommunityVisibilityState(): int
     {
-        return (int)$this->communityVisibilityState;
+        return (int) $this->communityVisibilityState;
     }
 
     public function setCommunityVisibilityState(?int $state)
     {
         $this->communityVisibilityState = $state;
+
         return $this;
     }
 
     public function getProfileState(): int
     {
-        return (int)$this->profileState;
+        return (int) $this->profileState;
     }
 
     public function setProfileState(?int $state): self
     {
         $this->profileState = $state;
+
         return $this;
     }
 
@@ -138,12 +143,14 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setProfileName(string $name): self
     {
         $this->profileName = $name;
+
         return $this;
     }
 
     /**
-     * @return DateTime
      * @throws Exception
+     *
+     * @return DateTime
      */
     public function getLastLogOff(): DateTime
     {
@@ -157,24 +164,25 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     /**
      * @param int $lastLogOff
+     *
      * @throws Exception
      */
     public function setLastLogOff(?int $lastLogOff)
     {
-
         $this->lastLogOff = $lastLogOff
-            ? DateTime::createFromFormat('U', (string)$lastLogOff)
+            ? DateTime::createFromFormat('U', (string) $lastLogOff)
             : null;
     }
 
     public function getCommentPermission(): int
     {
-        return (int)$this->commentPermission;
+        return (int) $this->commentPermission;
     }
 
     public function setCommentPermission(?int $permission): self
     {
         $this->commentPermission = $permission;
+
         return $this;
     }
 
@@ -186,28 +194,31 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setProfileUrl(string $url): self
     {
         $this->profileUrl = $url;
+
         return $this;
     }
 
     public function getAvatar(): string
     {
-        return (string)$this->avatar;
+        return (string) $this->avatar;
     }
 
     public function setAvatar(string $avatar): self
     {
         $this->avatar = $avatar;
+
         return $this;
     }
 
     public function getPersonaState(): int
     {
-        return (int)$this->personaState;
+        return (int) $this->personaState;
     }
 
     public function setPersonaState(?int $state): self
     {
         $this->personaState = $state;
+
         return $this;
     }
 
@@ -219,6 +230,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setPrimaryClanId(?int $clanId): self
     {
         $this->primaryClanId = $clanId;
+
         return $this;
     }
 
@@ -228,13 +240,12 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     }
 
     /**
-     * @param int|null $joinDate
-     * @return self
      * @throws Exception
      */
     public function setJoinDate(?int $joinDate): self
     {
-        $this->joinDate = DateTime::createFromFormat('U', (string)$joinDate);
+        $this->joinDate = DateTime::createFromFormat('U', (string) $joinDate);
+
         return $this;
     }
 
@@ -246,15 +257,17 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setCountryCode(?string $countryCode): self
     {
         $this->countryCode = $countryCode;
+
         return $this;
     }
 
     public function hasRole(RoleName $roleName): bool
     {
-        $roleNameId = (string)$roleName;
+        $roleNameId = (string) $roleName;
+
         return $this->roles->exists(
-            function (/** @noinspection PhpUnusedParameterInspection */ int $pos, Role $userRole) use ($roleNameId) {
-                return $roleNameId === (string)$userRole->getName();
+            function (/* @noinspection PhpUnusedParameterInspection */ int $pos, Role $userRole) use ($roleNameId) {
+                return $roleNameId === (string) $userRole->getName();
             }
         );
     }
@@ -266,6 +279,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         }
 
         $this->roles->add($role);
+
         return $this;
     }
 
@@ -281,10 +295,11 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function removeRole(RoleName $roleName): self
     {
         $this->roles->filter(function (Role $role, int $idx) use ($roleName) {
-            if ((string)$role->getName() === (string)$roleName) {
+            if ((string) $role->getName() === (string) $roleName) {
                 $this->roles->remove($idx);
             }
         });
+
         return $this;
     }
 
@@ -299,7 +314,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function getRoleNames(): array
     {
         return array_map(function (Role $role) {
-            return (string)$role->getName();
+            return (string) $role->getName();
         }, $this->getRoles());
     }
 
@@ -309,7 +324,8 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     }
 
     /**
-     * @param array $userData
+     * @param array<string, string|int|null> $userData
+     *
      * @throws Exception
      */
     public function update(array $userData)
@@ -325,7 +341,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         $this->setAvatar($userData['avatarfull']);
         $this->setPersonaState($userData['personastate']);
         $this->setPrimaryClanId(
-            isset($userData['primaryclanid']) ? (int)$userData['primaryclanid'] : null
+            isset($userData['primaryclanid']) ? (int) $userData['primaryclanid'] : null
         );
         $this->setCountryCode(
             isset($userData['loccountrycode']) ? $userData['loccountrycode'] : null
@@ -344,7 +360,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function getUsername(): string
     {
-        return (string)$this->steamId->__default;
+        return (string) $this->steamId->__default;
     }
 
     public function getBlaeoName(): ?string
@@ -355,18 +371,21 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setBlaeoName(string $name): self
     {
         $this->blaeoName = $name;
+
         return $this;
     }
 
     public function activate(): self
     {
         $this->active = true;
+
         return $this;
     }
 
     public function deactivate(): self
     {
         $this->active = false;
+
         return $this;
     }
 
@@ -378,6 +397,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function setExtraRules(string $extraRules): self
     {
         $this->extraRules = $extraRules;
+
         return $this;
     }
 
@@ -406,11 +426,11 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function onUpdate(): void
     {
-        $this->updatedAt = new DateTime;
+        $this->updatedAt = new DateTime();
     }
 
     public function eraseCredentials()
     {
-        // nop
+        // impossible
     }
 }

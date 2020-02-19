@@ -60,6 +60,7 @@ class EventPick
 
         $this->changePlayedStatus(new EventPickPlayedStatus(EventPickPlayedStatus::NOT_PLAYED));
         $this->clearPlayingState();
+
         return $this;
     }
 
@@ -75,11 +76,12 @@ class EventPick
 
     public function changePlayedStatus(EventPickPlayedStatus $playedStatus): self
     {
-        if ((string)$this->playedStatus === (string)$playedStatus) {
+        if ((string) $this->playedStatus === (string) $playedStatus) {
             return $this;
         }
 
         $this->playedStatus = $playedStatus;
+
         return $this;
     }
 
@@ -91,18 +93,21 @@ class EventPick
     public function updatePlaytime(int $playtime): self
     {
         $this->playingState->updatePlaytime($playtime);
+
         return $this;
     }
 
     public function updateAchievements(int $achievements): self
     {
         $this->playingState->updateAchievements($achievements);
+
         return $this;
     }
 
     public function clearPlayingState(): self
     {
         $this->playingState->clear();
+
         return $this;
     }
 }

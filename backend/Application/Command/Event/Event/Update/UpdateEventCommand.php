@@ -33,6 +33,7 @@ class UpdateEventCommand
      * @param string $description
      * @param string $startingOn
      * @param string $endingOn
+     *
      * @throws Exception
      */
     public function __construct(string $uuid, string $name, string $description, string $startingOn, string $endingOn)

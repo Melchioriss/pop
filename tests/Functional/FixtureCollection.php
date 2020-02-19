@@ -9,17 +9,22 @@ use Nelmio\Alice\Loader\NativeLoader;
 
 class FixtureCollection implements IteratorAggregate
 {
+    /** @var object[] */
     private $objects;
 
+    /**
+     * @param object[] $objects
+     */
     public function __construct(array $objects)
     {
         $this->objects = $objects;
     }
 
-    public static function fromFile(string $file)
+    public static function fromFile(string $file): self
     {
-        $loader = new NativeLoader;
+        $loader = new NativeLoader();
         $objects = $loader->loadFile($file)->getObjects();
+
         return new self($objects);
     }
 
@@ -30,10 +35,12 @@ class FixtureCollection implements IteratorAggregate
 
     /**
      * @param string $name
-     * @return mixed
+     *
      * @throws Exception
+     *
+     * @return object
      */
-    public function getByName(string $name)
+    public function getByName(string $name): object
     {
         if ($this->objects[$name]) {
             return $this->objects[$name];
@@ -54,7 +61,7 @@ class FixtureCollection implements IteratorAggregate
             if (is_a($object, $class, true)) {
                 $found[] = $object;
 
-                $counter++;
+                ++$counter;
                 if ($limit && $counter > $limit) {
                     break;
                 }
@@ -65,12 +72,14 @@ class FixtureCollection implements IteratorAggregate
     }
 
     /**
-     * @param string $class
+     * @param string   $class
      * @param object[] $excluded
-     * @return mixed
+     *
      * @throws Exception
+     *
+     * @return object
      */
-    public function getOneOf(string $class, array $excluded = [])
+    public function getOneOf(string $class, array $excluded = []): object
     {
         $entities = $this->findAllOf($class, 1, $excluded);
         if (!$entities) {
@@ -80,4 +89,3 @@ class FixtureCollection implements IteratorAggregate
         return $entities[0];
     }
 }
-

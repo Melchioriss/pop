@@ -22,6 +22,7 @@ class MakePickHandler extends CommonSecurityHandler
 
     /**
      * @param MakePickCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

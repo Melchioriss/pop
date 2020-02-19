@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Security\User\User;
 
-
 use PlayOrPay\Application\Query\User\User\FindByProfileName\FindUserByProfileNameQuery;
 use PlayOrPay\Security\CommonSecurityHandler;
 

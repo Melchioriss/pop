@@ -6,7 +6,7 @@ use PlayOrPay\Domain\Role\RoleName;
 
 class RoleEnumType extends StringEnumType
 {
-    function getEnumClass(): string
+    public function getEnumClass(): string
     {
         return RoleName::class;
     }

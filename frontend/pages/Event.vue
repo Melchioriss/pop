@@ -22,6 +22,10 @@
             ></div>
 
             <div class="event__buttons">
+                <router-link
+                    :to="{name: 'event_leaderboard', params: {eventUuid: event.uuid}}"
+                    class="button button--light button--space-right"
+                >Leaderboard</router-link>
                 <button
                     v-if="!isShowingOnlyMine"
                     @click="showOnlyMineParticipations"

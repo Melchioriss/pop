@@ -4,7 +4,7 @@ api_controllers:
     prefix: /api
 
 home:
-    path: /{path}/{id?}
+    path: /{path}/{id?}/{subPath?}
     controller: PlayOrPay\UI\Http\Rest\Controller\StaticController
     defaults:
         template:  '../public/index.html'

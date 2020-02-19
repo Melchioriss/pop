@@ -218,7 +218,8 @@
         </div>
 
         <div
-            v-show="majorPicker && isCommentsShown[MAJOR]"
+            v-if="majorPicker"
+            v-show="isCommentsShown[MAJOR]"
             class="participation__comments"
         >
             <comments-area
@@ -311,7 +312,8 @@
         </div>
 
         <div
-            v-show="minorPicker && isCommentsShown[MINOR]"
+            v-if="minorPicker"
+            v-show="isCommentsShown[MINOR]"
             class="participation__comments"
         >
             <comments-area

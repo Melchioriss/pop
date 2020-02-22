@@ -6,7 +6,7 @@ use Exception;
 use PlayOrPay\Domain\Event\Event;
 use PlayOrPay\Domain\Event\EventPicker;
 use PlayOrPay\Domain\Event\EventPickType;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Tests\Functional\FunctionalTest;
 use Ramsey\Uuid\Uuid;
 
@@ -41,7 +41,7 @@ class MakePickTest extends FunctionalTest
             'pickUuid'   => Uuid::uuid4(),
             'pickerUuid' => (string) $picker->getUuid(),
             'type'       => (string) $pickType,
-            'gameId'     => $game->getId(),
+            'gameId'     => (string) $game->getId(),
         ]);
 
         $this->assertSuccessfulResponse();

@@ -13,7 +13,7 @@ use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 use PlayOrPay\Domain\Event\DomainEvent\PickPlayedStatusChanged;
 use PlayOrPay\Domain\Event\Exception\WrongParticipantException;
 use PlayOrPay\Domain\Exception\NotFoundException;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
@@ -514,7 +514,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
 
         $oldStatus = $pick->getPlayedStatus();
         $pick->changePlayedStatus($newPlayedStatus);
-        $this->addDomainEvent(new PickPlayedStatusChanged($oldStatus, $newPlayedStatus));
+        $this->addDomainEvent(new PickPlayedStatusChanged($pick, $oldStatus, $newPlayedStatus));
 
         return $this;
     }

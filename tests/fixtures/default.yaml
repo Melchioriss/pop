@@ -1,6 +1,11 @@
 parameters:
     profileUrl: 'https://steamcommunity.com/id/#username#/'
 
+PlayOrPay\Domain\Game\StoreId:
+    steam_store:
+        __construct:
+            0: '<constant("PlayOrPay\Domain\Game\StoreId::STEAM")>'
+
 PlayOrPay\Domain\Role\RoleName:
     role_admin_name:
         __construct:
@@ -53,8 +58,10 @@ PlayOrPay\Domain\Event\Event:
             description: 'blablabla'
             group: '@group_1'
 
-PlayOrPay\Domain\Steam\Game:
+PlayOrPay\Domain\Game\Game:
     game_{1..30}:
-        __construct:
-            id (unique): '<numberBetween(1000, 9000)>'
-            name: '<name()>'
+        __factory:
+            fromExpandedGameId:
+                storeId: '@steam_store'
+                localId (unique): '"<numberBetween(1000, 9000)>"'
+                name: '<name()>'

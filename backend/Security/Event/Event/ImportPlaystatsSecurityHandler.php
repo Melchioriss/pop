@@ -2,18 +2,18 @@
 
 namespace PlayOrPay\Security\Event\Event;
 
-use PlayOrPay\Application\Command\Event\Event\ImportPlaystats\ImportPlayingStatesCommand;
+use PlayOrPay\Application\Command\Event\Event\ImportSteamPlaystats\ImportSteamPlayingStatesCommand;
 use PlayOrPay\Security\CommonSecurityHandler;
 use PlayOrPay\Security\SecuriryException;
 
 class ImportPlaystatsSecurityHandler extends CommonSecurityHandler
 {
     /**
-     * @param ImportPlayingStatesCommand $command
+     * @param ImportSteamPlayingStatesCommand $command
      *
      * @throws SecuriryException
      */
-    public function __invoke(ImportPlayingStatesCommand $command)
+    public function __invoke(ImportSteamPlayingStatesCommand $command)
     {
         $this->assertAdmin();
     }

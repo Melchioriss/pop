@@ -3,7 +3,7 @@
 namespace PlayOrPay\Security\Event\EventPicker;
 
 use Doctrine\ORM\EntityNotFoundException;
-use PlayOrPay\Application\Command\Event\EventPicker\ChangePick\ChangePickGameCommand;
+use PlayOrPay\Application\Command\Event\EventPicker\ChangePickGame\ChangePickGameCommand;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickRepository;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinder;

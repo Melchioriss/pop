@@ -5,7 +5,7 @@ namespace PlayOrPay\Domain\Event;
 use DateTimeImmutable;
 use DomainException;
 use PlayOrPay\Domain\Exception\NotFoundException;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;

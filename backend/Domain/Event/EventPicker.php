@@ -5,7 +5,8 @@ namespace PlayOrPay\Domain\Event;
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use PlayOrPay\Domain\Exception\NotFoundException;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;
@@ -146,12 +147,18 @@ class EventPicker
     }
 
     /**
+     * @param StoreId $ofStore
+     *
      * @return Game[]
      */
-    public function getGames(): array
+    public function getGames(StoreId $ofStore = null): array
     {
         $games = [];
         foreach ($this->picks as $pick) {
+            if ($ofStore && !$pick->getGame()->getId()->getStoreId()->equalTo($ofStore)) {
+                continue;
+            }
+
             $games[] = $pick->getGame();
         }
 

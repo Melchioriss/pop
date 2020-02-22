@@ -15,6 +15,7 @@ use PlayOrPay\Application\Query\PaginatedQuery;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\DomainEvent\DomainEventRecord;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
+use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,6 +25,9 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
+    /** @var ActorFinder */
+    private $actorFinder;
+
     /**
      * Should tell us which class this repository serves.
      *
@@ -31,10 +35,14 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      */
     abstract public function getEntityClass(): string;
 
-    public function __construct(ManagerRegistry $registry, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        EventDispatcherInterface $eventDispatcher,
+        ActorFinder $actorFinder
+    ) {
         parent::__construct($registry, $this->getEntityClass());
         $this->eventDispatcher = $eventDispatcher;
+        $this->actorFinder = $actorFinder;
     }
 
     /**
@@ -82,7 +90,7 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
 
             if ($entity instanceof AggregateInterface) {
                 foreach ($entity->popDomainEvents() as $event) {
-                    $eventRecord = DomainEventRecord::fromEvent($event);
+                    $eventRecord = DomainEventRecord::fromEvent($event, $this->actorFinder->findActor());
                     $this->_em->persist($eventRecord);
 
                     $this->eventDispatcher->dispatch($event);
@@ -108,6 +116,17 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
     public function nextUuid()
     {
         return Uuid::uuid4();
+    }
+
+    public function paginateAll(PaginatedQuery $appQuery): Paginator
+    {
+        return $this->makePaginatedResult(
+            $this
+                ->createQueryBuilder('entity')
+                ->select('entity')
+                ->getQuery(),
+            $appQuery
+        );
     }
 
     public function makePaginatedResult(Query $dbQuery, PaginatedQuery $appQuery): Paginator

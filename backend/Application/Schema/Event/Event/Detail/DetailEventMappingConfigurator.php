@@ -11,7 +11,7 @@ use PlayOrPay\Domain\Event\EventParticipant;
 use PlayOrPay\Domain\Event\EventPick;
 use PlayOrPay\Domain\Event\EventPicker;
 use PlayOrPay\Domain\Event\EventPickerComment;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
 
 class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface

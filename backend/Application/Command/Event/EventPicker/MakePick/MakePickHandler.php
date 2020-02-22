@@ -10,7 +10,7 @@ use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
-use PlayOrPay\Infrastructure\Storage\Steam\GameRepository;
+use PlayOrPay\Infrastructure\Storage\Game\GameRepository;
 
 class MakePickHandler implements CommandHandlerInterface
 {
@@ -41,7 +41,7 @@ class MakePickHandler implements CommandHandlerInterface
      */
     public function __invoke(MakePickCommand $command)
     {
-        $game = $this->gameRepo->get($command->gameId);
+        $game = $this->gameRepo->get((string) $command->gameId);
         $picker = $this->pickerRepo->get($command->pickerUuid);
         $event = $picker->getEvent();
 

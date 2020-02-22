@@ -3,7 +3,7 @@
 namespace PlayOrPay\Domain\Event;
 
 use DomainException;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
 use Ramsey\Uuid\UuidInterface;
 
 class EventPick
@@ -130,5 +130,10 @@ class EventPick
     public function getEvent(): Event
     {
         return $this->getPicker()->getEvent();
+    }
+
+    public function getParticipant(): EventParticipant
+    {
+        return $this->getPicker()->getParticipant();
     }
 }

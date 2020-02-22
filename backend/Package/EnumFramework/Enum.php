@@ -40,7 +40,7 @@ class Enum extends SplEnum
     public function equalTo($anotherEnum): bool
     {
         if (!is_object($anotherEnum)) {
-            $anotherEnum = new self($anotherEnum);
+            $anotherEnum = new static($anotherEnum);
         }
 
         if (get_class($this) !== get_class($anotherEnum)) {
@@ -64,5 +64,38 @@ class Enum extends SplEnum
         }
 
         return false;
+    }
+
+    /**
+     * @param bool $includeDefault
+     *
+     * @return array<string, int>|array<string, string>
+     *
+     * @throws ReflectionException
+     */
+    public static function getOptions(bool $includeDefault = false): array
+    {
+        $constants = (new ReflectionClass(static::class))->getConstants();
+        if (!$includeDefault) {
+            unset($constants['__default']);
+        }
+        return $constants;
+    }
+
+    /**
+     * @param bool $includeDefault
+     *
+     * @return static[]
+     *
+     * @throws ReflectionException
+     */
+    public static function getEnums(bool $includeDefault = false): array
+    {
+        $enums = [];
+        foreach (array_values(self::getOptions($includeDefault)) as $option) {
+            $enums[] = new static($option);
+        }
+
+        return $enums;
     }
 }

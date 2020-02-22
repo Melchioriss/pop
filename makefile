@@ -123,3 +123,7 @@ migration:
 .PHONY: migrate
 migrate:
 	docker-compose exec php console doctrine:migrations:migrate --no-interaction
+
+.PHONY: import-pop
+import-pop:
+	docker-compose exec php console steam-group:import PoPSG

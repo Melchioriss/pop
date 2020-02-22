@@ -2,8 +2,8 @@
 
 namespace PlayOrPay\Domain\Contracts\DomainEvent;
 
-use Serializable;
+use JsonSerializable;
 
-interface DomainEventInterface extends Serializable
+interface DomainEventInterface extends JsonSerializable
 {
 }

@@ -52,4 +52,4 @@ import_playing_states:
     path: /api/execute/import_playing_states
     controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
     defaults:
-        command: PlayOrPay\Application\Command\Event\Event\ImportPlaystats\ImportPlayingStatesCommand
+        command: PlayOrPay\Application\Command\Event\Event\ImportSteamPlaystats\ImportSteamPlayingStatesCommand

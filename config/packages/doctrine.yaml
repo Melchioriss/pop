@@ -18,6 +18,7 @@ doctrine:
           event_picker_type: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickerType
           event_pick_type: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickType
           event_pick_played_status: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickPlayedStatusType
+          game_store_id: PlayOrPay\Infrastructure\Storage\Doctrine\Type\Game\StoreIdType
         mapping_types:
           uuid_binary: binary
     orm:

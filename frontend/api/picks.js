@@ -11,6 +11,6 @@ export default new class extends BaseApi {
     }
 
     changeGame(pick) {
-        return this.axios.put(this.path(pick.uuid), { gameId: pick.game.id });
+        return this.axios.put(this.path(pick.uuid, 'game'), { gameId: pick.game.id });
     }
 }

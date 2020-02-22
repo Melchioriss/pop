@@ -10,6 +10,7 @@ const EventsPage = () => import( /* webpackChunkName: "events_page" */ './pages/
 const NewEventPage = () => import( /* webpackChunkName: "new_event_page" */ './pages/CreateNewEvent.vue');
 const EventPage = () => import( /* webpackChunkName: "event_detail" */ './pages/Event.vue');
 const EventLeaderboardPage = () => import( /* webpackChunkName: "event_leaderboard" */ './pages/EventLeaderboard.vue');
+const ActivityPage = () => import( /* webpackChunkName: "activity_feed" */ './pages/ActivityFeed.vue');
 const TextFormattingPage = () => import( /* webpackChunkName: "text_formatting" */ './pages/TextFormatting.vue');
 const AdminToolsPage = () => import( /* webpackChunkName: "admin_tools" */ './pages/AdminTools.vue');
 const NotFoundPage = () => import( /* webpackChunkName: "not_found" */ './pages/NotFound.vue');
@@ -59,6 +60,12 @@ const appRouter = new Router({
             path: '/events/:eventUuid/leaderboard',
             component: EventLeaderboardPage,
             meta: {title: 'Play or Pay | Event Leaderboard'}
+        },
+        {
+            name: 'activity_feed',
+            path: '/activity',
+            component: ActivityPage,
+            meta: {title: 'Play or Pay | Activity Feed'}
         },
         {
             name: 'text_formatting',

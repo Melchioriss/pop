@@ -13,6 +13,7 @@
                 <nav class="app__main-nav nav">
                     <router-link :to="{name: 'events'}" class="nav__link">Events</router-link>
                     <router-link :to="{name: 'members'}" class="nav__link">Members</router-link>
+                    <router-link :to="{name: 'activity_feed'}" class="nav__link">Activity Feed</router-link>
                     <router-link
                         v-if="loggedUserIsAdmin"
                         :to="{name: 'admin_tools'}"

@@ -6,7 +6,8 @@ use Assert\Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use Exception;
-use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Domain\Steam\SteamId;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
@@ -164,13 +165,15 @@ class EventParticipant
     }
 
     /**
+     * @param StoreId|null $ofStore
+     *
      * @return Game[]
      */
-    public function getGames(): array
+    public function getGames(StoreId $ofStore = null): array
     {
         $games = [];
         foreach ($this->pickers as $picker) {
-            array_push($games, ...$picker->getGames());
+            array_push($games, ...$picker->getGames($ofStore));
         }
 
         return $games;

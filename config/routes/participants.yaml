@@ -25,3 +25,10 @@ add_participant_picker:
     controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
     defaults:
         command: PlayOrPay\Application\Command\Event\EventParticipant\AddPicker\AddEventParticipantPickerCommand
+
+update_event_participant_blaeo_points:
+    methods: PUT
+    path: /api/participants/{participantUuid}/blaeoPoints
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventParticipant\UpdateBlaeoPoints\UpdateEventParticipantBlaeoPointsCommand

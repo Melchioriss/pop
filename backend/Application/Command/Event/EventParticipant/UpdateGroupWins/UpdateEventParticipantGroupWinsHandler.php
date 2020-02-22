@@ -30,6 +30,8 @@ class UpdateEventParticipantGroupWinsHandler implements CommandHandlerInterface
     }
 
     /**
+     * @param UpdateEventParticipantGroupWinsCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -37,8 +39,12 @@ class UpdateEventParticipantGroupWinsHandler implements CommandHandlerInterface
      */
     public function __invoke(UpdateEventParticipantGroupWinsCommand $command)
     {
-        $participant = $this->participantRepo->get($command->getParticipantUuid());
-        $participant->updateGroupWins($command->getGroupWins());
+        $participantUuid = $command->getParticipantUuid();
+        $participant = $this->participantRepo->get($participantUuid);
+        $event = $participant->getEvent();
+
+        $event->updateParticipantGroupWins($participantUuid, $command->getGroupWins());
+
         $this->eventRepo->save($participant->getEvent());
     }
 }

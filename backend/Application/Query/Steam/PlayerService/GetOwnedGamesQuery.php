@@ -39,6 +39,7 @@ class GetOwnedGamesQuery
 
     /**
      * @param int[] $apps
+     *
      * @return self
      */
     public function forApps(array $apps): self

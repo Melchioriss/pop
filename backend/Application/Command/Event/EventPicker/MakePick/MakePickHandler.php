@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
@@ -36,13 +37,16 @@ class MakePickHandler implements CommandHandlerInterface
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws NotFoundException
      */
     public function __invoke(MakePickCommand $command)
     {
-        $picker = $this->pickerRepo->get($command->pickerUuid);
         $game = $this->gameRepo->get($command->gameId);
+        $picker = $this->pickerRepo->get($command->pickerUuid);
+        $event = $picker->getEvent();
 
-        $picker->makePick($command->pickUuid, $command->type, $game);
-        $this->eventRepo->save($picker->getParticipant()->getEvent());
+        $event->makePick($command->pickerUuid, $command->pickUuid, $command->type, $game);
+
+        $this->eventRepo->save($event);
     }
 }

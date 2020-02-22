@@ -9,7 +9,7 @@ use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
 use PlayOrPay\Security\CommonSecurityHandler;
 use PlayOrPay\Security\SecuriryException;
 
-class UpdateEventParticipantExtraRulesHandler extends CommonSecurityHandler
+class UpdateEventParticipantExtraRulesSecurityHandler extends CommonSecurityHandler
 {
     /** @var EventParticipantRepository */
     private $participantRepo;

@@ -1,4 +1,6 @@
-<?php /** @noinspection CssInvalidHtmlTagReference */
+<?php
+
+/** @noinspection CssInvalidHtmlTagReference */
 
 namespace PlayOrPay\Infrastructure\Storage\Steam;
 

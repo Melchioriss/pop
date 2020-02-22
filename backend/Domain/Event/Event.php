@@ -8,17 +8,23 @@ use DomainException;
 use Exception;
 use League\Period\Period;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
-use PlayOrPay\Domain\Contracts\Exception\ForbiddenActionException;
+use PlayOrPay\Domain\Event\DomainEvent\PickPlayedStatusChanged;
 use PlayOrPay\Domain\Event\Exception\WrongParticipantException;
 use PlayOrPay\Domain\Exception\NotFoundException;
+use PlayOrPay\Domain\Steam\Game;
 use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\User\User;
+use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 class Event implements OnUpdateEventListenerInterface, AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var UuidInterface */
     private $uuid;
 
@@ -67,6 +73,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
 
     /**
      * @param User $user
+     * @param UuidInterface|null $participantUuid
      *
      * @throws Exception
      *
@@ -88,6 +95,8 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     }
 
     /**
+     * @param Group $group
+     *
      * @throws Exception
      */
     private function fillParticipants(Group $group)
@@ -196,7 +205,11 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     }
 
     /**
+     * @param UuidInterface $needlePicker
+     *
      * @throws NotFoundException
+     *
+     * @return EventPicker
      */
     public function getPicker(UuidInterface $needlePicker): EventPicker
     {
@@ -212,11 +225,14 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     }
 
     /**
+     * @param UuidInterface $pickerUuid
+     * @param User $newUser
+     *
      * @throws NotFoundException
      *
      * @return Event
      */
-    public function replacePicker(UuidInterface $pickerUuid, User $newUser): self
+    public function replacePickerUser(UuidInterface $pickerUuid, User $newUser): self
     {
         $picker = $this->getPicker($pickerUuid);
         $picker->replaceUser($newUser);
@@ -357,35 +373,45 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         return $participant;
     }
 
-    public function updateEventParticipantBlaeoWins(?User $actor, UuidInterface $participantUuid, string $blaeoGames): self
+    public function updateParticipantBlaeoGames(UuidInterface $participantUuid, string $blaeoGames): self
     {
         $participant = $this->getParticipant($participantUuid);
-        $this->shouldBeAllowedToUpdateEventParticipant($actor, $participant);
         $participant->updateBlaeoGames($blaeoGames);
 
         return $this;
     }
 
-    public function updateEventParticipantGroupWins(?User $actor, UuidInterface $participantUuid, string $groupWins): self
+    public function updateParticipantGroupWins(UuidInterface $participantUuid, string $groupWins): self
     {
         $participant = $this->getParticipant($participantUuid);
-        $this->shouldBeAllowedToUpdateEventParticipant($actor, $participant);
         $participant->updateGroupWins($groupWins);
 
         return $this;
     }
 
-    private function shouldBeAllowedToUpdateEventParticipant(?User $actor, EventParticipant $participant)
+    /**
+     * @param UuidInterface $participantUuid
+     * @param EventReward $blaeoGamesReward
+     * @param int $blaeoPoins
+     *
+     * @throws Exception
+     *
+     * @return Event
+     */
+    public function updateParticipantBlaeoPoints(UuidInterface $participantUuid, EventReward $blaeoGamesReward, int $blaeoPoins): self
     {
-        if ($actor->isAdmin()) {
-            return;
-        }
+        $participant = $this->getParticipant($participantUuid);
+        $participant->updateBlaeoPoints($blaeoGamesReward, $blaeoPoins);
 
-        if ($actor === $participant->getUser()) {
-            return;
-        }
+        return $this;
+    }
 
-        throw ForbiddenActionException::forThisActor($actor, __METHOD__);
+    public function updateParticipantExtraRules(UuidInterface $participantUuid, string $extraRules): self
+    {
+        $participant = $this->getParticipant($participantUuid);
+        $participant->updateExtraRules($extraRules);
+
+        return $this;
     }
 
     /**
@@ -416,16 +442,140 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     /**
      * @param UuidInterface $commentUuid
      * @param UuidInterface $pickerUuid
-     * @param User          $user
-     * @param string        $text
+     * @param User $user
+     * @param string $text
+     * @param UuidInterface $reviewedPickUuid
+     *
+     * @throws AmbiguousValueException
+     * @throws NotFoundException
+     * @throws ReflectionException
+     *
+     * @return Event
+     */
+    public function addPickerComment(
+        UuidInterface $commentUuid,
+        UuidInterface $pickerUuid,
+        User $user,
+        string $text,
+        UuidInterface $reviewedPickUuid
+    ): self {
+        $this->getPicker($pickerUuid)->addComment($commentUuid, $user, $text, $reviewedPickUuid);
+
+        return $this;
+    }
+
+    /**
+     * @param UuidInterface $pickerUuid
+     * @param UuidInterface $participantUuid
+     * @param User $user
+     * @param EventPickerType $pickerType
+     *
+     * @throws AmbiguousValueException
+     * @throws ReflectionException
+     *
+     * @return $this
+     */
+    public function addPicker(
+        UuidInterface $pickerUuid,
+        UuidInterface $participantUuid,
+        User $user,
+        EventPickerType $pickerType
+    ) {
+        $picker = $this->makePicker($pickerUuid, $participantUuid, $user, $pickerType);
+        $participant = $picker->getParticipant();
+        $participant->addPicker($picker);
+
+        return $this;
+    }
+
+    private function makePicker(UuidInterface $pickerUuid, UuidInterface $participantUuid, User $user, EventPickerType $pickerType)
+    {
+        $participant = $this->getParticipant($participantUuid);
+
+        return new EventPicker(
+            $pickerUuid,
+            $participant,
+            $user,
+            $pickerType
+        );
+    }
+
+    /**
+     * @param UuidInterface $pickUuid
+     * @param EventPickPlayedStatus $newPlayedStatus
      *
      * @throws NotFoundException
      *
      * @return Event
      */
-    public function addPickerComment(UuidInterface $commentUuid, UuidInterface $pickerUuid, User $user, string $text): self
+    public function changePickPlayedStatus(UuidInterface $pickUuid, EventPickPlayedStatus $newPlayedStatus): self
     {
-        $this->getPicker($pickerUuid)->addComment($commentUuid, $user, $text);
+        $pick = $this->getPick($pickUuid);
+
+        $oldStatus = $pick->getPlayedStatus();
+        $pick->changePlayedStatus($newPlayedStatus);
+        $this->addDomainEvent(new PickPlayedStatusChanged($oldStatus, $newPlayedStatus));
+
+        return $this;
+    }
+
+    private function findPick(UuidInterface $pickUuid): ?EventPick
+    {
+        foreach ($this->participants as $participant) {
+            $pick = $participant->findPick($pickUuid);
+            if ($pick) {
+                return $pick;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param UuidInterface $pickUuid
+     *
+     * @throws NotFoundException
+     *
+     * @return EventPick
+     */
+    private function getPick(UuidInterface $pickUuid): EventPick
+    {
+        $pick = $this->findPick($pickUuid);
+        if (!$pick) {
+            throw NotFoundException::forObject(EventPick::class, (string) $pickUuid);
+        }
+
+        return $pick;
+    }
+
+    /**
+     * @param UuidInterface $pickUuid
+     * @param Game $game
+     *
+     * @throws NotFoundException
+     *
+     * @return Event
+     */
+    public function changePickGame(UuidInterface $pickUuid, Game $game): self
+    {
+        $this->getPick($pickUuid)->changeGame($game);
+
+        return $this;
+    }
+
+    /**
+     * @param UuidInterface $pickerUuid
+     * @param UuidInterface $pickUuid
+     * @param EventPickType $type
+     * @param Game $game
+     *
+     * @throws NotFoundException
+     *
+     * @return $this
+     */
+    public function makePick(UuidInterface $pickerUuid, UuidInterface $pickUuid, EventPickType $type, Game $game)
+    {
+        $this->getPicker($pickerUuid)->makePick($pickUuid, $type, $game);
 
         return $this;
     }

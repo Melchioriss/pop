@@ -64,6 +64,7 @@ abstract class QueryController
     /**
      * @param string $name
      * @param array<string, string|int|float> $params
+     *
      * @return string
      */
     protected function route(string $name, array $params = []): string

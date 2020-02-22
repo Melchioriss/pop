@@ -13,12 +13,17 @@ use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use PlayOrPay\Application\Query\PaginatedQuery;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\DomainEvent\DomainEventRecord;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
     /**
      * Should tell us which class this repository serves.
      *
@@ -26,9 +31,10 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      */
     abstract public function getEntityClass(): string;
 
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($registry, $this->getEntityClass());
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -61,6 +67,7 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws Exception
      */
     public function save(object ...$entities)
     {
@@ -72,6 +79,15 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
 
         foreach ($entities as $entity) {
             $this->_em->persist($entity);
+
+            if ($entity instanceof AggregateInterface) {
+                foreach ($entity->popDomainEvents() as $event) {
+                    $eventRecord = DomainEventRecord::fromEvent($event);
+                    $this->_em->persist($eventRecord);
+
+                    $this->eventDispatcher->dispatch($event);
+                }
+            }
         }
         $this->_em->flush();
     }

@@ -39,8 +39,12 @@ class UpdateEventParticipantExtraRulesHandler implements CommandHandlerInterface
      */
     public function __invoke(UpdateEventParticipantExtraRulesCommand $command)
     {
-        $participant = $this->participantRepo->get($command->getParticipantUuid());
-        $participant->updateExtraRules($command->getExtraRules());
-        $this->eventRepo->save($participant->getEvent());
+        $participantUuid = $command->getParticipantUuid();
+        $participant = $this->participantRepo->get($participantUuid);
+        $event = $participant->getEvent();
+
+        $event->updateParticipantExtraRules($participantUuid, $command->getExtraRules());
+
+        $this->eventRepo->save($event);
     }
 }

@@ -4,9 +4,12 @@ namespace PlayOrPay\Domain\Steam;
 
 use Assert\Assert;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 
 class Game implements AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var int */
     private $id;
 

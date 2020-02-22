@@ -2,9 +2,9 @@
 
 namespace PlayOrPay\Domain\Event;
 
-use Ducks\Component\SplTypes\SplEnum;
+use PlayOrPay\Package\EnumFramework\Enum;
 
-class EventPickPlayedStatus extends SplEnum
+class EventPickPlayedStatus extends Enum
 {
     const NOT_PLAYED = 0;
 

@@ -6,11 +6,12 @@ use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
-use PlayOrPay\Domain\Event\EventPicker;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
+use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
+use ReflectionException;
 
 class AddEventParticipantPickerHandler implements CommandHandlerInterface
 {
@@ -37,20 +38,18 @@ class AddEventParticipantPickerHandler implements CommandHandlerInterface
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws AmbiguousValueException
+     * @throws ReflectionException
      */
     public function __invoke(AddEventParticipantPickerCommand $command)
     {
-        $participant = $this->participantRepo->get($command->getParticipantUuid());
+        $participantUuid = $command->getParticipantUuid();
+
+        $participant = $this->participantRepo->get($participantUuid);
         $user = $this->userRepo->get($command->getUserId());
+        $event = $participant->getEvent();
 
-        $picker = new EventPicker(
-            $command->getPickerUuid(),
-            $participant,
-            $user,
-            $command->getPickerType()
-        );
-
-        $participant->addPickers([$picker]);
-        $this->eventRepo->save($participant->getEvent());
+        $event->addPicker($command->getPickerUuid(), $participantUuid, $user, $command->getPickerType());
+        $this->eventRepo->save($event);
     }
 }

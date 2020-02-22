@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
@@ -36,12 +37,16 @@ class UpdateEventPickerUserHandler implements CommandHandlerInterface
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws NotFoundException
      */
     public function __invoke(UpdateEventPickerUserCommand $command)
     {
-        $picker = $this->eventPickerRepo->get($command->pickerUuid);
         $newPickerUser = $this->userRepo->get($command->userId);
-        $picker->replaceUser($newPickerUser);
-        $this->eventRepo->save($picker->getParticipant()->getEvent());
+        $picker = $this->eventPickerRepo->get($command->pickerUuid);
+        $event = $picker->getParticipant()->getEvent();
+
+        $event->replacePickerUser($command->pickerUuid, $newPickerUser);
+
+        $this->eventRepo->save($event);
     }
 }

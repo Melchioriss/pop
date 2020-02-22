@@ -46,8 +46,8 @@ cs: ## executes php cs fixer
 cs-check: ## executes php cs fixer in dry run mode
 	docker-compose run --rm php sh -lc './vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix'
 
-.PHONY: layer
-layer: ## Check issues with layers
+.PHONY: deptrac
+deptrac: ## Check issues with layers
 	docker-compose run --rm php sh -lc 'php bin/deptrac.phar analyze --formatter-graphviz=0'
 
 .PHONY: db
@@ -115,3 +115,11 @@ admin:
 .PHONY: schema-update
 schema-update:
 	docker-compose exec php console doctrine:schema:update --force
+
+.PHONY: migration
+migration:
+	docker-compose exec php console doctrine:migrations:generate
+
+.PHONY: migrate
+migrate:
+	docker-compose exec php console doctrine:migrations:migrate --no-interaction

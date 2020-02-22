@@ -11,7 +11,7 @@ use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
 
-class UpdateEventParticipantBlaeoGameHandler implements CommandHandlerInterface
+class UpdateEventParticipantBlaeoGamesHandler implements CommandHandlerInterface
 {
     /** @var EventRepository */
     private $eventRepo;
@@ -39,7 +39,10 @@ class UpdateEventParticipantBlaeoGameHandler implements CommandHandlerInterface
     public function __invoke(UpdateEventParticipantBlaeoGamesCommand $command)
     {
         $participant = $this->participantRepo->get($command->getParticipantUuid());
-        $participant->updateBlaeoGames($command->getBlaeoGames());
-        $this->eventRepo->save($participant->getEvent());
+        $event = $participant->getEvent();
+
+        $event->updateParticipantBlaeoGames($participant->getUuid(), $command->getBlaeoGames());
+
+        $this->eventRepo->save($event);
     }
 }

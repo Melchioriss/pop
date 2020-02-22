@@ -4,9 +4,12 @@ namespace PlayOrPay\Domain\Role;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 
 class Role implements AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var RoleName */
     private $name;
 
@@ -33,6 +36,7 @@ class Role implements AggregateInterface
 
     /**
      * @param string[] $abilities
+     *
      * @return Role
      */
     private function addAbilities(array $abilities): self

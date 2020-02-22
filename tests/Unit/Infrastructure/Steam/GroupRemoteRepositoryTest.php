@@ -120,8 +120,9 @@ class GroupRemoteRepositoryTest extends TestCase
     }
 
     /**
-     * @return string
      * @throws Exception
+     *
+     * @return string
      */
     private function getGroupXml(): string
     {

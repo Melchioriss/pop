@@ -7,7 +7,9 @@ use DomainException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Steam\Game;
 use PlayOrPay\Domain\User\User;
+use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 class EventPicker
 {
@@ -156,9 +158,21 @@ class EventPicker
         return $games;
     }
 
-    public function addComment(UuidInterface $uuid, User $user, string $text): self
+    /**
+     * @param UuidInterface $uuid
+     * @param User $user
+     * @param string $text
+     * @param UuidInterface|null $reviewedPickUuid
+     *
+     * @throws AmbiguousValueException
+     * @throws NotFoundException
+     * @throws ReflectionException
+     *
+     * @return EventPicker
+     */
+    public function addComment(UuidInterface $uuid, User $user, string $text, ?UuidInterface $reviewedPickUuid): self
     {
-        $comment = new EventPickerComment($uuid, $this, $user, $text);
+        $comment = new EventPickerComment($uuid, $this, $user, $text, $reviewedPickUuid);
         $this->comments->add($comment);
 
         return $this;
@@ -173,5 +187,27 @@ class EventPicker
         }
 
         return null;
+    }
+
+    /**
+     * @param int $gameId
+     *
+     * @throws NotFoundException
+     *
+     * @return EventPick
+     */
+    public function getPickOfGame(int $gameId): EventPick
+    {
+        $pick = $this->findPickOfGame($gameId);
+        if (!$pick) {
+            throw NotFoundException::forObject(Game::class, $gameId);
+        }
+
+        return $pick;
+    }
+
+    public function getEvent(): Event
+    {
+        return $this->getParticipant()->getEvent();
     }
 }

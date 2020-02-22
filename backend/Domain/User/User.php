@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Knojector\SteamAuthenticationBundle\User\SteamUserInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 use PlayOrPay\Domain\Role\Role;
 use PlayOrPay\Domain\Role\RoleName;
@@ -18,6 +19,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerInterface, AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var SteamId */
     private $steamId;
 

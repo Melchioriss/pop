@@ -327,8 +327,8 @@ export default new Vuex.Store({
                 });
         },
 
-        changePick: function ({commit, state}, {picker, pick, participantUuid}) {
-            return api.pickers.changePick(picker, pick)
+        changePickGame: function ({commit, state}, {pick, participantUuid}) {
+            return api.picks.changeGame(pick)
                 .then(() => {
 
                     if (pick.game.id.toString() !== state.picks[pick.uuid].game.id.toString())

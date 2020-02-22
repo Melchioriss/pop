@@ -4,3 +4,10 @@ change_pick_status:
     controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
     defaults:
         command: PlayOrPay\Application\Command\Event\EventPick\ChangeStatus\ChangeEventPickStatusCommand
+
+change_pick_game:
+    methods: PUT
+    path: /api/picks/{pickUuid}/game
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPicker\ChangePickGame\ChangePickGameCommand

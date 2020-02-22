@@ -135,6 +135,7 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param Game[] $games
+     *
      * @return array<int, Game>
      */
     private function makeUnresolvedMap(array $games): array
@@ -195,6 +196,7 @@ class ImportPlayingStatesHandler implements CommandHandlerInterface
     /**
      * @param int $steamId
      * @param int[] $apps
+     *
      * @return GetOwnedGamesQuery
      */
     private function makeQuery(int $steamId, array $apps): GetOwnedGamesQuery

@@ -15,7 +15,7 @@ final class Version20200125225459 extends AbstractMigration
 
     public function getDescription(): string
     {
-        return 'Installs default roles';
+        return 'Default roles';
     }
 
     public function up(Schema $schema): void

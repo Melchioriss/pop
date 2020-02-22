@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
@@ -31,12 +32,16 @@ class ChangeEventPickStatusHandler implements CommandHandlerInterface
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws NotFoundException
      */
     public function __invoke(ChangeEventPickStatusCommand $command)
     {
-        $pick = $this->pickRepo->get($command->getPickUuid());
-        $pick->changePlayedStatus($command->getStatus());
+        $pickUuid = $command->getPickUuid();
+        $pick = $this->pickRepo->get($pickUuid);
+        $event = $pick->getEvent();
 
-        $this->eventRepo->save($pick->getPicker()->getParticipant()->getEvent());
+        $event->changePickPlayedStatus($pickUuid, $command->getStatus());
+
+        $this->eventRepo->save($event);
     }
 }

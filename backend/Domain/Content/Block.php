@@ -5,10 +5,13 @@ namespace PlayOrPay\Domain\Content;
 use Assert\Assert;
 use DateTimeImmutable;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 
 class Block implements OnUpdateEventListenerInterface, AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var string */
     private $code;
 

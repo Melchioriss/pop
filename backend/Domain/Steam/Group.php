@@ -4,10 +4,13 @@ namespace PlayOrPay\Domain\Steam;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\User\User;
 
 class Group implements AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var int */
     private $id;
 

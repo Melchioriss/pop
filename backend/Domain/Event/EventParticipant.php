@@ -191,6 +191,17 @@ class EventParticipant
         return count($this->getGames()) > 0;
     }
 
+    public function findPick(UuidInterface $uuid): ?EventPick
+    {
+        foreach ($this->pickers as $picker) {
+            if ($pick = $picker->findPick($uuid)) {
+                return $pick;
+            }
+        }
+
+        return null;
+    }
+
     public function getPickForGame(int $gameId): EventPick
     {
         foreach ($this->pickers as $picker) {

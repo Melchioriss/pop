@@ -103,6 +103,41 @@
                     >edit</span>
                 </div>
 
+                <div class="participation__additional">
+                    <label
+                        :for="'bp_'+participant.uuid"
+                        class="participation__sub-title"
+                    >BLAEO points:</label>
+                    <template v-if="isEditingBlaeoPoints">
+                        <input
+                            v-model="newBlaeoPoints"
+                            :id="'bp_'+participant.uuid"
+                            type="number"
+                            class="input"
+                        />
+                        <button
+                            @click="saveBlaeoPoints"
+                            type="button"
+                            class="button button--space-left"
+                        >save</button>
+                        <button
+                            @click="endEditingBlaeoPoints"
+                            type="button"
+                            class="button button--space-left"
+                        >cancel</button>
+                    </template>
+                    <div
+                        v-else
+                    >
+                        <div class="medal">18</div>
+                    </div>
+                    <span
+                        v-if="!isEditingBlaeoPoints"
+                        @click="startEditingBlaeoPoints"
+                        class="edit-link"
+                    >edit</span>
+                </div>
+
                 <div class="participation__sub-title">
                     <span>Extra rules by <b>{{participantUser.profileName}}</b> for this event:</span>
                     <span
@@ -362,9 +397,11 @@
                 isEditingGroupWins: false,
                 isEditingBlaeoGames: false,
                 isEditingExtraRules: false,
+                isEditingBlaeoPoints: false,
                 newExtraRules: '',
                 newGroupWins: '',
-                newBlaeoGames: ''
+                newBlaeoGames: '',
+                newBlaeoPoints: ''
             };
         },
         computed: {
@@ -531,6 +568,18 @@
                 this.isEditingExtraRules = false;
             },
 
+            startEditingBlaeoPoints() {
+                this.isEditingBlaeoPoints = true;
+            },
+
+            endEditingBlaeoPoints() {
+                this.isEditingBlaeoPoints = false;
+            },
+
+            saveBlaeoPoints() {
+                console.log(this.newBlaeoPoints);
+            },
+
             saveExtraRules() {
                 this.$store.dispatch('updateParticipantExtraRules', {participant: this.participant, extraRules: this.newExtraRules})
                     .then(() => {
@@ -610,6 +659,7 @@
 <style lang="less">
     @import "../assets/_colors";
     @import "../assets/user-tile";
+    @import "../assets/medal";
 
     .participation{
         margin-bottom: 20px;

@@ -11,11 +11,12 @@ class UpdateEventPickerUserTest extends FunctionalTest
 {
     /**
      * @test
+     *
      * @throws Exception
      */
     public function should_update_successfuly()
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/default.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
 
         /** @var Event $event */
         $event = $fixtures->getOneOf(Event::class);
@@ -33,8 +34,8 @@ class UpdateEventPickerUserTest extends FunctionalTest
 
         $this->authorizeAsAdmin();
         $this->request('replace_event_picker', [
-            'pickerUuid' => (string)$updatedPicker->getUuid(),
-            'userId' => (string)$newUser->getSteamId(),
+            'pickerUuid' => (string) $updatedPicker->getUuid(),
+            'userId'     => (string) $newUser->getSteamId(),
         ]);
 
         $this->assertSuccessfulResponse();

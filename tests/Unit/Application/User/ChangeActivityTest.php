@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Tests\System\User;
+namespace PlayOrPay\Tests\Unit\Application\User;
 
 use League\Tactician\CommandBus;
 use PlayOrPay\Application\Command\User\User\Activate\ActivateUserCommand;
@@ -17,25 +17,25 @@ class ChangeActivityTest extends KernelTestCase
     }
 
     /** @test */
-    public function should_activate_properly()
+    public function should_activate_properly(): void
     {
         $this->should_has_specific_active_state_after_command(true, ActivateUserCommand::class);
     }
 
     /** @test */
-    public function should_deactivate_properly()
+    public function should_deactivate_properly(): void
     {
         $this->should_has_specific_active_state_after_command(false, DeactivateUserCommand::class);
     }
 
-    private function should_has_specific_active_state_after_command(bool $newExpectedState, string $commandClass)
+    private function should_has_specific_active_state_after_command(bool $newExpectedState, string $commandClass): void
     {
         /** @var UserRepository $userRepo */
         $userRepo = self::$container->get(UserRepository::class);
 
         $user = $this->makeUser(!$newExpectedState);
 
-        /** @noinspection PhpUnhandledExceptionInspection */
+        /* @noinspection PhpUnhandledExceptionInspection */
         $userRepo->save($user);
 
         $user = $userRepo->find($user->getSteamId());
@@ -52,7 +52,7 @@ class ChangeActivityTest extends KernelTestCase
 
     private function makeUser(bool $active): User
     {
-        $user = (new User)
+        $user = (new User())
             ->setSteamId(12345)
             ->setProfileName('abc')
             ->setProfileUrl('https://steam/ab/c/')

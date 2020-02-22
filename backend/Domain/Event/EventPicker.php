@@ -7,7 +7,9 @@ use DomainException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Steam\Game;
 use PlayOrPay\Domain\User\User;
+use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 class EventPicker
 {
@@ -35,8 +37,8 @@ class EventPicker
         $this->participant = $participant;
         $this->user = $user;
         $this->type = $type;
-        $this->picks = new ArrayCollection;
-        $this->comments = new ArrayCollection;
+        $this->picks = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getUuid(): UuidInterface
@@ -62,13 +64,14 @@ class EventPicker
     public function replaceUser(User $user): self
     {
         $this->user = $user;
+
         return $this;
     }
 
     public function findPickByType(EventPickType $type): ?EventPick
     {
         foreach ($this->picks as $pick) {
-            if ((string)$pick->getType() === (string)$type) {
+            if ((string) $pick->getType() === (string) $type) {
                 return $pick;
             }
         }
@@ -88,15 +91,13 @@ class EventPicker
     }
 
     /**
-     * @param UuidInterface $pickUuid
-     * @return EventPick
      * @throws NotFoundException
      */
     public function getPick(UuidInterface $pickUuid): EventPick
     {
         $pick = $this->findPick($pickUuid);
         if (!$pick) {
-            throw NotFoundException::forObject(EventPick::class, (string)$pickUuid);
+            throw NotFoundException::forObject(EventPick::class, (string) $pickUuid);
         }
 
         return $pick;
@@ -104,8 +105,10 @@ class EventPicker
 
     /**
      * @param EventPickType $type
-     * @return EventPick
+     *
      * @throws NotFoundException
+     *
+     * @return EventPick
      */
     public function getPickOfType(EventPickType $type): EventPick
     {
@@ -114,13 +117,13 @@ class EventPicker
             return $pick;
         }
 
-        throw NotFoundException::forObject(EventPick::class, (string)$type);
+        throw NotFoundException::forObject(EventPick::class, (string) $type);
     }
 
     public function makePick(UuidInterface $pickUuid, EventPickType $type, Game $game)
     {
         if ($this->findPickByType($type)) {
-            throw new DomainException(sprintf("Pick of '%s' type aready exists", (string)$type));
+            throw new DomainException(sprintf("Pick of '%s' type aready exists", (string) $type));
         }
 
         $pick = new EventPick(
@@ -129,10 +132,11 @@ class EventPicker
             $game,
             $type,
             new EventPickPlayedStatus(EventPickPlayedStatus::NOT_PLAYED),
-            new PlayingState
+            new PlayingState()
         );
 
         $this->picks->add($pick);
+
         return $pick;
     }
 
@@ -154,10 +158,23 @@ class EventPicker
         return $games;
     }
 
-    public function addComment(UuidInterface $uuid, User $user, string $text): self
+    /**
+     * @param UuidInterface $uuid
+     * @param User $user
+     * @param string $text
+     * @param UuidInterface|null $reviewedPickUuid
+     *
+     * @throws AmbiguousValueException
+     * @throws NotFoundException
+     * @throws ReflectionException
+     *
+     * @return EventPicker
+     */
+    public function addComment(UuidInterface $uuid, User $user, string $text, ?UuidInterface $reviewedPickUuid): self
     {
-        $comment = new EventPickerComment($uuid, $this, $user, $text);
+        $comment = new EventPickerComment($uuid, $this, $user, $text, $reviewedPickUuid);
         $this->comments->add($comment);
+
         return $this;
     }
 
@@ -170,5 +187,27 @@ class EventPicker
         }
 
         return null;
+    }
+
+    /**
+     * @param int $gameId
+     *
+     * @throws NotFoundException
+     *
+     * @return EventPick
+     */
+    public function getPickOfGame(int $gameId): EventPick
+    {
+        $pick = $this->findPickOfGame($gameId);
+        if (!$pick) {
+            throw NotFoundException::forObject(Game::class, $gameId);
+        }
+
+        return $pick;
+    }
+
+    public function getEvent(): Event
+    {
+        return $this->getParticipant()->getEvent();
     }
 }

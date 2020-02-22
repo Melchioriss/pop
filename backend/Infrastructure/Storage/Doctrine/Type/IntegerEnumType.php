@@ -11,6 +11,6 @@ abstract class IntegerEnumType extends IntegerType
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return (int)(string)$value;
+        return (int) (string) $value;
     }
 }

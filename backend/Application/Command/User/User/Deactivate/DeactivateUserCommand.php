@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PlayOrPay\Application\Command\User\User\Deactivate;
 
 use PlayOrPay\Domain\Steam\SteamId;

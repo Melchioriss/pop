@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Security\User\User;
 
-
 use Doctrine\ORM\EntityNotFoundException;
 use PlayOrPay\Application\Command\User\User\SetExtraRules\SetUserExtraRulesCommand;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
@@ -23,6 +22,7 @@ class SetUserExtraRulesSecurityHandler extends CommonSecurityHandler
 
     /**
      * @param SetUserExtraRulesCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

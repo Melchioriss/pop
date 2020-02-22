@@ -1,17 +1,19 @@
 <?php
 
+/** @noinspection CssInvalidHtmlTagReference */
+
 namespace PlayOrPay\Infrastructure\Storage\Steam;
 
-use Exception;
-use PlayOrPay\Domain\Steam\Group;
 use Assert\Assert;
 use Assert\InvalidArgumentException;
+use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Knojector\SteamAuthenticationBundle\Exception\InvalidApiResponseException;
 use Knojector\SteamAuthenticationBundle\Exception\InvalidUserClassException;
 use Knojector\SteamAuthenticationBundle\Factory\UserFactory;
 use Knojector\SteamAuthenticationBundle\Http\SteamApiClient;
+use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\Steam\SteamId;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 use Symfony\Component\DomCrawler\Crawler;
@@ -42,8 +44,7 @@ class GroupRemoteRepository
         GroupRepository $groupRepo,
         UserRepository $userRepo,
         UserFactory $userFactory
-    )
-    {
+    ) {
         $this->httpClient = $httpClient;
         $this->profileClient = $profileClient;
         $this->groupRepo = $groupRepo;
@@ -53,12 +54,14 @@ class GroupRemoteRepository
 
     /**
      * @param string $code
-     * @return Group|null
+     *
      * @throws GuzzleException
      * @throws InvalidArgumentException
      * @throws InvalidApiResponseException
      * @throws InvalidUserClassException
      * @throws Exception
+     *
+     * @return Group|null
      */
     public function findByCode(string $code): ?Group
     {
@@ -76,7 +79,7 @@ class GroupRemoteRepository
             return null;
         }
 
-        $groupId = (int)$groupIdNode->text();
+        $groupId = (int) $groupIdNode->text();
         $groupCode = $groupData->filter('groupURL')->first()->text();
         $groupName = $groupData->filter('groupName')->first()->text();
         $logoUrl = $groupData->filter('avatarFull')->first()->text();
@@ -94,13 +97,13 @@ class GroupRemoteRepository
 
         $memberIds = [];
         $groupData->filter('members steamID64')->each(function (Crawler $member) use (&$memberIds) {
-            $memberIds[] = (int)$member->text();
+            $memberIds[] = (int) $member->text();
         });
 
         $memberChunks = array_chunk($memberIds, 100);
         foreach ($memberChunks as $members) {
             foreach ($this->profileClient->loadProfiles($members) as $member) {
-                $user = $this->userRepo->find(new SteamId((int)$member['steamid']));
+                $user = $this->userRepo->find(new SteamId((int) $member['steamid']));
                 if ($user) {
                     $user->update($member);
                 } else {

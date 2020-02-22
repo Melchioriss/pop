@@ -2,12 +2,17 @@
 
 namespace PlayOrPay\Domain\Event;
 
+use Assert\Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
+use Exception;
 use PlayOrPay\Domain\Steam\Game;
 use PlayOrPay\Domain\Steam\SteamId;
 use PlayOrPay\Domain\User\User;
-use Doctrine\Common\Collections\ArrayCollection;
+use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use ReflectionException;
 
 class EventParticipant
 {
@@ -35,8 +40,18 @@ class EventParticipant
     /** @var EventPicker[] */
     private $pickers;
 
-    public function __construct(UuidInterface $uuid, Event $event, User $user, string $groupWins, string $blaeoGames, string $extraRules, bool $active = true)
-    {
+    /** @var EventEarnedReward[] */
+    private $rewards;
+
+    public function __construct(
+        UuidInterface $uuid,
+        Event $event,
+        User $user,
+        string $groupWins,
+        string $blaeoGames,
+        string $extraRules,
+        bool $active = true
+    ) {
         $this->uuid = $uuid;
         $this->event = $event;
         $this->user = $user;
@@ -44,7 +59,8 @@ class EventParticipant
         $this->blaeoGames = $blaeoGames;
         $this->extraRules = $extraRules;
         $this->active = $active;
-        $this->pickers = new ArrayCollection;
+        $this->pickers = new ArrayCollection();
+        $this->rewards = new ArrayCollection();
     }
 
     public function getUser(): User
@@ -65,18 +81,21 @@ class EventParticipant
     public function updateGroupWins(string $groupWins): self
     {
         $this->groupWins = $groupWins;
+
         return $this;
     }
 
     public function updateBlaeoGames(string $blaeoGames): self
     {
         $this->blaeoGames = $blaeoGames;
+
         return $this;
     }
 
     public function updateExtraRules(string $extraRules): self
     {
         $this->extraRules = $extraRules;
+
         return $this;
     }
 
@@ -86,14 +105,53 @@ class EventParticipant
     }
 
     /**
-     * @param EventPicker[] $pickers
+     * @param EventPicker $picker
+     *
+     * @throws AmbiguousValueException
+     * @throws ReflectionException
+     *
      * @return EventParticipant
      */
-    public function addPickers(array $pickers): EventParticipant
+    public function addPicker(EventPicker $picker): self
+    {
+        $existsPicker = $this->findPickerOfType($picker->getType());
+        if ($existsPicker) {
+            throw new DomainException(sprintf("Participant '%s' already has picker '%s' of type '%s'", $this->getUser()->getUsername(), $picker->getUser()->getUsername(), $picker->getType()->getCodename()));
+        }
+        if ($this->pickers->contains($picker)) {
+            throw new DomainException(sprintf("Participant '%s' already has picker '%s'", $this->getUser()->getUsername(), $picker->getUser()->getUsername()));
+        }
+
+        $this->pickers->add($picker);
+
+        return $this;
+    }
+
+    public function findPickerOfType(EventPickerType $pickerType): ?EventPicker
+    {
+        foreach ($this->pickers as $picker) {
+            if ($picker->getType()->equalTo($pickerType)) {
+                return $picker;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param EventPicker[] $pickers
+     *
+     * @throws AmbiguousValueException
+     * @throws ReflectionException
+     *
+     * @return self
+     */
+    public function addPickers(array $pickers): self
     {
         foreach ($pickers as $picker) {
-            $this->pickers->add($picker);
+            $this->addPicker($picker);
         }
+
         return $this;
     }
 
@@ -120,7 +178,7 @@ class EventParticipant
 
     public function getGameIds(): array
     {
-        return array_map(function(Game $game) {
+        return array_map(function (Game $game) {
             return $game->getId();
         }, $this->getGames());
     }
@@ -138,24 +196,110 @@ class EventParticipant
             }
         }
 
-        throw new DomainException(
-            sprintf(
-                "Participant '%s' doesn't have pick for game '%s'",
-                $this->getUser()->getProfileName(),
-                $gameId
-            )
-        );
+        throw new DomainException(sprintf("Participant '%s' doesn't have pick for game '%s'", $this->getUser()->getProfileName(), $gameId));
     }
 
     public function updatePlaytimeForGame(int $gameId, int $playtime): self
     {
         $this->getPickForGame($gameId)->updatePlaytime($playtime);
+
         return $this;
     }
 
     public function updateAchievementsForGame(int $gameId, int $achievements): self
     {
         $this->getPickForGame($gameId)->updateAchievements($achievements);
+
         return $this;
+    }
+
+    /**
+     * @param EventReward $blaeoGamesReward
+     * @param int $value
+     *
+     * @throws Exception
+     *
+     * @return EventParticipant
+     */
+    public function updateBlaeoPoints(EventReward $blaeoGamesReward, int $value): self
+    {
+        Assert::lazy()
+            ->that($value)->greaterOrEqualThan(0)
+            ->that((string) $blaeoGamesReward->getReason())->same(RewardReason::BLAEO_GAMES)
+            ->verifyNow();
+
+        if ($value > 0) {
+            $this->setupReward($blaeoGamesReward, $value);
+        } else {
+            $this->removeReward($blaeoGamesReward->getReason());
+        }
+
+        return $this;
+    }
+
+    private function findReward(RewardReason $targetReason): ?EventEarnedReward
+    {
+        $targetReasonValue = (string) $targetReason;
+
+        foreach ($this->rewards as $earnedReward) {
+            if ((string) $earnedReward->getReason() === $targetReasonValue) {
+                return $earnedReward;
+            }
+        }
+
+        return null;
+    }
+
+    private function removeReward(RewardReason $reason): self
+    {
+        $earnedReward = $this->findReward($reason);
+        if ($earnedReward) {
+            $this->rewards->removeElement($earnedReward);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param EventReward $reward
+     * @param int|null $value
+     *
+     * @throws Exception
+     *
+     * @return EventParticipant
+     */
+    private function setupReward(EventReward $reward, ?int $value = null): self
+    {
+        $earnedReward = $this->findReward($reward->getReason());
+        if ($earnedReward) {
+            $earnedReward->updateValue($value);
+
+            return $this;
+        }
+
+        $earnedReward = $this->makeReward($reward, $value);
+        $this->insertReward($earnedReward);
+
+        return $this;
+    }
+
+    private function insertReward(EventEarnedReward $achievement): self
+    {
+        $this->rewards->add($achievement);
+
+        return $this;
+    }
+
+    /**
+     * @param EventReward $reward
+     * @param int|null $value
+     *
+     * @throws Exception
+     *
+     * @return EventEarnedReward
+     */
+    private function makeReward(EventReward $reward, ?int $value = null)
+    {
+        return new EventEarnedReward(Uuid::uuid4(), $this, $reward, $value);
     }
 }

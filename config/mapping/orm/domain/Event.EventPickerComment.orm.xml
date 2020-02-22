@@ -12,5 +12,8 @@
         </many-to-one>
         <field name="text" type="text" />
         <field name="createdAt" type="datetime_immutable" />
+        <many-to-one field="reviewedGame" target-entity="PlayOrPay\Domain\Steam\Game">
+            <join-column />
+        </many-to-one>
     </entity>
 </doctrine-mapping>

@@ -2,10 +2,11 @@
 
 namespace PlayOrPay\Application\Command\User\User\RevokeAdminRole;
 
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
-use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Role\RoleName;
-use PlayOrPay\Domain\User\User;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
 
 class RevokeUserAdminRoleHandler implements CommandHandlerInterface
@@ -20,16 +21,15 @@ class RevokeUserAdminRoleHandler implements CommandHandlerInterface
 
     /**
      * @param RevokeUserAdminRoleCommand $command
-     * @throws NotFoundException
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(RevokeUserAdminRoleCommand $command)
     {
         $steamId = $command->getSteamId();
-        $user = $this->userRepo->find($steamId);
-        if (!$user) {
-            throw NotFoundException::forObject(User::class, (string)$steamId);
-        }
-
+        $user = $this->userRepo->get($steamId);
         $user->removeRole(new RoleName(RoleName::ADMIN));
         $this->userRepo->save($user);
     }

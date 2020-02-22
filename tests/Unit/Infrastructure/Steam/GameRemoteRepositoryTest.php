@@ -10,13 +10,12 @@ class GameRemoteRepositoryTest extends KernelTestCase
     /**
      * @test
      */
-    public function should_get_games_from_steam()
+    public function should_get_games_from_steam(): void
     {
         self::bootKernel();
         /** @var GameRemoteRepository $gameRemoteRepo */
         $gameRemoteRepo = self::$container->get(GameRemoteRepository::class);
 
         $this->assertNotCount(0, $gameRemoteRepo->getAll());
-
     }
 }

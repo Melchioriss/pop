@@ -6,10 +6,10 @@ use Assert\Assert;
 
 class PlayingState
 {
-    /** @var null|int */
+    /** @var int|null */
     private $playtime;
 
-    /** @var null|int */
+    /** @var int|null */
     private $achievements;
 
     public function __construct(?float $playtime = null, ?int $achievements = null)
@@ -34,6 +34,7 @@ class PlayingState
     {
         Assert::that($playtime)->greaterOrEqualThan(0);
         $this->playtime = $playtime;
+
         return $this;
     }
 
@@ -41,6 +42,7 @@ class PlayingState
     {
         Assert::that($achievements)->greaterOrEqualThan(0);
         $this->achievements = $achievements;
+
         return $this;
     }
 

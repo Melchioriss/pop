@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Security\Steam\Group;
 
-
 use PlayOrPay\Application\Query\Steam\Group\GetAll\GetAllGroupsQuery;
 use PlayOrPay\Security\CommonSecurityHandler;
 

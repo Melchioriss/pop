@@ -17,12 +17,20 @@ class AddEventPickerCommentCommand
     /** @var string */
     public $text;
 
-    public function __construct(/*string $commentUuid, */string $pickerUuid, string $text)
-    {
+    /** @var UuidInterface|null */
+    public $reviewedPickUuid;
+
+    public function __construct(
+        /*string $commentUuid, */
+        string $pickerUuid,
+        string $text,
+        string $reviewedPickUuid = null
+    ) {
         Assert::that($text)->minLength(1);
 
         //$this->commentUuid = Uuid::fromString($commentUuid);
         $this->pickerUuid = Uuid::fromString($pickerUuid);
+        $this->reviewedPickUuid = Uuid::fromString($reviewedPickUuid);
         $this->text = $text;
     }
 }

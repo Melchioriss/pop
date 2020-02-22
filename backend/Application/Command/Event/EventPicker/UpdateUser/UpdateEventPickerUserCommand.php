@@ -20,6 +20,6 @@ class UpdateEventPickerUserCommand
         Assert::that($pickerUuid)->uuid();
 
         $this->pickerUuid = Uuid::fromString($pickerUuid);
-        $this->userId = new SteamId((int)$userId);
+        $this->userId = new SteamId((int) $userId);
     }
 }

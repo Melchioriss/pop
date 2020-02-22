@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Infrastructure\Storage\Steam;
 
-
 use Goutte\Client;
 
 class GameRemoteRepository
@@ -15,7 +14,6 @@ class GameRemoteRepository
     /** @var Client */
     private $goutteClient;
 
-
     public function __construct(Client $goutteClient, string $steamApiKey)
     {
         $this->goutteClient = $goutteClient;
@@ -27,9 +25,9 @@ class GameRemoteRepository
         $games = [];
 
         $baseParams = [
-            'key' => $this->key,
+            'key'           => $this->key,
             'include_games' => 1,
-            'max_results' => 45000
+            'max_results'   => 45000,
         ];
 
         $lastAppId = 0;
@@ -40,7 +38,7 @@ class GameRemoteRepository
                 $urlParams['last_appid'] = $lastAppId;
             }
 
-            $url = self::BASE_URL.'?'.urldecode(http_build_query($urlParams));
+            $url = self::BASE_URL . '?' . urldecode(http_build_query($urlParams));
             $this->goutteClient->request('GET', $url);
             $response = json_decode($this->goutteClient->getResponse()->getContent(), true);
             $actualResponse = $response['response'];

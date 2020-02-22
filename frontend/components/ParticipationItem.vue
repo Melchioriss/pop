@@ -594,7 +594,7 @@
 
                 if (existedPick && existedPick.uuid)
                 {
-                    actionName = 'changePick';
+                    actionName = 'changePickGame';
                     pick = {...existedPick, ...{game}};
                 }
                 else
@@ -720,7 +720,7 @@
             }
 
         }
-        
+
         &__picker{
             border-top: 1px solid @color-cobalt;
             border-bottom: 1px solid @color-cobalt;
@@ -732,7 +732,7 @@
         &__picker-bottom{
             margin-top: auto;
         }
-        
+
         &__user-title{
             font-size: 12px;
             font-weight: bold;
@@ -767,7 +767,7 @@
                 box-shadow: inset 0 0 0 3px @color-cobalt;
             }
         }
-        
+
         &__pick-help{
             font-size: 12px;
             font-weight: bold;

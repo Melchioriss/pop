@@ -4,5 +4,4 @@ namespace PlayOrPay\Security;
 
 interface SecurityHandlerInterface
 {
-
 }

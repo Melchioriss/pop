@@ -14,9 +14,9 @@ class SetUserBlaeoNameCommand
     private $blaeoName;
 
     /**
-     * SetUserBlaeoNameCommand constructor.
-     * @param int $steamId
+     * @param int    $steamId
      * @param string $blaeoName
+     *
      * @throws Exception
      */
     public function __construct(int $steamId, string $blaeoName)
@@ -24,7 +24,7 @@ class SetUserBlaeoNameCommand
         $this->steamId = new SteamId($steamId);
 
         if ($blaeoName) {
-            $blaeoParsedName = (new BlaeoProfileUrlParser)->parse($blaeoName);
+            $blaeoParsedName = (new BlaeoProfileUrlParser())->parse($blaeoName);
             if ($blaeoParsedName === null) {
                 throw new Exception("Blaeo name couldn't be parsed");
             }

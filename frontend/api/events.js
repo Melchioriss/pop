@@ -33,7 +33,10 @@ export default new class extends BaseApi {
     }
 
     addParticipant (event, participantUuid, steamId) {
-        return this.axios.post(this.path(event.uuid, 'participants', participantUuid), {steamId});
+        return this.axios.post(this.path(event.uuid, 'participants'), {
+            steamId,
+            participantUuid,
+        });
     }
 
     importPlaystats (event) {

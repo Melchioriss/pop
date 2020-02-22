@@ -13,11 +13,6 @@ use PlayOrPay\Infrastructure\Storage\Doctrine\Repository\ServiceEntityRepository
  */
 class GameRepository extends ServiceEntityRepository
 {
-    public function isSaveAllowed(): bool
-    {
-        return true;
-    }
-
     public function getEntityClass(): string
     {
         return Game::class;

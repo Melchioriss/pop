@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Command\Event\EventPick\ChangeStatus;
 
-
 use Assert\Assert;
 use PlayOrPay\Domain\Event\EventPickPlayedStatus;
 use Ramsey\Uuid\Uuid;
@@ -33,5 +32,4 @@ class ChangeEventPickStatusCommand
     {
         return $this->status;
     }
-
 }

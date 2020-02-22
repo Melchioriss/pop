@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Infrastructure\Storage\Event;
 
-
 use PlayOrPay\Domain\Event\EventPick;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Repository\ServiceEntityRepository;
 

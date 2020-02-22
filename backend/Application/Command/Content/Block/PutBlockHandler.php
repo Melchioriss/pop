@@ -21,6 +21,7 @@ class PutBlockHandler implements CommandHandlerInterface
 
     /**
      * @param PutBlockCommand $command
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException

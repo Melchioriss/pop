@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Domain\Event;
 
+use DomainException;
 use PlayOrPay\Domain\Steam\Game;
 use Ramsey\Uuid\UuidInterface;
 
@@ -52,14 +53,23 @@ class EventPick
 
     public function changeGame(Game $game): self
     {
+        if ($this->playedStatus->equalToOneOf(...[
+            EventPickPlayedStatus::BEATEN,
+            EventPickPlayedStatus::COMPLETED,
+        ])) {
+            throw new DomainException(sprintf("You can't change game for beaten or completed game, " . "because this was already rewarded and it's ambiguous situation to resolve it automatically"));
+        }
+
         if ($game === $this->game) {
-            return $this;
+            throw new DomainException(sprintf("This pick is already for game '%s'", $game->getName()));
         }
 
         $this->game = $game;
 
-        $this->changePlayedStatus(new EventPickPlayedStatus(EventPickPlayedStatus::NOT_PLAYED));
-        $this->clearPlayingState();
+        $this
+            ->resetPlayedStatus()
+            ->clearPlayingState();
+
         return $this;
     }
 
@@ -73,13 +83,21 @@ class EventPick
         return $this->playedStatus;
     }
 
-    public function changePlayedStatus(EventPickPlayedStatus $playedStatus): self
+    public function changePlayedStatus(EventPickPlayedStatus $newStatus): self
     {
-        if ((string)$this->playedStatus === (string)$playedStatus) {
-            return $this;
+        if ($this->playedStatus->equalTo($newStatus)) {
+            throw new DomainException(sprintf("Pick already in status '%s'", (string) $newStatus));
         }
 
-        $this->playedStatus = $playedStatus;
+        $this->playedStatus = $newStatus;
+
+        return $this;
+    }
+
+    public function resetPlayedStatus(): self
+    {
+        $this->playedStatus = new EventPickPlayedStatus(EventPickPlayedStatus::NOT_PLAYED);
+
         return $this;
     }
 
@@ -91,18 +109,26 @@ class EventPick
     public function updatePlaytime(int $playtime): self
     {
         $this->playingState->updatePlaytime($playtime);
+
         return $this;
     }
 
     public function updateAchievements(int $achievements): self
     {
         $this->playingState->updateAchievements($achievements);
+
         return $this;
     }
 
     public function clearPlayingState(): self
     {
         $this->playingState->clear();
+
         return $this;
+    }
+
+    public function getEvent(): Event
+    {
+        return $this->getPicker()->getEvent();
     }
 }

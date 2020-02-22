@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Command\User\User\SetExtraRules;
 
-use Assert\Assert;
 use PlayOrPay\Domain\Steam\SteamId;
 
 class SetUserExtraRulesCommand
@@ -15,7 +14,6 @@ class SetUserExtraRulesCommand
 
     public function __construct(int $steamId, string $extraRules)
     {
-
         $this->steamId = new SteamId($steamId);
         $this->extraRules = $extraRules;
     }
@@ -29,5 +27,4 @@ class SetUserExtraRulesCommand
     {
         return $this->extraRules;
     }
-
 }

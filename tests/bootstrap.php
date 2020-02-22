@@ -2,11 +2,11 @@
 
 use Symfony\Component\Dotenv\Dotenv;
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $envFiles = [
-    __DIR__.'/../.env.test',
-    __DIR__.'/../.env.test.local',
+    __DIR__ . '/../.env.test',
+    __DIR__ . '/../.env.test.local',
 ];
 
 $dotEnv = new Dotenv(true);

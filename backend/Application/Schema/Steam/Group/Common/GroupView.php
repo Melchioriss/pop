@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\Steam\Group\Common;
 
-
 class GroupView
 {
     /** @var string */

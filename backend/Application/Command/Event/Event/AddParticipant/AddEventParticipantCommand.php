@@ -8,7 +8,7 @@ use Ramsey\Uuid\UuidInterface;
 
 class AddEventParticipantCommand
 {
-    /** @var UuidInterface  */
+    /** @var UuidInterface */
     public $eventUuid;
 
     /** @var UuidInterface */

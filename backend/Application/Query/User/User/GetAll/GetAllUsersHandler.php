@@ -27,17 +27,19 @@ class GetAllUsersHandler implements QueryHandlerInterface
 
     /**
      * @param GetAllUsersQuery $query
-     * @return Common\CommonUserView[]
+     *
      * @throws InvalidArgumentException
+     *
+     * @return Common\CommonUserView[]
      */
     public function __invoke(GetAllUsersQuery $query): array
     {
         $domainUsers = $this->userRepo->findBy([], [
-            'active' => Criteria::DESC,
-            'steamId' => Criteria::ASC
+            'active'  => Criteria::DESC,
+            'steamId' => Criteria::ASC,
         ]);
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
 
         return (new AutoMapper($config))->mapMultiple($domainUsers, Common\CommonUserView::class);
     }

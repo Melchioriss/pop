@@ -9,4 +9,8 @@ export default new class extends BaseApi {
     changeStatus (pick, status) {
         return this.axios.put(this.path(pick.uuid, 'status'), {status});
     }
+
+    changeGame(pick) {
+        return this.axios.put(this.path(pick.uuid), { gameId: pick.game.id });
+    }
 }

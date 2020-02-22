@@ -24,20 +24,21 @@ class PassthroughQueryController extends QueryController
         UrlGeneratorInterface $router,
         CommandBus $securityBus,
         RequestConverter $requestConverter
-    )
-    {
+    ) {
         parent::__construct($queryBus, $formatter, $router, $securityBus);
         $this->requestConverter = $requestConverter;
     }
 
     /**
      * @param Request $request
-     * @param string $query
-     * @return JsonResponse
+     * @param string  $query
+     *
      * @throws RequiredParameterNotFound
      * @throws NotFoundException
      * @throws SecuriryException
      * @throws IncompatibleHandlerException
+     *
+     * @return JsonResponse
      */
     public function __invoke(Request $request, string $query)
     {
@@ -48,6 +49,7 @@ class PassthroughQueryController extends QueryController
         if (is_array($response)) {
             $size = count($response);
             $collection = new Collection(1, $size, $size, $response);
+
             return $this->json($collection);
         }// elseif (!$response instanceof Collection) {
         //    throw IncompatibleHandlerException::becauseItShouldReturnCollectionOrArray(self::class, $query, $response);

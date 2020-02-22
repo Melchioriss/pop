@@ -11,7 +11,8 @@ trait EnumTypeTrait
 
     public function convertToPHPValue(
         $value,
-        /** @noinspection PhpUnusedParameterInspection */ AbstractPlatform $platform
+        /* @noinspection PhpUnusedParameterInspection */
+        AbstractPlatform $platform
     ) {
         if ($value === null) {
             return null;
@@ -27,7 +28,7 @@ trait EnumTypeTrait
         return preg_replace('/Type$/', '', (new ReflectionClass(static::class))->getShortName());
     }
 
-    public function requiresSQLCommentHint(/** @noinspection PhpUnusedParameterInspection */ AbstractPlatform $platform)
+    public function requiresSQLCommentHint(/* @noinspection PhpUnusedParameterInspection */ AbstractPlatform $platform)
     {
         return true;
     }

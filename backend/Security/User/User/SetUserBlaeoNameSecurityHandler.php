@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Security\User\User;
 
-
 use Doctrine\ORM\EntityNotFoundException;
 use PlayOrPay\Application\Command\User\User\SetBlaeoName\SetUserBlaeoNameCommand;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
@@ -23,6 +22,7 @@ class SetUserBlaeoNameSecurityHandler extends CommonSecurityHandler
 
     /**
      * @param SetUserBlaeoNameCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

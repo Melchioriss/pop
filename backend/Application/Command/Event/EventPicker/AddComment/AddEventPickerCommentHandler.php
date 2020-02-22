@@ -11,6 +11,7 @@ use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerCommentRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
+use PlayOrPay\Infrastructure\Storage\Event\EventPickRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
 
@@ -22,6 +23,9 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
     /** @var EventRepository */
     private $eventRepo;
 
+    /** @var EventPickRepository */
+    private $pickRepo;
+
     /** @var EventPickerCommentRepository */
     private $commentRepo;
 
@@ -32,17 +36,19 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
         EventPickerRepository $pickerRepo,
         EventRepository $eventRepo,
         EventPickerCommentRepository $commentRepo,
+        EventPickRepository $pickRepo,
         ActorFinder $actorFinder
-    )
-    {
+    ) {
         $this->pickerRepo = $pickerRepo;
         $this->eventRepo = $eventRepo;
         $this->commentRepo = $commentRepo;
+        $this->pickRepo = $pickRepo;
         $this->actorFinder = $actorFinder;
     }
 
     /**
      * @param AddEventPickerCommentCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
@@ -54,9 +60,16 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
     {
         $actor = $this->actorFinder->getActor();
         $picker = $this->pickerRepo->get($command->pickerUuid);
-        $event = $picker->getParticipant()->getEvent();
+        $event = $picker->getEvent();
 
-        $event->addPickerComment($this->commentRepo->nextUuid(), $picker->getUuid(), $actor, $command->text);
+        $event->addPickerComment(
+            $this->commentRepo->nextUuid(),
+            $picker->getUuid(),
+            $actor,
+            $command->text,
+            $command->reviewedPickUuid
+        );
+
         $this->eventRepo->save($event);
     }
 }

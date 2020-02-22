@@ -8,8 +8,8 @@ use AutoMapperPlus\Exception\InvalidArgumentException;
 use PlayOrPay\Application\Query\Collection;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
 use PlayOrPay\Application\Query\SearchPaginatedQuery;
-use PlayOrPay\Application\Schema\Steam\Game\Common\CommonGameMappingConfigurator;
 use PlayOrPay\Application\Schema\Steam\Game\Common;
+use PlayOrPay\Application\Schema\Steam\Game\Common\CommonGameMappingConfigurator;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Steam\GameRepository;
 
@@ -29,15 +29,17 @@ class GetGameListHandler implements QueryHandlerInterface
 
     /**
      * @param SearchPaginatedQuery $query
-     * @return Collection
+     *
      * @throws InvalidArgumentException
      * @throws NotFoundException
+     *
+     * @return Collection
      */
     public function __invoke(SearchPaginatedQuery $query): Collection
     {
         $gamesPaginator = $this->gameRepo->findBySearch($query);
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
 
         /** @var Common\GameView[] $games */
         $games = (new AutoMapper($config))->mapMultiple(

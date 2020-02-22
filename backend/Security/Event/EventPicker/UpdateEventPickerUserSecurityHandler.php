@@ -10,6 +10,7 @@ class UpdateEventPickerUserSecurityHandler extends CommonSecurityHandler
 {
     /**
      * @param UpdateEventPickerUserCommand $command
+     *
      * @throws SecuriryException
      */
     public function __invoke(UpdateEventPickerUserCommand $command)

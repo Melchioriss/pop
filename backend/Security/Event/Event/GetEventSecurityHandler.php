@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Security\Event\Event;
 
-
 use PlayOrPay\Application\Query\Event\Event\Get\GetEventQuery;
 use PlayOrPay\Security\CommonSecurityHandler;
 

@@ -12,13 +12,16 @@ class LogoutController
 {
     /**
      * @Route("/logout")
-     * @param Request $request
+     *
+     * @param Request               $request
      * @param TokenStorageInterface $tokenStorage
+     *
      * @return Response
      */
     public function __invoke(Request $request, TokenStorageInterface $tokenStorage)
     {
         $tokenStorage->setToken(null);
+
         return new JsonResponse([]);
     }
 }

@@ -7,7 +7,7 @@ use Assert\Assert;
 class FindUserByProfileNameQuery
 {
     /** @var string|null */
-    private $profileName = null;
+    private $profileName;
 
     public function __construct(?string $profileName)
     {

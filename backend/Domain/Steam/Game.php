@@ -3,9 +3,13 @@
 namespace PlayOrPay\Domain\Steam;
 
 use Assert\Assert;
+use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
+use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 
-class Game
+class Game implements AggregateInterface
 {
+    use AggregateTrait;
+
     /** @var int */
     private $id;
 
@@ -36,6 +40,7 @@ class Game
     public function updateName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -47,6 +52,7 @@ class Game
     public function updateAchievements(?int $achievements): self
     {
         $this->achievements = $achievements;
+
         return $this;
     }
 }

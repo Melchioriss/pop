@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 abstract class FunctionalTest extends WebTestCase
 {
-    /** @var KernelBrowser  */
+    /** @var KernelBrowser */
     protected $client;
 
     /** @var EntityManagerInterface */
@@ -51,7 +51,7 @@ abstract class FunctionalTest extends WebTestCase
         $this->em = null;
     }
 
-    private function saveFixtures(FixtureCollection $objects)
+    private function saveFixtures(FixtureCollection $objects): void
     {
         $metadataFactory = $this->em->getMetadataFactory();
         foreach ($objects as $object) {
@@ -72,33 +72,34 @@ abstract class FunctionalTest extends WebTestCase
     /**
      * @throws DBALException
      */
-    protected function cleanDatabase()
+    protected function cleanDatabase(): void
     {
         $connection = $this->em->getConnection();
         $connection->getConfiguration()->setSQLLogger(null);
 
-        $connection->prepare("SET FOREIGN_KEY_CHECKS = 0;")->execute();
+        $connection->prepare('SET FOREIGN_KEY_CHECKS = 0;')->execute();
 
         foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
             $connection->prepare("DELETE FROM {$tableName};")->execute();
         }
-        $connection->prepare("SET FOREIGN_KEY_CHECKS = 1;")->execute();
+        $connection->prepare('SET FOREIGN_KEY_CHECKS = 1;')->execute();
         $this->em->clear();
     }
 
     /**
      * @throws Exception
      */
-    public function authorizeAsAdmin()
+    public function authorizeAsAdmin(): void
     {
         $this->authorize('admin');
     }
 
     /**
      * @param string $reference
+     *
      * @throws Exception
      */
-    protected function authorize(string $reference)
+    protected function authorize(string $reference): void
     {
         if (!$this->fixtures) {
             throw new Exception('You must call applyFixtures before trying to authorize as somebody');
@@ -110,12 +111,12 @@ abstract class FunctionalTest extends WebTestCase
         $container = $this->client->getContainer();
         $session = $container->get('session');
 
-        $token = new SteamUserToken;
+        $token = new SteamUserToken();
         $token->__unserialize([
-            'attributes' => [],
+            'attributes'    => [],
             'authenticated' => true,
-            'user' => $user,
-            'username' => $user->getUsername(),
+            'user'          => $user,
+            'username'      => $user->getUsername(),
         ]);
 
         $session->set('_security_main', serialize($token));
@@ -125,21 +126,22 @@ abstract class FunctionalTest extends WebTestCase
         $this->client->getCookieJar()->set($cookie);
     }
 
-    public function assertSuccessfulResponse()
+    public function assertSuccessfulResponse(): void
     {
         $this->assertResponseCode(Response::HTTP_OK);
     }
 
-    public function assertResponseCode(int $code)
+    public function assertResponseCode(int $code): void
     {
         $response = $this->client->getResponse();
         $this->assertSame($code, $response->getStatusCode(), $response->getContent());
     }
 
-    public function applyFixtures(string $file)
+    public function applyFixtures(string $file): FixtureCollection
     {
         $this->fixtures = FixtureCollection::fromFile($file);
         $this->saveFixtures($this->fixtures);
+
         return $this->fixtures;
     }
 
@@ -147,10 +149,11 @@ abstract class FunctionalTest extends WebTestCase
     {
         $route = $this->router->getRouteCollection()->get($routeName);
         $this->client->request($route->getMethods()[0], $this->router->generate($routeName, $params), $params);
+
         return $this->client->getResponse();
     }
 
-    public function save()
+    public function save(): void
     {
         $this->em->flush();
     }

@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Infrastructure\Storage\Steam;
 
-
 class SteamAppSchema
 {
     /** @var int */

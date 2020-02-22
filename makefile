@@ -1,44 +1,42 @@
-.PHONY: start
-start: erase build up db ## clean current environment, recreate dependencies and spin up again
+.PHONY: from-scratch # clean start
+start: erase build up db
 
 .PHONY: reup
 reup: stop up
 
 .PHONY: stop
-stop: ## stop environment
+stop:
 	docker-compose stop
 
-.PHONY: rebuild
-rebuild: start ## same as start
-
-.PHONY: erase
-erase: ## stop and delete containers, clean volumes.
+.PHONY: erase ## erase everything except sources
+erase:
 	docker-compose stop
 	docker-compose rm -v -f
 	docker-compose down --volumes --remove-orphans
 	rm -rf ./var
 	rm -rf ./vendor
+	rm -rf ./node_modules
 
 .PHONY: build
-build: ## build environment and initialize composer and project dependencies
+build:
 	docker-compose build
 	docker-compose run --rm php sh -lc 'xoff;COMPOSER_MEMORY_LIMIT=-1 composer install'
 
 .PHONY: composer-update
-composer-update: ## Update project dependencies
+composer-update:
 	docker-compose run --rm php sh -lc 'xoff;COMPOSER_MEMORY_LIMIT=-1 composer update'
 
 .PHONY: up
-up: ## spin up environment
+up:
 	docker-compose up -d
 
 .PHONY: test
-test: # run tests in exists environment
+test:
 	docker-compose exec php sh -lc "./vendor/bin/phpunit $(with)"
 
 .PHONY: style
-style: ## executes php analizers
-	docker-compose run --rm php sh -lc './vendor/bin/phpstan analyse -l 6 -c phpstan.neon src tests'
+style:
+	docker-compose run --rm php sh -lc './vendor/bin/phpstan analyse -l 6 -c phpstan.neon backend tests'
 
 .PHONY: cs
 cs: ## executes php cs fixer
@@ -48,8 +46,8 @@ cs: ## executes php cs fixer
 cs-check: ## executes php cs fixer in dry run mode
 	docker-compose run --rm php sh -lc './vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix'
 
-.PHONY: layer
-layer: ## Check issues with layers
+.PHONY: deptrac
+deptrac: ## Check issues with layers
 	docker-compose run --rm php sh -lc 'php bin/deptrac.phar analyze --formatter-graphviz=0'
 
 .PHONY: db
@@ -117,3 +115,11 @@ admin:
 .PHONY: schema-update
 schema-update:
 	docker-compose exec php console doctrine:schema:update --force
+
+.PHONY: migration
+migration:
+	docker-compose exec php console doctrine:migrations:generate
+
+.PHONY: migrate
+migrate:
+	docker-compose exec php console doctrine:migrations:migrate --no-interaction

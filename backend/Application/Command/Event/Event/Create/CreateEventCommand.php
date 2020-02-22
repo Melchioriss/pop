@@ -37,6 +37,7 @@ class CreateEventCommand
      * @param string $startingOn
      * @param string $endingOn
      * @param string $group
+     *
      * @throws Exception
      */
     public function __construct(string $uuid, string $name, string $description, string $startingOn, string $endingOn, string $group)

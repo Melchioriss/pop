@@ -2,9 +2,9 @@
 
 namespace PlayOrPay\Domain\Event;
 
-use Ducks\Component\SplTypes\SplEnum;
+use PlayOrPay\Package\EnumFramework\Enum;
 
-class EventPickerType extends SplEnum
+class EventPickerType extends Enum
 {
     const MINOR = 10;
     const MAJOR = 20;

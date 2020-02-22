@@ -26,24 +26,29 @@ class GetOwnedGamesQuery
     public function includeAppInfo(): self
     {
         $this->appInfoIncluded = true;
+
         return $this;
     }
 
     public function includePlayedFreeGames(): self
     {
         $this->playedFreeGamesIncluded = true;
-        return $this;
-    }
 
-    public function forApps(array $apps): self
-    {
-        $this->appIdsFilter = $apps;
         return $this;
     }
 
     /**
-     * @return SteamId
+     * @param int[] $apps
+     *
+     * @return self
      */
+    public function forApps(array $apps): self
+    {
+        $this->appIdsFilter = $apps;
+
+        return $this;
+    }
+
     public function getSteamId(): SteamId
     {
         return $this->steamId;

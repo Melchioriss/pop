@@ -2,11 +2,11 @@
 
 namespace PlayOrPay\Application\Command\Event\EventParticipant\UpdateExtraRules;
 
-
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\User\ActorFinderInterface;
@@ -31,14 +31,20 @@ class UpdateEventParticipantExtraRulesHandler implements CommandHandlerInterface
 
     /**
      * @param UpdateEventParticipantExtraRulesCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws UnallowedOperationException
      */
     public function __invoke(UpdateEventParticipantExtraRulesCommand $command)
     {
-        $participant = $this->participantRepo->get($command->getParticipantUuid());
-        $participant->updateExtraRules($command->getExtraRules());
-        $this->eventRepo->save($participant->getEvent());
+        $participantUuid = $command->getParticipantUuid();
+        $participant = $this->participantRepo->get($participantUuid);
+        $event = $participant->getEvent();
+
+        $event->updateParticipantExtraRules($participantUuid, $command->getExtraRules());
+
+        $this->eventRepo->save($event);
     }
 }

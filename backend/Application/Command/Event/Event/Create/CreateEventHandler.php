@@ -26,7 +26,6 @@ class CreateEventHandler implements CommandHandlerInterface
     }
 
     /**
-     * @param CreateEventCommand $command
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws Exception

@@ -14,6 +14,10 @@ class AddUserRolesCommand
     /** @var RoleName[] */
     private $roleNames;
 
+    /**
+     * @param int $steamId
+     * @param string[] $roles
+     */
     public function __construct(int $steamId, array $roles)
     {
         Assert::thatAll($roles)->string();

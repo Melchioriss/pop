@@ -13,7 +13,7 @@ class CommonUserMappingConfigurator implements AutoMapperConfiguratorInterface
         $config
             ->registerMapping(User::class, CommonUserView::class)
             ->forMember('steamId', function (User $user) {
-                return (string)$user->getSteamId();
+                return (string) $user->getSteamId();
             })
             ->forMember('roles', function (User $user) {
                 return $user->getRoleNames();

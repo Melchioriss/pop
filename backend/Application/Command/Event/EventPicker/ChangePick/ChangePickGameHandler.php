@@ -8,14 +8,14 @@ use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
-use PlayOrPay\Infrastructure\Storage\Event\EventPickerRepository;
+use PlayOrPay\Infrastructure\Storage\Event\EventPickRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\Steam\GameRepository;
 
-class ChangePickHandler implements CommandHandlerInterface
+class ChangePickGameHandler implements CommandHandlerInterface
 {
-    /** @var EventPickerRepository */
-    private $pickerRepo;
+    /** @var EventPickRepository */
+    private $pickRepo;
 
     /** @var GameRepository */
     private $gameRepo;
@@ -23,30 +23,30 @@ class ChangePickHandler implements CommandHandlerInterface
     /** @var EventRepository */
     private $eventRepo;
 
-    public function __construct(EventPickerRepository $pickerRepo, GameRepository $gameRepo, EventRepository $eventRepo)
+    public function __construct(GameRepository $gameRepo, EventRepository $eventRepo, EventPickRepository $pickRepo)
     {
-        $this->pickerRepo = $pickerRepo;
+        $this->pickRepo = $pickRepo;
         $this->gameRepo = $gameRepo;
         $this->eventRepo = $eventRepo;
     }
 
     /**
-     * @param ChangePickCommand $command
+     * @param ChangePickGameCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws NotFoundException
      * @throws UnallowedOperationException
      */
-    public function __invoke(ChangePickCommand $command)
+    public function __invoke(ChangePickGameCommand $command)
     {
         $game = $this->gameRepo->get($command->gameId);
+        $pick = $this->pickRepo->get($command->pickUuid);
+        $event = $pick->getEvent();
 
-        $picker = $this->pickerRepo->get($command->pickerUuid);
-        $pick = $picker->getPick($command->pickUuid);
+        $event->changePickGame($command->pickUuid, $game);
 
-        $pick->changeGame($game);
-
-        $this->eventRepo->save($picker->getParticipant()->getEvent());
+        $this->eventRepo->save($event);
     }
 }

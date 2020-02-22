@@ -33,6 +33,7 @@ class ActorFinder implements ActorFinderInterface
 
     /**
      * @throws DomainException
+     *
      * @return User
      */
     public function getActor(): User

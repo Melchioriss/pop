@@ -13,7 +13,7 @@ class CommonGroupMappingConfigurator implements AutoMapperConfiguratorInterface
         $config
             ->registerMapping(Group::class, GroupView::class)
             ->forMember('id', function (Group $group) {
-                return (string)$group->getId();
+                return (string) $group->getId();
             });
     }
 }

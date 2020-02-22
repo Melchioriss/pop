@@ -22,6 +22,7 @@ class GetEventPotentialParticipantsSecurityHandler extends CommonSecurityHandler
 
     /**
      * @param GetEventPotentialParticipantsQuery $query
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */

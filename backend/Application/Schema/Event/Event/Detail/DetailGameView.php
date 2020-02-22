@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\Event\Event\Detail;
 
-
 class DetailGameView
 {
     /** @var int */

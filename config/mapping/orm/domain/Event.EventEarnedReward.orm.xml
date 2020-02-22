@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="PlayOrPay\Domain\Event\EventEarnedReward" table="earned_rewards">
+        <id name="uuid" type="uuid" />
+        <field name="value" type="integer" />
+        <many-to-one field="participant" target-entity="PlayOrPay\Domain\Event\EventParticipant">
+            <join-column referenced-column-name="uuid" />
+        </many-to-one>
+        <many-to-one field="reward" target-entity="PlayOrPay\Domain\Event\EventReward">
+            <join-column referenced-column-name="reason" />
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

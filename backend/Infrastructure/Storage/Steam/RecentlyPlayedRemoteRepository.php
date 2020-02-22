@@ -27,16 +27,18 @@ class RecentlyPlayedRemoteRepository
 
     /**
      * @param int $steamId
+     *
      * @throws GuzzleException
      * @throws UnexpectedResponseException
+     *
      * @return RecentlyPlayedGame[]
      */
     public function findBySteamId(int $steamId): array
     {
         $response = $this->httpClient->request(
             Request::METHOD_GET,
-            $this->endpoint.'?'.http_build_query([
-                'key' => $this->steamApiKey,
+            $this->endpoint . '?' . http_build_query([
+                'key'     => $this->steamApiKey,
                 'steamId' => $steamId,
             ])
         );

@@ -7,6 +7,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Steam\Game;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Steam\GameRemoteRepository;
 use PlayOrPay\Infrastructure\Storage\Steam\GameRepository;
 
@@ -28,9 +29,11 @@ class ImportGamesHandler implements CommandHandlerInterface
 
     /**
      * @param ImportGamesCommand $command
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws MappingException
+     * @throws UnallowedOperationException
      */
     public function __invoke(ImportGamesCommand $command)
     {
@@ -40,12 +43,12 @@ class ImportGamesHandler implements CommandHandlerInterface
 
         $counters = [
             'created' => 0,
-            'updated' => 0
+            'updated' => 0,
         ];
 
         $existedAppIds = $this->gameRepo->getAllIds();
 
-        $newAppIds = array_diff( array_keys($apps), $existedAppIds );
+        $newAppIds = array_diff(array_keys($apps), $existedAppIds);
 
         $existedAppIdsChunks = array_chunk(
             array_intersect(
@@ -56,7 +59,6 @@ class ImportGamesHandler implements CommandHandlerInterface
         );
 
         foreach ($existedAppIdsChunks as $existedChunk) {
-
             /** @var Game[] $existedGames */
             $existedGames = $this->gameRepo->findBy(['id' => $existedChunk]);
 
@@ -65,13 +67,12 @@ class ImportGamesHandler implements CommandHandlerInterface
             foreach ($existedGames as $existedGame) {
                 $gameId = $existedGame->getId();
 
-                $newName = $apps[ $gameId ]->name;
+                $newName = $apps[$gameId]->name;
 
-                if ($existedGame->getName() !== $newName)
-                {
+                if ($existedGame->getName() !== $newName) {
                     $existedGame->updateName($newName);
                     $updatedGames[] = $existedGame;
-                    $counters['updated']++;
+                    ++$counters['updated'];
                 }
             }
             $this->gameRepo->save(...$updatedGames);
@@ -80,13 +81,12 @@ class ImportGamesHandler implements CommandHandlerInterface
 
         $newAppIdsChunks = array_chunk($newAppIds, self::CHUNK_SIZE);
 
-        foreach ($newAppIdsChunks as $newChunk)
-        {
+        foreach ($newAppIdsChunks as $newChunk) {
             $newGames = [];
             foreach ($newChunk as $newId) {
                 $app = $apps[$newId];
                 $newGames[] = new Game($app->appid, $app->name);
-                $counters['created']++;
+                ++$counters['created'];
             }
 
             $this->gameRepo->save(...$newGames);

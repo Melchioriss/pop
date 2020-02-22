@@ -10,6 +10,7 @@ class UpdateEventSecurityHandler extends CommonSecurityHandler
 {
     /**
      * @param UpdateEventCommand $command
+     *
      * @throws SecuriryException
      */
     public function __invoke(UpdateEventCommand $command)

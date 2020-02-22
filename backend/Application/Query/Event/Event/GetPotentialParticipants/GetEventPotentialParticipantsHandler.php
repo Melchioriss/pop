@@ -27,15 +27,17 @@ class GetEventPotentialParticipantsHandler implements QueryHandlerInterface
 
     /**
      * @param GetEventPotentialParticipantsQuery $query
-     * @return array
+     *
      * @throws InvalidArgumentException
      * @throws EntityNotFoundException
+     *
+     * @return PotentialParticipantUserView[]
      */
     public function __invoke(GetEventPotentialParticipantsQuery $query)
     {
         $event = $this->eventRepo->get($query->eventUuid);
 
-        $this->mapping->configure($config = new AutoMapperConfig);
+        $this->mapping->configure($config = new AutoMapperConfig());
 
         return (new AutoMapper($config))->mapMultiple(
             $event->getPotentialParticipants(),

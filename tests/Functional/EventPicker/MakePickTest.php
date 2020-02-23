@@ -19,10 +19,10 @@ class MakePickTest extends FunctionalTest
      */
     public function make_new_pick_shoud_be_successful()
     {
-        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/empty_event.yaml');
 
         /** @var Event $event */
-        $event = $fixtures->getOneOf(Event::class);
+        $event = $fixtures->get('empty_event');
         $event->generatePickers();
         $this->save();
 

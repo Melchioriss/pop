@@ -1,0 +1,8 @@
+include:
+    - ./empty_event.yaml
+
+PlayOrPay\Domain\Event\Event:
+    filled_event (extends empty_event_template):
+        __calls:
+            - generatePickers: []
+            - generatePicks: ['<numberBetween(1, 15)>x @game_*']

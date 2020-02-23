@@ -15,9 +15,9 @@ class Enum extends SplEnum
      * @throws ReflectionException
      * @throws AmbiguousValueException
      *
-     * @return int|string
+     * @return string
      */
-    public function getCodename(bool $getFirstOnAmbiguous = false)
+    public function getCodename(bool $getFirstOnAmbiguous = false): string
     {
         $class = new ReflectionClass($this);
         $codenames = array_keys($class->getConstants(), $this->__default);

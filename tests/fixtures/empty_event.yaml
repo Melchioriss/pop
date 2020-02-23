@@ -22,6 +22,64 @@ League\Period\Period:
             0: 'now'
             1: 'now + 1 week'
 
+PlayOrPay\Domain\Event\RewardReason:
+    reward_reason_short_game_beaten:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::SHORT_GAME_BEATEN")>' ]
+
+    reward_reason_medium_game_beaten:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::MEDIUM_GAME_BEATEN")>' ]
+
+    reward_reason_long_game_beaten:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::LONG_GAME_BEATEN")>' ]
+
+    reward_reason_very_long_game_beaten:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::VERY_LONG_GAME_BEATEN")>' ]
+
+    reward_reason_game_completed:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::GAME_COMPLETED")>' ]
+
+    reward_reason_blaeo_games:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::BLAEO_GAMES")>' ]
+
+    reward_reason_all_picks_beaten:
+        __construct: [ '<constant("PlayOrPay\Domain\Event\RewardReason::ALL_PICKS_BEATEN")>' ]
+
+PlayOrPay\Domain\Event\EventReward:
+    event_reward_short_game_beaten:
+        __construct:
+            reason: '@reward_reason_short_game_beaten'
+            value: 2
+
+    event_reward_medium_game_beaten:
+        __construct:
+            reason: '@reward_reason_medium_game_beaten'
+            value: 4
+
+    event_reward_long_game_beaten:
+        __construct:
+            reason: '@reward_reason_long_game_beaten'
+            value: 6
+
+    event_reward_very_long_game_beaten:
+        __construct:
+            reason: '@reward_reason_very_long_game_beaten'
+            value: 8
+
+    event_reward_game_completed:
+        __construct:
+            reason: '@reward_reason_game_completed'
+            value: 1
+
+    event_reward_blaeo_games:
+        __construct:
+            reason: '@reward_reason_blaeo_games'
+            value: null
+
+    event_reward_all_picks_beaten:
+        __construct:
+            reason: '@reward_reason_all_picks_beaten'
+            value: 1
+
 PlayOrPay\Domain\User\User:
     admin:
         steamId (unique): '<numberBetween(90000000000000000, 99999999999999999)>'
@@ -50,16 +108,19 @@ PlayOrPay\Domain\Steam\Group:
         members: '<numberBetween(1, 15)>x @user_*'
 
 PlayOrPay\Domain\Event\Event:
-    event:
+    empty_event_template (template):
         __construct:
-            uuid (unique): '<call_user_func("Ramsey\Uuid\Uuid::uuid4")>'
+            uuid: '<call_user_func("Ramsey\Uuid\Uuid::uuid4")>'
             name: '<username()>'
             activePeriod: '@default_active_period'
             description: 'blablabla'
             group: '@group_1'
 
+    empty_event (extends empty_event_template):
+
+
 PlayOrPay\Domain\Game\Game:
-    game_{1..30}:
+    game_{1..100}:
         __factory:
             fromExpandedGameId:
                 storeId: '@steam_store'

@@ -40,7 +40,7 @@ class FixtureCollection implements IteratorAggregate
      *
      * @return object
      */
-    public function getByName(string $name): object
+    public function get(string $name): object
     {
         if ($this->objects[$name]) {
             return $this->objects[$name];

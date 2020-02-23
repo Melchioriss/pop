@@ -2,9 +2,9 @@
 
 namespace PlayOrPay\Domain\Event;
 
-use Ducks\Component\SplTypes\SplEnum;
+use PlayOrPay\Package\EnumFramework\Enum;
 
-class RewardReason extends SplEnum
+class RewardReason extends Enum
 {
     const SHORT_GAME_BEATEN = 100;
 

@@ -7,6 +7,7 @@ use AutoMapperPlus\AutoMapperPlusBundle\AutoMapperConfiguratorInterface;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
 use AutoMapperPlus\MappingOperation\Operation;
 use PlayOrPay\Domain\Event\Event;
+use PlayOrPay\Domain\Event\EventEarnedReward;
 use PlayOrPay\Domain\Event\EventParticipant;
 use PlayOrPay\Domain\Event\EventPick;
 use PlayOrPay\Domain\Event\EventPicker;
@@ -30,7 +31,10 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->forMember('user', function (EventParticipant $participant) {
                 return (string) $participant->getUser()->getSteamId();
             })
-            ->forMember('pickers', Operation::mapCollectionTo(DetailEventPickerView::class));
+            ->forMember('pickers', Operation::mapCollectionTo(DetailEventPickerView::class))
+            ->forMember('rewards', function (EventParticipant $participant, AutoMapperInterface $mapper) {
+                return $mapper->mapMultiple($participant->getRewards(), DetailEventEarnedReward::class);
+            });
 
         $config
             ->registerMapping(EventPicker::class, DetailEventPickerView::class)
@@ -62,7 +66,10 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             });
 
         $config
-            ->registerMapping(Game::class, DetailGameView::class);
+            ->registerMapping(Game::class, DetailGameView::class)
+            ->forMember('id', function (Game $game) {
+                return (string) $game->getId();
+            });
 
         $config
             ->registerMapping(EventPickerComment::class, DetailEventPickerComment::class)
@@ -73,6 +80,16 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
                 $game = $comment->getReviewedGame();
 
                 return $game ? $game->getId() : null;
+            });
+
+        $config
+            ->registerMapping(EventEarnedReward::class, DetailEventEarnedReward::class)
+            ->forMember('pick', function (EventEarnedReward $reward) {
+                $pick = $reward->getPick();
+                return $pick ? (string) $pick->getUuid() : null;
+            })
+            ->forMember('reason', function (EventEarnedReward $reward) {
+                return (int)(string) $reward->getReason();
             });
     }
 }

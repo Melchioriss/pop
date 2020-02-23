@@ -16,10 +16,10 @@ class UpdateEventPickerUserTest extends FunctionalTest
      */
     public function should_update_successfuly()
     {
-        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/empty_event.yaml');
 
         /** @var Event $event */
-        $event = $fixtures->getOneOf(Event::class);
+        $event = $fixtures->get('empty_event');
         $event->generatePickers();
         $this->save();
 

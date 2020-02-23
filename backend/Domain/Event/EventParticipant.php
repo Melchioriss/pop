@@ -6,6 +6,7 @@ use Assert\Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use Exception;
+use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Domain\Steam\SteamId;
@@ -191,6 +192,23 @@ class EventParticipant
         return count($this->getGames()) > 0;
     }
 
+    /**
+     * @param UuidInterface $uuid
+     *
+     * @return EventPick
+     *
+     * @throws NotFoundException
+     */
+    public function getPick(UuidInterface $uuid): EventPick
+    {
+        $pick = $this->findPick($uuid);
+        if (!$pick) {
+            throw NotFoundException::forObject(EventPick::class, (string) $uuid);
+        }
+
+        return $pick;
+    }
+
     public function findPick(UuidInterface $uuid): ?EventPick
     {
         foreach ($this->pickers as $picker) {
@@ -239,24 +257,22 @@ class EventParticipant
     {
         Assert::lazy()
             ->that($value)->greaterOrEqualThan(0)
-            ->that((string) $blaeoGamesReward->getReason())->same(RewardReason::BLAEO_GAMES)
+            ->that($blaeoGamesReward->getReason()->__default)->eq(RewardReason::BLAEO_GAMES)
             ->verifyNow();
 
         if ($value > 0) {
-            $this->setupReward($blaeoGamesReward, $value);
+            $this->setupReward($blaeoGamesReward, null, $value);
         } else {
-            $this->removeReward($blaeoGamesReward->getReason());
+            $this->removeReward($blaeoGamesReward->getReason(), null);
         }
 
         return $this;
     }
 
-    private function findReward(RewardReason $targetReason): ?EventEarnedReward
+    public function findReward(RewardReason $desiredReason, ?UuidInterface $pickUuid): ?EventEarnedReward
     {
-        $targetReasonValue = (string) $targetReason;
-
         foreach ($this->rewards as $earnedReward) {
-            if ((string) $earnedReward->getReason() === $targetReasonValue) {
+            if ($earnedReward->getReason()->equalTo($desiredReason) && $earnedReward->isForPick($pickUuid)) {
                 return $earnedReward;
             }
         }
@@ -264,34 +280,68 @@ class EventParticipant
         return null;
     }
 
-    private function removeReward(RewardReason $reason): self
+    /**
+     * @param RewardReason $desiredReason
+     * @param UuidInterface|null $pickUuid
+     *
+     * @return EventEarnedReward
+     *
+     * @throws AmbiguousValueException
+     * @throws NotFoundException
+     * @throws ReflectionException
+     */
+    public function getReward(RewardReason $desiredReason, ?UuidInterface $pickUuid): EventEarnedReward
     {
-        $earnedReward = $this->findReward($reason);
-        if ($earnedReward) {
-            $this->rewards->removeElement($earnedReward);
+        $reward = $this->findReward($desiredReason, $pickUuid);
+        if (!$reward) {
+            throw NotFoundException::forQuery(EventEarnedReward::class, [
+                'reason' => $desiredReason->getCodename(),
+                'pick' => (string) $pickUuid,
+            ]);
         }
+
+        return $reward;
+    }
+
+    /**
+     * @param RewardReason $reason
+     * @param UuidInterface|null $pickUuid
+     *
+     * @return EventParticipant
+     *
+     * @throws AmbiguousValueException
+     * @throws ReflectionException
+     */
+    private function removeReward(RewardReason $reason, ?UuidInterface $pickUuid): self
+    {
+        $earnedReward = $this->findReward($reason, $pickUuid);
+        if (!$earnedReward) {
+            throw new DomainException(sprintf("Such a reward for pick '%s' and reason '%s' doesn't exist", (string) $pickUuid, $reason->getCodename()));
+        }
+
+        $this->rewards->removeElement($earnedReward);
 
         return $this;
     }
 
     /**
      * @param EventReward $reward
+     * @param UuidInterface $pickUuid
      * @param int|null $value
      *
-     * @throws Exception
-     *
      * @return EventParticipant
+     * @throws Exception
      */
-    private function setupReward(EventReward $reward, ?int $value = null): self
+    private function setupReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): self
     {
-        $earnedReward = $this->findReward($reward->getReason());
+        $earnedReward = $this->findReward($reward->getReason(), $pickUuid);
         if ($earnedReward) {
             $earnedReward->updateValue($value);
 
             return $this;
         }
 
-        $earnedReward = $this->makeReward($reward, $value);
+        $earnedReward = $this->makeReward($reward, $pickUuid, $value);
         $this->insertReward($earnedReward);
 
         return $this;
@@ -306,14 +356,23 @@ class EventParticipant
 
     /**
      * @param EventReward $reward
+     * @param UuidInterface $pickUuid
      * @param int|null $value
      *
-     * @throws Exception
-     *
      * @return EventEarnedReward
+     * @throws Exception
      */
-    private function makeReward(EventReward $reward, ?int $value = null)
+    private function makeReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null)
     {
-        return new EventEarnedReward(Uuid::uuid4(), $this, $reward, $value);
+        $pick = $pickUuid ? $this->getPick($pickUuid) : null;
+        return new EventEarnedReward(Uuid::uuid4(), $this, $pick, $reward, $value);
+    }
+
+    /**
+     * @return EventEarnedReward[]
+     */
+    public function getRewards(): array
+    {
+        return $this->rewards->toArray();
     }
 }

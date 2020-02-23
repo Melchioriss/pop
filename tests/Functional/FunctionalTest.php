@@ -106,7 +106,7 @@ abstract class FunctionalTest extends WebTestCase
         }
 
         /** @var User $adminUser */
-        $user = $this->fixtures->getByName($reference);
+        $user = $this->fixtures->get($reference);
 
         $container = $this->client->getContainer();
         $session = $container->get('session');

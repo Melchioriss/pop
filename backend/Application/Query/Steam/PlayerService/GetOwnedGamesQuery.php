@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Application\Query\Steam\PlayerService;
 
+use Assert\Assert;
 use PlayOrPay\Domain\Steam\SteamId;
 
 class GetOwnedGamesQuery
@@ -15,7 +16,7 @@ class GetOwnedGamesQuery
     /** @var bool */
     private $playedFreeGamesIncluded;
 
-    /** @var int[] */
+    /** @var string[] */
     private $appIdsFilter;
 
     public function __construct(int $steamId)
@@ -38,12 +39,13 @@ class GetOwnedGamesQuery
     }
 
     /**
-     * @param int[] $apps
+     * @param string[] $apps
      *
      * @return self
      */
     public function forApps(array $apps): self
     {
+        Assert::thatAll($apps)->string();
         $this->appIdsFilter = $apps;
 
         return $this;
@@ -65,7 +67,7 @@ class GetOwnedGamesQuery
     }
 
     /**
-     * @return int[]
+     * @return string[]
      */
     public function getAppIdsFilter(): ?array
     {

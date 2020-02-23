@@ -29,8 +29,8 @@ class AddEventParticipantTest extends FunctionalTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
-        $this->event = $this->fixtures->getOneOf(Event::class);
+        $this->fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/empty_event.yaml');
+        $this->event = $this->fixtures->get('empty_event');
         $this->participantRepo = self::$container->get(EventParticipantRepository::class);
     }
 
@@ -42,7 +42,7 @@ class AddEventParticipantTest extends FunctionalTest
     public function should_add_new_participant()
     {
         /** @var User $admin */
-        $admin = $this->fixtures->getByName('admin');
+        $admin = $this->fixtures->get('admin');
 
         $this->event->getGroup()->addMember($admin);
         $this->save();
@@ -77,7 +77,7 @@ class AddEventParticipantTest extends FunctionalTest
     public function should_not_add_new_participant_who_doesnt_belong_to_the_group()
     {
         $this->expectException(DomainException::class);
-        $admin = $this->fixtures->getByName('admin');
+        $admin = $this->fixtures->get('admin');
         if (!$admin instanceof User) {
             throw new Exception('admin fixture should be User');
         }

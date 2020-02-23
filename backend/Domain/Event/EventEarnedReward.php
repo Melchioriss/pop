@@ -14,21 +14,25 @@ class EventEarnedReward
     /** @var EventParticipant */
     private $participant;
 
+    /** @var EventPick|null */
+    private $pick;
+
     /** @var EventReward */
     private $reward;
 
     /** @var int */
     private $value;
 
-    public function __construct(UuidInterface $uuid, EventParticipant $participant, EventReward $reward, ?int $value)
+    public function __construct(UuidInterface $uuid, EventParticipant $participant, ?EventPick $pick, EventReward $reward, ?int $value)
     {
         $this->uuid = $uuid;
         $this->participant = $participant;
+        $this->pick = $pick;
         $this->reward = $reward;
 
         $defaultValue = $this->reward->getValue();
         if ($value === null && $defaultValue === null) {
-            throw new DomainException('Either passed value or achievement value must be not null');
+            throw new DomainException('Either passed value or reward value must be not null');
         }
 
         $this->value = $value === null ? $defaultValue : $value;
@@ -43,5 +47,29 @@ class EventEarnedReward
     {
         Assert::that($value)->greaterOrEqualThan(1);
         $this->value = $value;
+    }
+
+    public function isForPick(?UuidInterface $pickUuid)
+    {
+        if ($pickUuid) {
+            return $this->pick->getUuid()->equals($pickUuid);
+        }
+
+        return $this->pick === null;
+    }
+
+    public function getValue(): int
+    {
+        return $this->value;
+    }
+
+    public function getParticipant(): EventParticipant
+    {
+        return $this->participant;
+    }
+
+    public function getPick(): ?EventPick
+    {
+        return $this->pick;
     }
 }

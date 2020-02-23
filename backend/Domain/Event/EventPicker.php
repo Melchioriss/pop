@@ -14,6 +14,11 @@ use ReflectionException;
 
 class EventPicker
 {
+    const PICK_QUOTA = [
+        EventPickerType::MINOR => 3,
+        EventPickerType::MAJOR => 4,
+    ];
+
     /** @var UuidInterface */
     private $uuid;
 
@@ -123,6 +128,10 @@ class EventPicker
 
     public function makePick(UuidInterface $pickUuid, EventPickType $type, Game $game)
     {
+        if ($this->getRestPickQuota() === 0) {
+            throw new DomainException(sprintf("Picker '%s' has already done their allowed %d picks", $this->getUser()->getProfileName(), $this->getPickQuota()));
+        }
+
         if ($this->findPickByType($type)) {
             throw new DomainException(sprintf("Pick of '%s' type aready exists", (string) $type));
         }
@@ -141,9 +150,12 @@ class EventPicker
         return $pick;
     }
 
+    /**
+     * @return EventPick[]
+     */
     public function getPicks(): array
     {
-        return $this->picks;
+        return $this->picks->toArray();
     }
 
     /**
@@ -216,5 +228,15 @@ class EventPicker
     public function getEvent(): Event
     {
         return $this->getParticipant()->getEvent();
+    }
+
+    public function getPickQuota(): int
+    {
+        return self::PICK_QUOTA[ (int)(string) $this->type ];
+    }
+
+    public function getRestPickQuota(): int
+    {
+        return $this->getPickQuota() - $this->picks->count();
     }
 }

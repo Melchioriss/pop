@@ -9,7 +9,7 @@ use Exception;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Event\RewardReason;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
-use PlayOrPay\Infrastructure\Storage\Event\EventAchievementRepository;
+use PlayOrPay\Infrastructure\Storage\Event\EventRewardRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 
@@ -21,17 +21,17 @@ class UpdateEventParticipantBlaeoPointsHandler implements CommandHandlerInterfac
     /** @var EventParticipantRepository */
     private $participantRepo;
 
-    /** @var EventAchievementRepository */
-    private $achievementRepo;
+    /** @var EventRewardRepository */
+    private $rewardRepo;
 
     public function __construct(
         EventRepository $eventRepo,
         EventParticipantRepository $participantRepo,
-        EventAchievementRepository $achievementRepo
+        EventRewardRepository $rewardRepo
     ) {
         $this->eventRepo = $eventRepo;
         $this->participantRepo = $participantRepo;
-        $this->achievementRepo = $achievementRepo;
+        $this->rewardRepo = $rewardRepo;
     }
 
     /**
@@ -45,7 +45,7 @@ class UpdateEventParticipantBlaeoPointsHandler implements CommandHandlerInterfac
      */
     public function __invoke(UpdateEventParticipantBlaeoPointsCommand $command): void
     {
-        $blaeoGamesAchievement = $this->achievementRepo->get(RewardReason::BLAEO_GAMES);
+        $blaeoGamesAchievement = $this->rewardRepo->get(RewardReason::BLAEO_GAMES);
 
         $participant = $this->participantRepo->get($command->participantUuid);
         $event = $participant->getEvent();

@@ -15,7 +15,7 @@ class PutBlockTest extends FunctionalTest
      */
     public function should_successfully_create_a_new_one()
     {
-        $this->applyFixtures(__DIR__ . '/../../fixtures/default.yaml');
+        $this->applyFixtures(__DIR__ . '/../../fixtures/empty_event.yaml');
 
         $code = (string) Uuid::uuid4();
         $content = 'hello world';

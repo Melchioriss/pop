@@ -29,4 +29,7 @@ class DetailEventParticipantView
 
     /** @var DetailEventPickerView[] */
     public $pickers;
+
+    /** @var DetailEventEarnedReward[] */
+    public $rewards;
 }

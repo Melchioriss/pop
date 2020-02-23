@@ -47,7 +47,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
             ],
         ];
 
-        if ('dev' === $this->environment) {
+        if (in_array($this->environment, ['dev', 'test'])) {
             $error = array_merge(
                 $error,
                 [

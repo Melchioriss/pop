@@ -20,11 +20,15 @@ erase:
 .PHONY: build
 build:
 	docker-compose build
-	docker-compose run --rm php sh -lc 'xoff;COMPOSER_MEMORY_LIMIT=-1 composer install'
+	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer install'
 
 .PHONY: composer-update
 composer-update:
-	docker-compose run --rm php sh -lc 'xoff;COMPOSER_MEMORY_LIMIT=-1 composer update'
+	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer update'
+
+.PHONY: composer-require
+composer-require:
+	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer require $(this)'
 
 .PHONY: up
 up:

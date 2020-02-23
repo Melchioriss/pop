@@ -8,7 +8,7 @@ use PlayOrPay\Infrastructure\Storage\Doctrine\Repository\ServiceEntityRepository
 /**
  * @method EventReward get($id, $lockMode = null, $lockVersion = null)
  */
-class EventAchievementRepository extends ServiceEntityRepository
+class EventRewardRepository extends ServiceEntityRepository
 {
     public function getEntityClass(): string
     {

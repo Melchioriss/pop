@@ -5,7 +5,7 @@
     <entity name="PlayOrPay\Domain\Event\EventEarnedReward" table="earned_rewards">
         <id name="uuid" type="uuid" />
         <field name="value" type="integer" />
-        <many-to-one field="participant" target-entity="PlayOrPay\Domain\Event\EventParticipant">
+        <many-to-one field="participant" target-entity="PlayOrPay\Domain\Event\EventParticipant" inversed-by="rewards">
             <join-column referenced-column-name="uuid" />
         </many-to-one>
         <many-to-one field="reward" target-entity="PlayOrPay\Domain\Event\EventReward">

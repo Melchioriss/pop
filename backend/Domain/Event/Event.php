@@ -579,4 +579,38 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
 
         return $this;
     }
+
+    /**
+     * Generate picks for input games
+     * For testing purpose
+     * @param Game[] $games
+     *
+     * @throws Exception
+     */
+    public function generatePicks(array $games)
+    {
+        foreach ($this->participants as $participant) {
+            foreach ($participant->getPickers() as $picker) {
+                $pickTypes = EventPickType::getEnums();
+                $pickedGames = array_splice($games, -$picker->getPickQuota());
+                foreach ($pickedGames as $pickIdx => $pickedGame) {
+                    $picker->makePick(Uuid::uuid4(), $pickTypes[$pickIdx], $pickedGame);
+                }
+            }
+        }
+    }
+
+    public function fetchReward(
+        UuidInterface $participantUuid,
+        RewardReason $reason,
+        ?UuidInterface $pickUuid
+    ): ?EventEarnedReward
+    {
+        $participant = $this->findParticipant($participantUuid);
+        if (!$participant) {
+            return null;
+        }
+
+        return $participant->findReward($reason, $pickUuid);
+    }
 }

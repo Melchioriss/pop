@@ -30,7 +30,7 @@ class AddEventPickerCommentCommand
 
         //$this->commentUuid = Uuid::fromString($commentUuid);
         $this->pickerUuid = Uuid::fromString($pickerUuid);
-        $this->reviewedPickUuid = Uuid::fromString($reviewedPickUuid);
+        $this->reviewedPickUuid = $reviewedPickUuid ? Uuid::fromString($reviewedPickUuid) : null;
         $this->text = $text;
     }
 }

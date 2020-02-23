@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Game\GameId;
 use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
@@ -163,7 +164,7 @@ class EventPicker
      *
      * @return Game[]
      */
-    public function getGames(StoreId $ofStore = null): array
+    public function getGames(?StoreId $ofStore = null): array
     {
         $games = [];
         foreach ($this->picks as $pick) {
@@ -197,10 +198,10 @@ class EventPicker
         return $this;
     }
 
-    public function findPickOfGame(int $gameId): ?EventPick
+    public function findPickOfGame(GameId $gameId): ?EventPick
     {
         foreach ($this->picks as $pick) {
-            if ($pick->getGame()->getId() === $gameId) {
+            if ($pick->getGame()->getId()->equalTo($gameId)) {
                 return $pick;
             }
         }
@@ -215,7 +216,7 @@ class EventPicker
      *
      * @return EventPick
      */
-    public function getPickOfGame(int $gameId): EventPick
+    public function getPickOfGame(GameId $gameId): EventPick
     {
         $pick = $this->findPickOfGame($gameId);
         if (!$pick) {

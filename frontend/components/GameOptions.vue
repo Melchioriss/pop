@@ -7,12 +7,12 @@
             @click="selectGame(game)"
         >
             <div
-                :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+game.id+'/capsule_184x69.jpg);'"
+                :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+game.localId+'/capsule_184x69.jpg);'"
                 class="game-options__item-img"
             ></div>
             <div class="game-options__item-base">
                 <a
-                    :href="'https://store.steampowered.com/app/'+game.id+'/'"
+                    :href="'https://store.steampowered.com/app/'+game.localId+'/'"
                     target="_blank"
                 >{{game.name}}</a>
             </div>

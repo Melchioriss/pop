@@ -11,6 +11,8 @@ use PlayOrPay\Application\Query\Steam\PlayerService\GetOwnedGamesQuery;
 use PlayOrPay\Application\Query\Steam\UserStatsQuery;
 use PlayOrPay\Domain\Event\EventParticipant;
 use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Game\GameId;
+use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\Steam\Exception\UnexpectedResponseException;
@@ -32,6 +34,9 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
     /** @var PlayerAchievementsRemoteRepository */
     private $playerAchievementsRemoteRepo;
 
+    /** @var StoreId */
+    private $steamStore;
+
     public function __construct(
         EventRepository $eventRepo,
         OwnedGameRemoteRepository $ownedGameRemoteRepo,
@@ -42,6 +47,7 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
         $this->ownedGameRemoteRepo = $ownedGameRemoteRepo;
         $this->recentlyPlayedRemoteRepository = $recentlyPlayedRemoteRepository;
         $this->playerAchievementsRemoteRepo = $playerAchievementsRemoteRepo;
+        $this->steamStore = new StoreId(StoreId::STEAM);
     }
 
     /**
@@ -89,7 +95,7 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
      */
     private function updatePlaytime(EventParticipant $participant): self
     {
-        $unresolvedPlaytimeGames = $this->makeUnresolvedMap($participant->getGames());
+        $unresolvedPlaytimeGames = $this->makeUnresolvedMap($participant->getGames($this->steamStore));
         $this->importPlaytimeFromGetOwned($participant, $unresolvedPlaytimeGames);
         $this->importPlaytimeFromRecentlyPlayed($participant, $unresolvedPlaytimeGames);
 
@@ -106,7 +112,7 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
      */
     private function updateAchievements(EventParticipant $participant): self
     {
-        foreach ($participant->getGames() as $game) {
+        foreach ($participant->getGames($this->steamStore) as $game) {
             $steamGameId = $game->getId()->getLocalId();
             $userStatsQuery = new UserStatsQuery((int) (string) $participant->getUserSteamId(), $steamGameId);
             $achievementsState = $this->playerAchievementsRemoteRepo->find($userStatsQuery);
@@ -116,7 +122,7 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
                 $this->updateGameAchievements($game, $achievementsState->count());
             }
 
-            $participant->updateAchievementsForGame($steamGameId, $achievementsState->countAchieved());
+            $participant->updateAchievementsForGame($game->getId(), $achievementsState->countAchieved());
         }
 
         return $this;
@@ -159,9 +165,9 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
             return;
         }
 
-        $getOwnedGamesQuery = $this->makeQuery($participant->getUser()->getSteamId(), $participant->getGameIds());
+        $getOwnedGamesQuery = $this->makeQuery($participant->getUser()->getSteamId(), $participant->getLocalGameIds($this->steamStore));
         foreach ($this->ownedGameRemoteRepo->find($getOwnedGamesQuery) as $ownedGame) {
-            $participant->updatePlaytimeForGame($ownedGame->appId, $ownedGame->playtimeForever);
+            $participant->updatePlaytimeForGame(new GameId($this->steamStore, (string) $ownedGame->appId), $ownedGame->playtimeForever);
             unset($unresolvedGames[$ownedGame->appId]);
         }
     }
@@ -188,7 +194,10 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
                 continue;
             }
 
-            $participant->updatePlaytimeForGame($recentlyPlayedGame->appId, $recentlyPlayedGame->playtimeForever);
+            $participant->updatePlaytimeForGame(
+                new GameId($this->steamStore, (string) $recentlyPlayedGame->appId),
+                $recentlyPlayedGame->playtimeForever
+            );
             unset($unresolvedGames[$recentlyPlayedGame->appId]);
         }
     }

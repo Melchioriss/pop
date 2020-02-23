@@ -457,7 +457,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         UuidInterface $pickerUuid,
         User $user,
         string $text,
-        UuidInterface $reviewedPickUuid
+        ?UuidInterface $reviewedPickUuid
     ): self {
         $this->getPicker($pickerUuid)->addComment($commentUuid, $user, $text, $reviewedPickUuid);
 

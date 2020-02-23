@@ -41,4 +41,10 @@ class GameId
     {
         return $this->localId;
     }
+
+    public function equalTo(self $otherGameId): bool
+    {
+        return $this->localId === $otherGameId->localId
+            && $this->storeId->equalTo($otherGameId->storeId);
+    }
 }

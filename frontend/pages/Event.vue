@@ -77,6 +77,10 @@
                 v-if="isUpdatingPlaystats"
             >updating playing stats, it may take a while...</loading-indicator>
 
+            <error-box
+                v-if="error"
+            >{{error}}</error-box>
+
             <div
                 v-if="isShowingPotentialParticipants"
                 class="event__potential"
@@ -97,10 +101,6 @@
                     >Add</button>
                 </div>
             </div>
-
-            <error-box
-                v-if="generationError"
-            >{{generationError}}</error-box>
 
             <div
                 v-if="isShowingPPTable"
@@ -152,7 +152,7 @@
         data() {
             return {
                 isLoading: false,
-                generationError: '',
+                error: '',
                 isNotFoundError: false,
                 isHidingAllComments: false,
                 isShowingOnlyMine: false,
@@ -252,7 +252,8 @@
                         location.reload();
                     })
                     .catch(e => {
-                        this.generationError = 'There was an error generating pickers.';
+                        console.log(e.response.data.errors.detail);
+                        this.error = 'There was an error generating pickers.';
                     });
             },
             togglePPTable () {
@@ -278,7 +279,12 @@
                 this.$store.dispatch('importEventPlaystats', {event: this.event})
                     .then(() => {
                         location.reload();
-                    });
+                    })
+                    .catch(e => {
+                        console.log(e.response.data.errors.detail);
+                        this.error = 'There was a error updating playstats, try again later.';
+                        this.isUpdatingPlaystats = false;
+                    })
             }
         },
         created() {

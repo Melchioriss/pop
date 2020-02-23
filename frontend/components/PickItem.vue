@@ -3,11 +3,11 @@
         <template v-if="pick.uuid">
             <div class="pick__game">
                 <div
-                    :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+pick.game.id+'/capsule_184x69.jpg);'"
+                    :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+pick.game.localId+'/capsule_184x69.jpg);'"
                     class="pick__img"
                 ></div>
                 <a
-                    :href="'https://store.steampowered.com/app/'+pick.game.id+'/'"
+                    :href="'https://store.steampowered.com/app/'+pick.game.localId+'/'"
                     target="_blank"
                     class="pick__name"
                 >
@@ -15,7 +15,7 @@
                 </a>
                 <div class="pick__stats">
                     <a
-                        :href="'https://steamcommunity.com/profiles/'+userId+'/stats/'+pick.game.id+'/achievements/'"
+                        :href="'https://steamcommunity.com/profiles/'+userId+'/stats/'+pick.game.localId+'/achievements/'"
                         class="pick__stats-item"
                     >
                         <i class="fa-icon fas fa-fw fa-trophy"></i>{{+pick.playingState.achievements}} / {{+pick.game.achievements}}

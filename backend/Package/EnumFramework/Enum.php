@@ -47,7 +47,7 @@ class Enum extends SplEnum
             return false;
         }
 
-        return $this->__default === $anotherEnum->__default;
+        return (string)$this->__default === (string)$anotherEnum->__default;
     }
 
     /**

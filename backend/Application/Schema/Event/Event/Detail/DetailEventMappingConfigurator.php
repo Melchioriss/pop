@@ -62,7 +62,16 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             });
 
         $config
-            ->registerMapping(Game::class, DetailGameView::class);
+            ->registerMapping(Game::class, DetailGameView::class)
+            ->forMember('id', function (Game $game) {
+                return (string) $game->getId();
+            })
+            ->forMember('storeId', function (Game $game) {
+                return (int)(string) $game->getId()->getStoreId();
+            })
+            ->forMember('localId', function (Game $game) {
+                return (string) $game->getId()->getLocalId();
+            });
 
         $config
             ->registerMapping(EventPickerComment::class, DetailEventPickerComment::class)

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use Exception;
 use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Game\GameId;
 use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Domain\Steam\SteamId;
 use PlayOrPay\Domain\User\User;
@@ -169,7 +170,7 @@ class EventParticipant
      *
      * @return Game[]
      */
-    public function getGames(StoreId $ofStore = null): array
+    public function getGames(?StoreId $ofStore = null): array
     {
         $games = [];
         foreach ($this->pickers as $picker) {
@@ -184,6 +185,20 @@ class EventParticipant
         return array_map(function (Game $game) {
             return $game->getId();
         }, $this->getGames());
+    }
+
+    /**
+     * @param StoreId $storeId
+     * @return int[]
+     */
+    public function getLocalGameIds(StoreId $storeId): array
+    {
+        $ids = [];
+        foreach ($this->getGames($storeId) as $game) {
+            $ids[] = $game->getId()->getLocalId();
+        }
+
+        return $ids;
     }
 
     public function hasPicks(): bool
@@ -202,7 +217,7 @@ class EventParticipant
         return null;
     }
 
-    public function getPickForGame(int $gameId): EventPick
+    public function getPickForGame(GameId $gameId): EventPick
     {
         foreach ($this->pickers as $picker) {
             if ($pick = $picker->findPickOfGame($gameId)) {
@@ -213,14 +228,14 @@ class EventParticipant
         throw new DomainException(sprintf("Participant '%s' doesn't have pick for game '%s'", $this->getUser()->getProfileName(), $gameId));
     }
 
-    public function updatePlaytimeForGame(int $gameId, int $playtime): self
+    public function updatePlaytimeForGame(GameId $gameId, int $playtime): self
     {
         $this->getPickForGame($gameId)->updatePlaytime($playtime);
 
         return $this;
     }
 
-    public function updateAchievementsForGame(int $gameId, int $achievements): self
+    public function updateAchievementsForGame(GameId $gameId, int $achievements): self
     {
         $this->getPickForGame($gameId)->updateAchievements($achievements);
 

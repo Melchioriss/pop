@@ -7,6 +7,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        users: {},
+        loggedUser: {},
+        groups: {},
+        events: {},
+        participants: {},
+        pickers: {},
+        picks: {},
+        games: {},
+        blocks: {},
+
         BLAEO_USER_BASE_LINK: 'https://www.backlog-assassins.net/users/',
         MAJOR: 20,
         MINOR: 10,
@@ -23,16 +33,6 @@ export default new Vuex.Store({
         ABANDONED: 40,
 
         MAIN_PAGE_CONTENT_CODE: 'main_page',
-
-        users: {},
-        loggedUser: {},
-        groups: {},
-        events: {},
-        participants: {},
-        pickers: {},
-        picks: {},
-        games: {},
-        blocks: {},
     },
     getters: {
         statusTexts: (state) => ({
@@ -41,6 +41,18 @@ export default new Vuex.Store({
             [state.BEATEN]: 'Beaten',
             [state.COMPLETED]: 'Completed',
             [state.ABANDONED]: 'Abandoned'
+        }),
+
+        rewardReasons: (state) => ({
+            GAME_BEATEN: {
+                [state.SHORT]: 100,
+                [state.MEDIUM]: 200,
+                [state.LONG]: 300,
+                [state.VERY_LONG]: 400
+            },
+            GAME_COMPLETED: 500,
+            BLAEO_POINTS: 600,
+            ALL_PICKS_BEATEN: 700
         }),
 
         getMainGroup: (state) => state.groups[0],
@@ -236,9 +248,17 @@ export default new Vuex.Store({
                                     participant.picks[picker.type][pick.type] = pick.uuid;
                                 });
                                 delete picker.picks;
-
                             });
                             participant.pickers = pickersNormalized;
+
+                            let rewards = {};
+                            participant.rewards.forEach(reward => {
+                                let key = reward.pick ? reward.pick : 'global'
+                                rewards[key] = {};
+                                rewards[key][reward.reason] = reward;
+                            });
+
+                            participant.rewards = rewards;
                         });
 
 
@@ -267,6 +287,24 @@ export default new Vuex.Store({
             return api.participants.updateBlaeoGames(participant, blaeoGames)
                 .then(() => {
                     participant.blaeoGames = blaeoGames;
+                    commit('setParticipant', participant)
+                })
+        },
+
+        updateParticipantBlaeoPoints: function ({commit, state, getters}, {participant, blaeoPoints}) {
+            return api.participants.updateBlaeoPoints(participant, blaeoPoints)
+                .then(() => {
+                    if (!participant.rewards)
+                        participant.rewards = {};
+
+                    if (!participant.rewards.global)
+                        participant.rewards.global = {};
+
+                    participant.rewards.global[getters.rewardReasons.BLAEO_POINTS] = {
+                        pick: null,
+                        reason: getters.rewardReasons.BLAEO_POINTS,
+                        value: blaeoPoints
+                    };
                     commit('setParticipant', participant)
                 })
         },

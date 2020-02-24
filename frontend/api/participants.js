@@ -14,6 +14,10 @@ export default new class extends BaseApi {
         return this.axios.put(this.path(participant.uuid, 'blaeoGames'), {blaeoGames})
     }
 
+    updateBlaeoPoints (participant, blaeoPoints) {
+        return this.axios.put(this.path(participant.uuid, 'blaeoPoints'), {blaeoPoints})
+    }
+
     updateExtraRules (participant, extraRules) {
         return this.axios.put(this.path(participant.uuid, 'extraRules'), {extraRules})
     }

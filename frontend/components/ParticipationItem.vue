@@ -129,9 +129,9 @@
                         >cancel</button>
                     </template>
                     <div
-                        v-else
+                        v-else-if="blaeoPoints"
                     >
-                        <div class="medal">18</div>
+                        <div class="medal">{{+blaeoPoints}}</div>
                     </div>
                     <span
                         v-if="!isEditingBlaeoPoints"
@@ -321,7 +321,8 @@
                 loggedUserSteamId: 'loggedUserSteamId',
                 isAdmin: 'loggedUserIsAdmin',
                 getPick: 'getPick',
-                getGame: 'getGame'
+                getGame: 'getGame',
+                rewardReasons: 'rewardReasons'
             }),
 
             participantUser: function () {
@@ -329,6 +330,10 @@
             },
             participantBlaeoLink: function () {
                 return this.participantUser.blaeoName ? this.BLAEO_USER_BASE_LINK + this.participantUser.blaeoName : '';
+            },
+            blaeoPoints: function () {
+                let reward = this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ] : null;
+                return reward ? reward.value : null;
             },
             pickers: function () {
                 let pickers = {};
@@ -520,6 +525,7 @@
             },
 
             startEditingBlaeoPoints() {
+                this.newBlaeoPoints = +this.blaeoPoints;
                 this.isEditingBlaeoPoints = true;
             },
 
@@ -528,7 +534,10 @@
             },
 
             saveBlaeoPoints() {
-                console.log(this.newBlaeoPoints);
+                this.$store.dispatch('updateParticipantBlaeoPoints', {participant: this.participant, blaeoPoints: this.newBlaeoPoints})
+                    .then(() => {
+                        this.endEditingBlaeoPoints();
+                    });
             },
 
             saveExtraRules() {

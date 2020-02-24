@@ -63,7 +63,7 @@ class OwnedGameRemoteRepository
 
         $responseData = json_decode($responseBody, true);
         if (!array_key_exists('games', $responseData['response'])) {
-            throw UnexpectedResponseException::becauseFieldDoentExists('games');
+            throw UnexpectedResponseException::becauseFieldDoesntExist('games');
         }
 
         $ownedGames = [];

@@ -6,7 +6,9 @@
         >
             <div class="participation__participant">
                 <div class="participation__user-title">Participant:</div>
-                <div class="user-tile participation__user">
+                <div
+                    :class="['user-tile', {'user-tile--mine': isParticipant}]"
+                >
                     <div class="user-tile__pic-block">
                         <img
                             :src="participantUser.avatar"
@@ -171,192 +173,88 @@
                 ></div>
             </div>
         </div>
-        <div
-            :class="['participation__line', {'participation__line--mine': isMajorPicker}]"
-        >
-            <div class="participation__picker">
-                <div class="participation__user-title">Major Picker:</div>
-                <participation-picker
-                    :user-id="majorPickerUserId"
-                    @change-picker="saveNewPicker($event, MAJOR)"
-                    class="participation__user"
-                />
 
-                <div
-                    v-if="majorPicker"
-                    class="participation__picker-bottom"
-                >
+        <template
+            v-for="pickerType in [MAJOR, MINOR]"
+        >
+            <div class="participation__line">
+                <div class="participation__picker">
+                    <div class="participation__user-title">{{pickerType === MAJOR ? 'Major' : 'Minor'}} Picker:</div>
+                    <participation-picker
+                        :user-id="pickersUserIds[pickerType]"
+                        @change-picker="saveNewPicker($event, pickerType)"
+                        class="participation__user"
+                    />
+
+                    <div
+                        v-if="pickers[pickerType]"
+                        class="participation__picker-bottom"
+                    >
                     <span
-                        v-if="!isCommentsShown[MAJOR]"
-                        @click="showComments(MAJOR)"
+                        v-if="!isCommentsShown[pickerType]"
+                        @click="showComments(pickerType)"
                         class="edit-link edit-link--comments-show"
                     >Show comments</span>
                     <span
-                        v-if="isCommentsShown[MAJOR]"
-                        @click="hideComments(MAJOR)"
+                        v-if="isCommentsShown[pickerType]"
+                        @click="hideComments(pickerType)"
                         class="edit-link edit-link--comments-hide"
                     >Hide comments</span>
-                </div>
+                    </div>
 
-            </div>
-            <div class="participation__main-area">
-                <div
-                    v-if="majorPicker"
-                    class="participation__picks"
-                >
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Short game (2-8h)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MAJOR][SHORT])"
-                            :user-id="participant.user"
-                            :is-picker="isMajorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, SHORT, MAJOR)"
-                            @change-status="changeStatus($event, SHORT, MAJOR)"
-                        />
-                    </div>
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Medium game (8-15h)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MAJOR][MEDIUM])"
-                            :user-id="participant.user"
-                            :is-picker="isMajorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, MEDIUM, MAJOR)"
-                            @change-status="changeStatus($event, MEDIUM, MAJOR)"
-                        />
-                    </div>
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Long game (15-25h)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MAJOR][LONG])"
-                            :user-id="participant.user"
-                            :is-picker="isMajorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, LONG, MAJOR)"
-                            @change-status="changeStatus($event, LONG, MAJOR)"
-                        />
-                    </div>
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Very long game (25h+)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MAJOR][VERY_LONG])"
-                            :user-id="participant.user"
-                            :is-picker="isMajorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, VERY_LONG, MAJOR)"
-                            @change-status="changeStatus($event, VERY_LONG, MAJOR)"
-                        />
+                </div>
+                <div class="participation__main-area">
+                    <div
+                        v-if="pickers[pickerType]"
+                        class="participation__picks"
+                    >
+                        <div
+                            v-for="pickType in pickTypes[pickerType]"
+                            class="participation__pick"
+                        >
+                            <div v-if="pickType === SHORT" class="participation__pick-help">Short game (2-8h)</div>
+                            <div v-if="pickType === MEDIUM" class="participation__pick-help">Medium game (8-15h)</div>
+                            <div v-if="pickType === LONG" class="participation__pick-help">Long game (15-25h)</div>
+                            <div v-if="pickType === VERY_LONG" class="participation__pick-help">Very long game (25h+)</div>
+                            <pick-item
+                                :pick="getPick(participant.picks[pickerType][pickType])"
+                                :user-id="participant.user"
+                                :is-picker="isPicker(pickerType)"
+                                :is-participant="isParticipant"
+                                @select-game="selectGame($event, pickType, pickerType)"
+                                @change-status="changeStatus($event, pickType, pickerType)"
+                            />
+                        </div>
+
+                        <div
+                            v-if="pickerType === MINOR"
+                            class="participation__pick participation__pick--total"
+                        >
+                            <div class="participation__total-title">
+                                {{participantUser.profileName}}'s Totals:
+                            </div>
+                            <div class="participation__total-line">
+                                <i class="fa-icon fa-fw fas fa-trophy"></i>{{totalPlayStats.achievements}} acheivements taken
+                            </div>
+                            <div class="participation__total-line">
+                                <i class="fa-icon fa-fw far fa-clock"></i>{{totalPlayStats.playtimeHours}} hours played
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div
-            v-if="majorPicker"
-            v-show="isCommentsShown[MAJOR]"
-            class="participation__comments"
-        >
-            <comments-area
-                :comments="majorPicker.comments"
-                :can-comment="canComment(MAJOR)"
-                @add-comment="addComment($event, MAJOR)"
-            />
-        </div>
-
-        <div
-            :class="['participation__line', {'participation__line--mine': isMinorPicker}]"
-        >
-            <div class="participation__picker">
-                <div class="participation__user-title">Minor Picker:</div>
-
-                <participation-picker
-                    :user-id="minorPickerUserId"
-                    @change-picker="saveNewPicker($event, MINOR)"
-                    class="participation__user"
+            <div
+                v-if="pickers[pickerType]"
+                v-show="isCommentsShown[pickerType]"
+                class="participation__comments"
+            >
+                <comments-area
+                    :comments="pickers[pickerType].comments"
+                    :can-comment="canComment(pickerType)"
+                    @add-comment="addComment($event, pickerType)"
                 />
-
-                <div
-                    v-if="minorPicker"
-                    class="participation__picker-bottom"
-                >
-                    <span
-                        v-if="!isCommentsShown[MINOR]"
-                        @click="showComments(MINOR)"
-                        class="edit-link  edit-link--comments-show"
-                    >Show comments</span>
-                    <span
-                        v-if="isCommentsShown[MINOR]"
-                        @click="hideComments(MINOR)"
-                        class="edit-link  edit-link--comments-hide"
-                    >Hide comments</span>
-                </div>
-
             </div>
-            <div class="participation__main-area">
-                <div
-                    v-if="minorPicker"
-                    class="participation__picks"
-                >
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Short game (2-8h)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MINOR][SHORT])"
-                            :user-id="participant.user"
-                            :is-picker="isMinorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, SHORT, MINOR)"
-                            @change-status="changeStatus($event, SHORT, MINOR)"
-                        />
-                    </div>
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Medium game (8-15h)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MINOR][MEDIUM])"
-                            :user-id="participant.user"
-                            :is-picker="isMinorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, MEDIUM, MINOR)"
-                            @change-status="changeStatus($event, MEDIUM, MINOR)"
-                        />
-                    </div>
-                    <div class="participation__pick">
-                        <div class="participation__pick-help">Long game (15-25h)</div>
-                        <pick-item
-                            :pick="getPick(participant.picks[MINOR][LONG])"
-                            :user-id="participant.user"
-                            :is-picker="isMinorPicker"
-                            :is-participant="isParticipant"
-                            @select-game="selectGame($event, LONG, MINOR)"
-                            @change-status="changeStatus($event, LONG, MINOR)"
-                        />
-                    </div>
-                    <div class="participation__pick participation__pick--total">
-                        <div class="participation__total-title">
-                            {{participantUser.profileName}}'s Totals:
-                        </div>
-                        <div class="participation__total-line">
-                            <i class="fa-icon fa-fw fas fa-trophy"></i>{{totalPlayStats.achievements}} acheivements taken
-                        </div>
-                        <div class="participation__total-line">
-                            <i class="fa-icon fa-fw far fa-clock"></i>{{totalPlayStats.playtimeHours}} hours played
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div
-            v-if="minorPicker"
-            v-show="isCommentsShown[MINOR]"
-            class="participation__comments"
-        >
-            <comments-area
-                :comments="minorPicker.comments"
-                :can-comment="canComment(MINOR)"
-                @add-comment="addComment($event, MINOR)"
-            />
-        </div>
+        </template>
 
     </div>
 </template>
@@ -424,32 +322,24 @@
             participantBlaeoLink: function () {
                 return this.participantUser.blaeoName ? this.BLAEO_USER_BASE_LINK + this.participantUser.blaeoName : '';
             },
-            majorPicker: function () {
-                return this.$store.getters.getPicker( this.participant.pickers[this.MAJOR] );
+            pickers: function () {
+                let pickers = {};
+                [this.MAJOR, this.MINOR].forEach(type => {
+                    pickers[type] = this.$store.getters.getPicker( this.participant.pickers[type] );
+                });
+                return pickers;
             },
-            minorPicker: function () {
-                return this.$store.getters.getPicker( this.participant.pickers[this.MINOR] );
+            pickersUserIds: function () {
+                return Object.values(this.pickers).reduce((prev, cur) => ({...prev, ...{[cur.type]: cur.user}}), {});
             },
-            isMajorPicker: function () {
-                if (!this.majorPicker)
-                    return false;
-
-                return (this.majorPicker.user === this.loggedUserSteamId);
-            },
-            isMinorPicker: function () {
-                if (!this.minorPicker)
-                    return false;
-
-                return (this.minorPicker.user === this.loggedUserSteamId);
+            pickTypes: function () {
+                return {
+                    [this.MAJOR]: [this.SHORT, this.MEDIUM, this.LONG, this.VERY_LONG],
+                    [this.MINOR]: [this.SHORT, this.MEDIUM, this.LONG]
+                };
             },
             isParticipant: function () {
                 return this.participant.user === this.loggedUserSteamId;
-            },
-            majorPickerUserId: function () {
-                return this.majorPicker ? this.majorPicker.user : '';
-            },
-            minorPickerUserId: function () {
-                return this.minorPicker ? this.minorPicker.user : '';
             },
             totalPlayStats: function () {
                 let totals = {
@@ -458,7 +348,7 @@
                     playtimeHours: 0
                 };
 
-                [this.majorPicker, this.minorPicker].forEach(picker => {
+                Object.values(this.pickers).forEach(picker => {
                     picker.picks.forEach(pick => {
                         totals.achievements += +pick.playingState.achievements;
                         totals.playtime += +pick.playingState.playtime;
@@ -490,10 +380,7 @@
                 if (this.isAdmin || this.isParticipant)
                     return true;
 
-                if (type === this.MAJOR)
-                    return this.isMajorPicker;
-
-                return this.isMinorPicker;
+                return this.isPicker(type);
             },
 
             saveNewPicker(newPickerSteamId, pickerType) {
@@ -525,6 +412,14 @@
                             participant: this.participant
                         });
                 }
+            },
+
+            isPicker: function (pickerType) {
+                let picker = this.pickers[pickerType];
+                if (!picker)
+                    return false;
+
+                return (picker.user === this.loggedUserSteamId);
             },
 
             startEditingGroupWins() {
@@ -662,14 +557,8 @@
     @import "../assets/medal";
 
     .participation{
-        margin-bottom: 20px;
-        border-bottom: 3px solid @color-cobalt;
+        border-top: 3px solid @color-dark-orange;
         padding-bottom: 10px;
-
-        &:first-child{
-            padding-top: 20px;
-            border-top: 3px solid @color-cobalt;
-        }
 
         &__line{
             display: flex;
@@ -678,16 +567,14 @@
 
             &--base{
                 margin-bottom: 0;
-                padding: 10px 0;
-            }
-
-            &--mine{
-                background: @color-bg-light;
+                padding: 20px 0 10px;
             }
         }
 
         &__participant{
-            padding-left: 10px;
+            padding: 0 10px;
+            width: 250px;
+            box-sizing: border-box;
         }
 
         &__user{

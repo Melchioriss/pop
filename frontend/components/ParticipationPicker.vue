@@ -2,7 +2,7 @@
     <div class="picker">
         <div
             v-if="userId"
-            class="user-tile"
+            :class="['user-tile', {'user-tile--mine': isMe}]"
         >
             <div class="user-tile__pic-block">
                 <img
@@ -56,10 +56,15 @@
             ...mapGetters({
                 users: 'getSortedUsers',
                 isAdmin: 'loggedUserIsAdmin',
+                loggedUserId: 'loggedUserSteamId'
             }),
 
             pickerUser: function () {
                 return this.$store.getters.getUser(this.userId);
+            },
+
+            isMe: function () {
+                return this.userId === this.loggedUserId;
             }
         },
         watch: {

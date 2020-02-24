@@ -6,7 +6,7 @@ use Exception;
 
 class UnexpectedResponseException extends Exception
 {
-    public static function becauseFieldDoentExists(string $field)
+    public static function becauseFieldDoesntExist(string $field)
     {
         return new self(sprintf("Expected '%s' field wasn't found in the response", $field));
     }

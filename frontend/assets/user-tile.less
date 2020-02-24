@@ -5,6 +5,16 @@
   align-items: center;
   align-self: start;
   margin-bottom: 8px;
+  line-height: 1.2;
+
+  &--mine{
+    background: @color-gray;
+  }
+
+  &--mine &__name{
+    color: @color-cobalt;
+    font-weight: bold;
+  }
 
   &__pic-block{
     width: 40px;

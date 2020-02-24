@@ -18,7 +18,7 @@
                 @select-game="selectGame"
             />
             <pagin-box
-                v-if="pages > 1"
+                v-if="pages > 1 && foundGames.length > 0"
                 class="game-options__pagin"
                 :currentPageNumber="currentPage"
                 :maxPageNumber="pages"

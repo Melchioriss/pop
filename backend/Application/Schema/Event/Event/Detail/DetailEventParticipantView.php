@@ -21,9 +21,6 @@ class DetailEventParticipantView
     /** @var string */
     public $blaeoGames;
 
-    /** @var int */
-    public $blaeoPoints;
-
     /** @var string */
     public $extraRules;
 

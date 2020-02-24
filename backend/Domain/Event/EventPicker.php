@@ -98,6 +98,10 @@ class EventPicker
     }
 
     /**
+     * @param UuidInterface $pickUuid
+     *
+     * @return EventPick
+     *
      * @throws NotFoundException
      */
     public function getPick(UuidInterface $pickUuid): EventPick
@@ -192,10 +196,28 @@ class EventPicker
      */
     public function addComment(UuidInterface $uuid, User $user, string $text, ?UuidInterface $reviewedPickUuid): self
     {
+        if ($reviewedPickUuid) {
+            $pick = $this->getPick($reviewedPickUuid);
+            if ($this->hasRewiew($pick->getGame())) {
+                throw new DomainException('This game already has a review');
+            }
+        }
+
         $comment = new EventPickerComment($uuid, $this, $user, $text, $reviewedPickUuid);
         $this->comments->add($comment);
 
         return $this;
+    }
+
+    public function hasRewiew(Game $game): bool
+    {
+        foreach ($this->comments as $comment) {
+            if ($comment->getReviewedGame() === $game) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function findPickOfGame(GameId $gameId): ?EventPick

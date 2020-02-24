@@ -6,7 +6,7 @@ use PlayOrPay\Package\EnumFramework\Enum;
 
 class EventPickPlayedStatus extends Enum
 {
-    const NOT_PLAYED = 0;
+    const NOT_PLAYED = 5;
 
     const UNFINISHED = 10;
 

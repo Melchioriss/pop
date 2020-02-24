@@ -1,0 +1,6 @@
+update_comment:
+    methods: PUT
+    path: /api/comments/{commentUuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventPicker\UpdateComment\UpdateEventPickerCommentCommand

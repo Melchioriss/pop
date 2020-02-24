@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class ImportSteamGroupCommand extends Command
+class ImportSteamGroupCliCommand extends Command
 {
     /** @var CommandBus */
     private $commandBus;
@@ -25,7 +25,7 @@ class ImportSteamGroupCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('steam-group:import')
+            ->setName('steam:group:import')
             ->setDescription('Imports steam group and its members to the site')
             ->getDefinition()
             ->addArguments([

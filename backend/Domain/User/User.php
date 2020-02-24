@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PlayOrPay\Domain\User;
 
+use Assert\Assert;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Knojector\SteamAuthenticationBundle\User\SteamUserInterface;
+use PlayOrPay\Application\Command\DuplicatedEntryException;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
@@ -85,14 +87,39 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         $this->groups = new ArrayCollection();
     }
 
-    public function addGroup(Group $group)
+    /**
+     * @param Group $group
+     *
+     * @return User
+     *
+     * @throws DuplicatedEntryException
+     */
+    public function addGroup(Group $group): self
     {
         if ($this->groups->contains($group)) {
-            return $this;
+            throw DuplicatedEntryException::collectionAlreadyHas('groups', $group->getName());
         }
 
         $this->groups->add($group);
         $group->addMember($this);
+
+        return $this;
+    }
+
+    /**
+     * @param Group[] $groups
+     *
+     * @return self
+     *
+     * @throws DuplicatedEntryException
+     */
+    public function addGroups(array $groups): self
+    {
+        Assert::thatAll($groups)->isInstanceOf(Group::class);
+
+        foreach ($groups as $group) {
+            $this->addGroup($group);
+        }
 
         return $this;
     }

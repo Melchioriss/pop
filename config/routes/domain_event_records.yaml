@@ -3,4 +3,4 @@ get_domain_event_records:
     path: /api/log
     controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughQuery\PassthroughQueryController
     defaults:
-        query: PlayOrPay\Application\Query\DomainEvent\DomainEventRecord\GetAll\GetAllDomainEventRecordsQuery
+        query: PlayOrPay\Application\Query\DomainEvent\DomainEventRecord\GetLog\GetDomainEventRecordsLogQuery

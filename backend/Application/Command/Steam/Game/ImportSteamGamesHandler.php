@@ -64,7 +64,7 @@ class ImportSteamGamesHandler implements CommandHandlerInterface
 
         foreach ($existedAppIdsChunks as $existedChunk) {
             /** @var Game[] $existedGames */
-            $existedGames = $this->gameRepo->findBy(['id' => $existedChunk]);
+            $existedGames = $this->gameRepo->findBy(['id.localId' => $existedChunk]);
 
             $updatedGames = [];
 

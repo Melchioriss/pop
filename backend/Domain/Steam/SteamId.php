@@ -10,11 +10,15 @@ use Ducks\Component\SplTypes\SplInt;
  */
 class SteamId extends SplInt
 {
+    /**
+     * @param string|int $value
+     * @param null $strict
+     */
     public function __construct($value, $strict = null)
     {
         // TODO: make better check
-        Assert::that($value)->min(1, 'Wrong steam identity');
+        Assert::that($value)->numeric()->min(1, 'Wrong steam identity');
 
-        parent::__construct($value, $strict);
+        parent::__construct((int) $value, $strict);
     }
 }

@@ -10,4 +10,9 @@ class ReviewAdded implements DomainEventInterface
     {
         return [];
     }
+
+    public static function refsMap(): array
+    {
+        return [];
+    }
 }

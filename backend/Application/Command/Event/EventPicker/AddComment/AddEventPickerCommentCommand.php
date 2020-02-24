@@ -9,7 +9,7 @@ use Ramsey\Uuid\UuidInterface;
 class AddEventPickerCommentCommand
 {
     /** @var UuidInterface */
-    //public $commentUuid;
+    public $commentUuid;
 
     /** @var UuidInterface */
     public $pickerUuid;
@@ -21,14 +21,14 @@ class AddEventPickerCommentCommand
     public $reviewedPickUuid;
 
     public function __construct(
-        /*string $commentUuid, */
+        string $commentUuid,
         string $pickerUuid,
         string $text,
         string $reviewedPickUuid = null
     ) {
         Assert::that($text)->minLength(1);
 
-        //$this->commentUuid = Uuid::fromString($commentUuid);
+        $this->commentUuid = Uuid::fromString($commentUuid);
         $this->pickerUuid = Uuid::fromString($pickerUuid);
         $this->reviewedPickUuid = $reviewedPickUuid ? Uuid::fromString($reviewedPickUuid) : null;
         $this->text = $text;

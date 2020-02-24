@@ -31,6 +31,7 @@ final class JsonApiFormatter
                 'page'  => $collection->page,
                 'pages' => $collection->pages,
                 'total' => $collection->total,
+                'refs' => $collection->refs,
             ],
             'data' => $collection->data,
         ], JsonEncoder::FORMAT);

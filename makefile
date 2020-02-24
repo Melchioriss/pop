@@ -116,6 +116,14 @@ cache-cleanup:
 admin:
 	docker-compose exec php console user:roles:add $(them) ADMIN
 
+.PHONY: member
+member:
+	docker-compose exec php console user:group:add $(them) $(of)
+
+.PHONY: games
+games:
+	docker-compose exec php console steam:games:import
+
 .PHONY: schema-update
 schema-update:
 	docker-compose exec php console doctrine:schema:update --force
@@ -130,4 +138,4 @@ migrate:
 
 .PHONY: import-pop
 import-pop:
-	docker-compose exec php console steam-group:import PoPSG
+	docker-compose exec php console steam:group:import PoPSG

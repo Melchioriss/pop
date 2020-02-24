@@ -578,7 +578,14 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      */
     public function makePick(UuidInterface $pickerUuid, UuidInterface $pickUuid, EventPickType $type, Game $game)
     {
-        $this->getPicker($pickerUuid)->makePick($pickUuid, $type, $game);
+        $picker = $this->getPicker($pickerUuid);
+
+        $participant = $picker->getParticipant();
+        if ($participant->hasPickOfGame($game->getId())) {
+            throw new DomainException(sprintf("Participant already has a pick for game '%s'", $game->getName()));
+        }
+
+        $picker->makePick($pickUuid, $type, $game);
 
         return $this;
     }

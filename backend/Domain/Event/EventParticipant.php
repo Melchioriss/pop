@@ -237,13 +237,24 @@ class EventParticipant
 
     public function getPickForGame(GameId $gameId): EventPick
     {
+        $pick = $this->findPickOfGame($gameId);
+
+        if ($pick) {
+            return $pick;
+        }
+
+        throw new DomainException(sprintf("Participant '%s' doesn't have pick for game '%s'", $this->getUser()->getProfileName(), $gameId));
+    }
+
+    public function findPickOfGame(GameId $gameId): ?EventPick
+    {
         foreach ($this->pickers as $picker) {
             if ($pick = $picker->findPickOfGame($gameId)) {
                 return $pick;
             }
         }
 
-        throw new DomainException(sprintf("Participant '%s' doesn't have pick for game '%s'", $this->getUser()->getProfileName(), $gameId));
+        return null;
     }
 
     public function updatePlaytimeForGame(GameId $gameId, int $playtime): self
@@ -475,5 +486,10 @@ class EventParticipant
     public function hasReward(EventReward $reward, ?UuidInterface $pickUuid): bool
     {
         return !!$this->findReward($reward->getReason(), $pickUuid);
+    }
+
+    public function hasPickOfGame(GameId $gameId): bool
+    {
+        return !!$this->findPickOfGame($gameId);
     }
 }

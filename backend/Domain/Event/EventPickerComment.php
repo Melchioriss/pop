@@ -31,6 +31,9 @@ class EventPickerComment
     /** @var Game|null */
     private $reviewedGame;
 
+    /** @var string[] */
+    private $history = [];
+
     /**
      * @param UuidInterface $uuid
      * @param EventPicker $picker
@@ -71,5 +74,34 @@ class EventPickerComment
     public function getReviewedGame(): ?Game
     {
         return $this->reviewedGame;
+    }
+
+    public function getEvent(): Event
+    {
+        return $this->picker->getEvent();
+    }
+
+    public function updateText(string $text)
+    {
+        $this->history[] = $this->text;
+        $this->text = $text;
+    }
+
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    public function getUuid(): UuidInterface
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getHistory(): array
+    {
+        return $this->history;
     }
 }

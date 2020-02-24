@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Application\Schema\DomainEvent\Collection;
+namespace PlayOrPay\Application\Schema\DomainEvent\Log;
 
 class CollectionDomainEventRecord
 {

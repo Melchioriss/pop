@@ -11,6 +11,7 @@
             <join-column referenced-column-name="steam_id" />
         </many-to-one>
         <field name="text" type="text" />
+        <field name="history" type="json_array" />
         <field name="createdAt" type="datetime_immutable" />
         <many-to-one field="reviewedGame" target-entity="PlayOrPay\Domain\Game\Game">
             <join-column referenced-column-name="complex_id" />

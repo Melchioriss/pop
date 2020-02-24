@@ -31,22 +31,33 @@ class Collection
      */
     public $data;
 
+    /** @var object[][] */
+    public $refs;
+
     /**
-     * @param int   $page
-     * @param int   $limit
-     * @param int   $total
+     * @param int $page
+     * @param int $limit
+     * @param int $total
      * @param object[] $data
      *
+     * @param array $refs
      * @throws NotFoundException
      */
-    public function __construct(int $page, int $limit, int $total, array $data)
+    public function __construct(int $page, int $limit, int $total, array $data, array $refs = [])
     {
         $this->exists($page, $limit, $total);
         $this->page = $page;
         $this->limit = $limit;
         $this->total = $total;
         $this->data = $data;
+        $this->refs = $refs;
         $this->calcPages();
+    }
+
+    public function addRefs(string $name, array $refs): self
+    {
+        $this->refs[$name] = $refs;
+        return $this;
     }
 
     private function calcPages()
@@ -63,7 +74,7 @@ class Collection
      */
     private function exists(int $page, int $limit, int $total): void
     {
-        if ($limit === 0) {
+        if ($limit === 0 || $total === 0) {
             return;
         }
 

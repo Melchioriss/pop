@@ -63,7 +63,7 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
         $event = $picker->getEvent();
 
         $event->addPickerComment(
-            $this->commentRepo->nextUuid(),
+            $command->commentUuid,
             $picker->getUuid(),
             $actor,
             $command->text,

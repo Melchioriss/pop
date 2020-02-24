@@ -30,7 +30,7 @@
 
     .loading-indicator{
         border-left: 2px solid @color-cobalt;
-        background: @color-bg-light;
+        background: @color-gray;
         padding: 8px 10px;
         margin-bottom: 20px;
 

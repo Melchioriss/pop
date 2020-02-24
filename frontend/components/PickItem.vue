@@ -25,12 +25,9 @@
                     </div>
                 </div>
             </div>
-            <div
-                v-if="!isChangingPick"
-                class="pick__links"
-            >
+            <div class="pick__links">
                 <span
-                    v-if="isPicker"
+                    v-if="canChangePick && !isChangingPick"
                     @click="changePick"
                     class="edit-link"
                 >change pick</span>
@@ -103,6 +100,17 @@
 
             playedHours: function () {
                 return (+this.pick.playingState.playtime / 60).toFixed(1);
+            },
+
+            canChangePick: function () {
+                if (!this.isPicker)
+                    return false;
+
+                return !(
+                    (this.pick.playedStatus === this.$store.state.BEATEN)
+                    ||
+                    (this.pick.playedStatus === this.$store.state.COMPLETED)
+                );
             }
         },
         watch: {
@@ -130,6 +138,9 @@
     @import "../assets/_colors";
 
     .pick{
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
 
         &__game{
             padding: 0 10px;
@@ -172,12 +183,20 @@
         &__links{
             text-align: center;
             margin-bottom: 10px;
+
+            &:empty{
+                margin-bottom: 0;
+            }
         }
 
         &__placeholder{
             text-align: center;
             padding: 10px;
             color: @color-cobalt;
+        }
+
+        &__status{
+            margin-top: auto;
         }
     }
 

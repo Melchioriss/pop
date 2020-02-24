@@ -282,7 +282,7 @@
                     })
                     .catch(e => {
                         console.log(e.response.data.errors.detail);
-                        this.error = 'There was a error updating playstats, try again later.';
+                        this.error = 'There was an error updating playstats, try again later.';
                         this.isUpdatingPlaystats = false;
                     })
             }
@@ -346,7 +346,7 @@
         &__potential{
             margin-bottom: 20px;
             padding: 20px 20px 10px;
-            background: @color-bg-light;
+            background: @color-gray;
         }
 
         &__potential-heading{

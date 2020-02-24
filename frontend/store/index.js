@@ -327,7 +327,7 @@ export default new Vuex.Store({
                 });
         },
 
-        changePickGame: function ({commit, state}, {pick, participantUuid}) {
+        changePickGame: function ({commit, state}, {picker, pick, participantUuid}) {
             return api.picks.changeGame(pick)
                 .then(() => {
 

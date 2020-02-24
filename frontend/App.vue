@@ -35,17 +35,18 @@
                     Created by
                     <a href="https://github.com/Ardiffaz" target="_blank" class="app__authors-link">Ardiffaz</a>
                     &
-                    <a href="https://github.com/insideone/" target="_blank" class="app__authors-link">insideone</a>
+                    <a href="https://github.com/insideone" target="_blank" class="app__authors-link">insideone</a>
                 </div>
 
                 <nav class="app__bottom-nav nav">
+                    <router-link :to="{name: 'text_formatting'}" class="nav__link">Text Formatting</router-link>
                     <a
                         :href="'https://steamcommunity.com/groups/'+group.code"
                         target="_blank"
                         class="nav__link"
                     >Steam Group</a>
-                    <a href="https://github.com/Ardiffaz/pop" target="_blank" class="nav__link">Bugs & Suggestions</a>
-                    <router-link :to="{name: 'text_formatting'}" class="nav__link">Text Formatting</router-link>
+                    <a href="https://github.com/Ardiffaz/pop" target="_blank" class="nav__link">Source Code</a>
+                    <a href="https://github.com/Ardiffaz/pop/issues" target="_blank" class="nav__link">Bugs & Suggestions</a>
                 </nav>
             </div>
         </footer>
@@ -217,7 +218,7 @@
         &__authors-link{
             color: @color-bg;
             &:hover{
-                color: @color-bg-light;
+                color: @color-gray;
             }
         }
 

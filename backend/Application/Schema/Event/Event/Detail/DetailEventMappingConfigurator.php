@@ -48,6 +48,16 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->forMember('comments', Operation::mapCollectionTo(DetailEventPickerComment::class));
 
         $config
+            ->registerMapping(EventPickerComment::class, DetailEventPickerComment::class)
+            ->forMember('user', function (EventPickerComment $comment) {
+                return (string) $comment->getUser()->getSteamId();
+            })
+            ->forMember('reviewedGame', function (EventPickerComment $comment) {
+                $reviewedGame = $comment->getReviewedGame();
+                return $reviewedGame ? (string) $reviewedGame->getId() : null;
+            });
+
+        $config
             ->registerMapping(User::class, DetailEventUserView::class)
             ->forMember('steamId', function (User $user) {
                 return (string) $user->getSteamId();

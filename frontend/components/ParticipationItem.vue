@@ -224,6 +224,12 @@
                                 @select-game="selectGame($event, pickType, pickerType)"
                                 @change-status="changeStatus($event, pickType, pickerType)"
                             />
+                            <div
+                                v-if="commentExistsForPicks[ participant.picks[pickerType][pickType] ]"
+                                class="participation__pick-review"
+                            >
+                                <i class="fa-icon fa-fw far fa-file-alt"></i>Review
+                            </div>
                         </div>
 
                         <div
@@ -251,6 +257,7 @@
                 <comments-area
                     :comments="pickers[pickerType].comments"
                     :can-comment="canComment(pickerType)"
+                    :picked-games="pickedGames[pickerType]"
                     @add-comment="addComment($event, pickerType)"
                 />
             </div>
@@ -313,7 +320,8 @@
                 users: 'getSortedUsers',
                 loggedUserSteamId: 'loggedUserSteamId',
                 isAdmin: 'loggedUserIsAdmin',
-                getPick: 'getPick'
+                getPick: 'getPick',
+                getGame: 'getGame'
             }),
 
             participantUser: function () {
@@ -359,6 +367,53 @@
                 totals.playtimeHours = (totals.playtime / 60).toFixed(1);
 
                 return totals;
+            },
+            pickedGames: function () {
+                let gamesByPicker = {};
+
+                Object.keys(this.participant.picks).forEach(pickerType => {
+                    let pickerPicks = this.participant.picks[pickerType];
+                    let games = {};
+                    Object.values(pickerPicks).forEach(pickUuid => {
+                        let pick = this.getPick(pickUuid);
+                        let game = this.getGame(pick.game);
+                        let gameId = game.id;
+                        games[gameId] = game;
+                        games[gameId].pickUuid = pickUuid;
+                    });
+
+                    this.pickers[pickerType].comments.forEach(comment => {
+                        if (comment.reviewedGame)
+                            games[comment.reviewedGame].commentExists = true;
+                    });
+
+                    gamesByPicker[pickerType] = games;
+                });
+
+                return gamesByPicker;
+            },
+            commentExistsForPicks: function () {
+                let pickUuidsByGames = {};
+                let commentExistsForPicks = {};
+                Object.keys(this.participant.picks).forEach(pickerType => {
+                    let pickerPicks = this.participant.picks[pickerType];
+
+                    Object.values(pickerPicks).forEach(pickUuid => {
+                        let pick = this.getPick(pickUuid);
+                        let game = this.getGame(pick.game);
+                        pickUuidsByGames[game.id] = pickUuid;
+                    });
+
+                    this.pickers[pickerType].comments.forEach(comment => {
+                        if (comment.reviewedGame)
+                        {
+                            let pickUuid = pickUuidsByGames[comment.reviewedGame];
+                            commentExistsForPicks[pickUuid] = true;
+                        }
+                    });
+                });
+
+                return commentExistsForPicks;
             }
         },
         watch: {
@@ -525,15 +580,11 @@
                     });
             },
 
-            addComment(commentText, pickerType) {
+            addComment(comment, pickerType) {
 
                 this.$store.dispatch('addPickerComment', {
                     picker: this.$store.getters.getPicker(this.participant.pickers[pickerType]),
-                    comment: {
-                        text: commentText,
-                        user: this.loggedUserSteamId,
-                        createdAt: this.$getDateNow()
-                    }
+                    comment: Object.assign(comment, {user: this.loggedUserSteamId, createdAt: this.$getDateNow()})
                 });
             }
         },
@@ -642,6 +693,7 @@
             flex-basis: 25%;
             border: 1px solid @color-cobalt;
             box-sizing: border-box;
+            position: relative;
 
             &:not(:first-child){
                 border-left: none;
@@ -659,8 +711,17 @@
         &__pick-help{
             font-size: 12px;
             font-weight: bold;
-            text-align: center;
-            padding: 6px 10px;
+            padding: 6px 10px 10px;
+        }
+
+        &__pick-review{
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 12px;
+            color: @color-light-orange;
+            background: @color-cobalt;
+            padding: 2px 6px;
         }
 
         &__total-title{

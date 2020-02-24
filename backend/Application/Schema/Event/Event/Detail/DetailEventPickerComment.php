@@ -15,6 +15,6 @@ class DetailEventPickerComment
     /** @var DateTimeImmutable */
     public $createdAt;
 
-    /** @var int */
+    /** @var string */
     public $reviewedGame;
 }

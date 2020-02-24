@@ -35,6 +35,14 @@ export default new Vuex.Store({
         blocks: {},
     },
     getters: {
+        statusTexts: (state) => ({
+            [state.NOT_PLAYED]: 'Not Played',
+            [state.UNFINISHED]: 'Unfinished',
+            [state.BEATEN]: 'Beaten',
+            [state.COMPLETED]: 'Completed',
+            [state.ABANDONED]: 'Abandoned'
+        }),
+
         getMainGroup: (state) => state.groups[0],
 
         getSortedUsers: (state) => {

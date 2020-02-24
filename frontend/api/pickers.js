@@ -15,6 +15,6 @@ export default new class extends BaseApi {
     }
 
     addComment (picker, comment) {
-        return this.axios.post(this.path(picker.uuid, 'comments'), {text: comment.text});
+        return this.axios.post(this.path(picker.uuid, 'comments'), {text: comment.text, reviewedPickUuid: comment.reviewedPickUuid});
     }
 }

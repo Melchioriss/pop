@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex';
+    import {mapState, mapGetters} from 'vuex';
     export default {
         name: "StatusItem",
         props: {
@@ -57,18 +57,12 @@
                 'ABANDONED'
             ]),
 
+            ...mapGetters([
+                'statusTexts'
+            ]),
+
             canEdit: function () {
                 return this.isParticipant || this.$store.getters.loggedUserIsAdmin;
-            },
-
-            statusTexts: function () {
-                return {
-                    [this.NOT_PLAYED]: 'Not Played',
-                    [this.UNFINISHED]: 'Unfinished',
-                    [this.BEATEN]: 'Beaten',
-                    [this.COMPLETED]: 'Completed',
-                    [this.ABANDONED]: 'Abandoned'
-                };
             },
 
             className: function () {

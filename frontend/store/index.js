@@ -31,6 +31,7 @@ export default new Vuex.Store({
         participants: {},
         pickers: {},
         picks: {},
+        games: {},
         blocks: {},
     },
     getters: {
@@ -73,10 +74,12 @@ export default new Vuex.Store({
 
         getPick: (state) => (pickUuid) => state.picks[pickUuid],
 
+        getGame: (state) => (gameId) => state.games[gameId],
+
         getMainPageContent: (state) => state.blocks[ state.MAIN_PAGE_CONTENT_CODE ],
     },
     actions: {
-        loadGroups: function({commit, state}) {
+        loadGroups: function({commit}) {
 
             return api.groups.getList()
                 .then(({data: groupsData}) => {
@@ -84,7 +87,7 @@ export default new Vuex.Store({
                 });
         },
 
-        loadProfile: function({commit, state}) {
+        loadProfile: function({commit}) {
             return api.profile.logged()
                 .then(({data: profileResult}) => {
 
@@ -92,7 +95,7 @@ export default new Vuex.Store({
                 });
         },
 
-        loadUsers: function ({commit, state}) {
+        loadUsers: function ({commit}) {
             return api.users.getList()
                 .then(({data: usersResult}) => {
                     let users = {};
@@ -113,7 +116,7 @@ export default new Vuex.Store({
                 })
         },
 
-        updateUserExtraRules: function ({commit, state}, {user, extraRules}) {
+        updateUserExtraRules: function ({commit}, {user, extraRules}) {
             return api.users.setExtraRules(user, extraRules)
                 .then(() => {
                     user.extraRules = extraRules;
@@ -121,7 +124,7 @@ export default new Vuex.Store({
                 });
         },
 
-        activateUser: function ({commit, state}, user) {
+        activateUser: function ({commit}, user) {
             return api.users.activateUser(user)
                 .then(() => {
                     user.active = true;
@@ -129,7 +132,7 @@ export default new Vuex.Store({
                 });
         },
 
-        deactivateUser: function ({commit, state}, user) {
+        deactivateUser: function ({commit}, user) {
             return api.users.deactivateUser(user)
                 .then(() => {
                     user.active = false;
@@ -137,7 +140,7 @@ export default new Vuex.Store({
                 });
         },
 
-        grantUserAdminRole: function ({commit, state}, user) {
+        grantUserAdminRole: function ({commit}, user) {
             return api.users.grantAdminRole(user)
                 .then(() => {
                     user.admin = true;
@@ -145,7 +148,7 @@ export default new Vuex.Store({
                 })
         },
 
-        revokeUserAdminRole: function ({commit, state}, user) {
+        revokeUserAdminRole: function ({commit}, user) {
             return api.users.revokeAdminRole(user)
                 .then(() => {
                     user.admin = false;
@@ -153,7 +156,7 @@ export default new Vuex.Store({
                 })
         },
 
-        createEvent: function ({commit, state}, event) {
+        createEvent: function ({commit}, event) {
 
             return new Promise((resolve, reject) => {
                 return api.events.create(event)
@@ -162,7 +165,7 @@ export default new Vuex.Store({
             })
         },
 
-        updateEvent: function ({commit, state}, event) {
+        updateEvent: function ({commit}, event) {
 
             return new Promise((resolve, reject) => {
                 return api.events.update(event)
@@ -171,7 +174,7 @@ export default new Vuex.Store({
             })
         },
 
-        loadEvents: function ({commit, state}) {
+        loadEvents: function ({commit}) {
 
             return api.events.getList()
                 .then(({data: eventsResult}) => {
@@ -185,7 +188,7 @@ export default new Vuex.Store({
                 });
         },
 
-        loadEvent: function ({commit, state}, eventUuid) {
+        loadEvent: function ({commit}, eventUuid) {
 
             return new Promise((resolve, reject) => {
                 return api.events.get(eventUuid)
@@ -206,6 +209,7 @@ export default new Vuex.Store({
 
                         let pickers = {};
                         let picks = {};
+                        let games = {};
                         Object.keys(participants).forEach(participantUuid => {
                             let participant = participants[participantUuid];
                             participant.picks = {};
@@ -217,15 +221,20 @@ export default new Vuex.Store({
                                 participant.picks[picker.type] = {};
 
                                 picker.picks.forEach(pick => {
+                                    games[pick.game.id] = pick.game;
+                                    pick.game = pick.game.id;
+
                                     picks[pick.uuid] = pick;
                                     participant.picks[picker.type][pick.type] = pick.uuid;
                                 });
+                                delete picker.picks;
 
                             });
                             participant.pickers = pickersNormalized;
                         });
 
 
+                        commit('setGames', games);
                         commit('setPicks', picks);
                         commit('setPickers', pickers);
                         commit('setUsers', users);
@@ -238,7 +247,7 @@ export default new Vuex.Store({
             });
         },
 
-        updateParticipantGroupWins: function ({commit, state}, {participant, groupWins}) {
+        updateParticipantGroupWins: function ({commit}, {participant, groupWins}) {
             return api.participants.updateGroupWins(participant, groupWins)
                 .then(() => {
                     participant.groupWins = groupWins;
@@ -246,7 +255,7 @@ export default new Vuex.Store({
                 })
         },
 
-        updateParticipantBlaeoGames: function ({commit, state}, {participant, blaeoGames}) {
+        updateParticipantBlaeoGames: function ({commit}, {participant, blaeoGames}) {
             return api.participants.updateBlaeoGames(participant, blaeoGames)
                 .then(() => {
                     participant.blaeoGames = blaeoGames;
@@ -254,7 +263,7 @@ export default new Vuex.Store({
                 })
         },
 
-        updateParticipantExtraRules: function ({commit, state}, {participant, extraRules}) {
+        updateParticipantExtraRules: function ({commit}, {participant, extraRules}) {
             return api.participants.updateExtraRules(participant, extraRules)
                 .then(() => {
                     participant.extraRules = extraRules;
@@ -262,11 +271,11 @@ export default new Vuex.Store({
                 })
         },
 
-        generateEventPickers: function ({commit, state}, event) {
+        generateEventPickers: function ({commit}, event) {
             return api.events.generatePickers(event);
         },
 
-        replacePickerUser: function ({commit, state}, {picker, userId}) {
+        replacePickerUser: function ({commit}, {picker, userId}) {
             return api.pickers.replaceUser(picker, userId)
                 .then(() => {
                     picker.user = userId;
@@ -274,7 +283,7 @@ export default new Vuex.Store({
                 });
         },
 
-        addPicker: function ({commit, state}, {picker, participant}) {
+        addPicker: function ({commit}, {picker, participant}) {
 
             return api.participants.addPicker(participant, picker)
                 .then(() => {
@@ -286,7 +295,7 @@ export default new Vuex.Store({
                 })
         },
 
-        importGroup: function ({commit, state}, code) {
+        importGroup: function ({commit}, code) {
             return new Promise((resolve, reject) => {
                 return api.groups.import(code)
                     .then(() => resolve())
@@ -294,7 +303,7 @@ export default new Vuex.Store({
             });
         },
 
-        importGames: function ({commit, state}) {
+        importGames: function () {
             return new Promise((resolve, reject) => {
                 return api.games.import()
                     .then(() => resolve())
@@ -302,7 +311,7 @@ export default new Vuex.Store({
             })
         },
 
-        findGames: function ({commit, state}, {query, page}) {
+        findGames: function ({commit}, {query, page}) {
             return new Promise((resolve, reject) => {
                 return api.games.getList(query, page)
                     .then(({data: gamesResult}) => {
@@ -319,9 +328,12 @@ export default new Vuex.Store({
                 .then(() => {
 
                     let participant = {...state.participants[participantUuid]};
+                    let game = pick.game;
+                    pick.game = game.id;
 
                     participant.picks[picker.type][pick.type] = pick.uuid;
 
+                    commit('setGame', game);
                     commit('setParticipant', participant);
                     commit('setPick', pick);
                 });
@@ -331,7 +343,7 @@ export default new Vuex.Store({
             return api.picks.changeGame(pick)
                 .then(() => {
 
-                    if (pick.game.id.toString() !== state.picks[pick.uuid].game.id.toString())
+                    if (pick.game.id.toString() !== state.picks[pick.uuid].game.toString())
                     {
                         pick.playedStatus = state.NOT_PLAYED;
                         pick.playingState = {
@@ -341,15 +353,18 @@ export default new Vuex.Store({
                     }
 
                     let participant = {...state.participants[participantUuid]};
+                    let game = pick.game;
+                    pick.game = game.id;
 
                     participant.picks[picker.type][pick.type] = pick.uuid;
 
+                    commit('setGame', game);
                     commit('setParticipant', participant);
                     commit('setPick', pick);
                 });
         },
 
-        changePickStatus: function ({commit, state}, {pick, status}) {
+        changePickStatus: function ({commit}, {pick, status}) {
 
             return api.picks.changeStatus(pick, status)
                 .then(() => {
@@ -358,7 +373,7 @@ export default new Vuex.Store({
                 });
         },
 
-        loadEventPotentialParticipants: function ({commit, state}, event) {
+        loadEventPotentialParticipants: function ({commit}, event) {
             return new Promise((resolve, reject) => {
                 return api.events.getPotentialParticipants(event)
                     .then(({data: participantsResult}) => {
@@ -367,15 +382,15 @@ export default new Vuex.Store({
             });
         },
 
-        addEventParticipant: function ({commit, state}, {event, participantUuid, steamId}) {
+        addEventParticipant: function ({commit}, {event, participantUuid, steamId}) {
             return api.events.addParticipant(event, participantUuid, steamId);
         },
 
-        importEventPlaystats: function ({commit, state}, {event}) {
+        importEventPlaystats: function ({commit}, {event}) {
             return api.events.importPlaystats(event);
         },
 
-        addPickerComment: function ({commit, state}, {picker, comment}) {
+        addPickerComment: function ({commit}, {picker, comment}) {
             return api.pickers.addComment(picker, comment)
                 .then(() => {
                     picker.comments.push(comment);
@@ -418,6 +433,10 @@ export default new Vuex.Store({
         setPicker: (state, picker) => Vue.set(state.pickers, picker.uuid, picker),
 
         setPicks: (state, picks) => state.picks = picks,
+
+        setGames: (state, games) => state.games = games,
+
+        setGame: (state, game) => Vue.set(state.games, game.id, game),
 
         setPick: (state, pick) => Vue.set(state.picks, pick.uuid, pick),
 

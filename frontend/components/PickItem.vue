@@ -3,22 +3,22 @@
         <template v-if="pick.uuid">
             <div class="pick__game">
                 <div
-                    :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+pick.game.localId+'/capsule_184x69.jpg);'"
+                    :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+game.localId+'/capsule_184x69.jpg);'"
                     class="pick__img"
                 ></div>
                 <a
-                    :href="'https://store.steampowered.com/app/'+pick.game.localId+'/'"
+                    :href="'https://store.steampowered.com/app/'+game.localId+'/'"
                     target="_blank"
                     class="pick__name"
                 >
-                    {{pick.game.name}}
+                    {{game.name}}
                 </a>
                 <div class="pick__stats">
                     <a
-                        :href="'https://steamcommunity.com/profiles/'+userId+'/stats/'+pick.game.localId+'/achievements/'"
+                        :href="'https://steamcommunity.com/profiles/'+userId+'/stats/'+game.localId+'/achievements/'"
                         class="pick__stats-item"
                     >
-                        <i class="fa-icon fas fa-fw fa-trophy"></i>{{+pick.playingState.achievements}} / {{+pick.game.achievements}}
+                        <i class="fa-icon fas fa-fw fa-trophy"></i>{{+pick.playingState.achievements}} / {{+game.achievements}}
                     </a>
                     <div class="pick__stats-item">
                         <i class="fa-icon far fa-fw fa-clock"></i>{{playedHours}} hrs
@@ -63,11 +63,7 @@
                 default: () => ({
                     uuid: '',
                     type: 10,
-                    game: {
-                        id: 0,
-                        name: '',
-                        achievements: null,
-                    },
+                    game: '',
                     playedStatus: 0,
                     playingState: {
                         playtime: null,
@@ -94,8 +90,12 @@
             };
         },
         computed: {
+            game: function () {
+                return this.$store.getters.getGame(this.pick.game);
+            },
+
             gameId: function () {
-                return this.pick.game.id;
+                return this.game ? this.game.id : '';
             },
 
             playedHours: function () {

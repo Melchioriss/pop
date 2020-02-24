@@ -194,7 +194,7 @@
                         v-if="!isCommentsShown[pickerType]"
                         @click="showComments(pickerType)"
                         class="edit-link edit-link--comments-show"
-                    >Show comments</span>
+                    >Show comments ({{pickers[pickerType].comments.length}})</span>
                     <span
                         v-if="isCommentsShown[pickerType]"
                         @click="hideComments(pickerType)"
@@ -348,8 +348,9 @@
                     playtimeHours: 0
                 };
 
-                Object.values(this.pickers).forEach(picker => {
-                    picker.picks.forEach(pick => {
+                Object.values(this.participant.picks).forEach(pickerPicks => {
+                    Object.values(pickerPicks).forEach(pickUuid => {
+                        let pick = this.getPick(pickUuid);
                         totals.achievements += +pick.playingState.achievements;
                         totals.playtime += +pick.playingState.playtime;
                     });
@@ -508,7 +509,7 @@
                 this.$store.dispatch(
                     actionName,
                     {
-                        picker: (pickerType === this.MAJOR) ? this.majorPicker : this.minorPicker,
+                        picker: this.pickers[pickerType],
                         pick,
                         participantUuid: this.participant.uuid
                     })

@@ -13,3 +13,6 @@ tactician:
         security:
             middleware:
                 - tactician.commandbus.security.middleware.command_handler
+        domain:
+            middleware:
+                - tactician.commandbus.domain.middleware.command_handler

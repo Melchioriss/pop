@@ -145,10 +145,14 @@ abstract class FunctionalTest extends WebTestCase
         return $this->fixtures;
     }
 
-    public function request(string $routeName, array $params = []): Response
+    public function request(string $routeName, array $params = [], bool $shouldBeSuccessful = true): Response
     {
         $route = $this->router->getRouteCollection()->get($routeName);
         $this->client->request($route->getMethods()[0], $this->router->generate($routeName, $params), $params);
+
+        if ($shouldBeSuccessful) {
+            $this->assertSuccessfulResponse();
+        }
 
         return $this->client->getResponse();
     }

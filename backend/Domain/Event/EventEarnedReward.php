@@ -49,10 +49,15 @@ class EventEarnedReward
         $this->value = $value;
     }
 
+    public function isFor(RewardReason $reason, ?UuidInterface $pickUuid): bool
+    {
+        return $reason->equalTo($this->getReason()) && $this->isForPick($pickUuid);
+    }
+
     public function isForPick(?UuidInterface $pickUuid)
     {
         if ($pickUuid) {
-            return $this->pick->getUuid()->equals($pickUuid);
+            return $this->pick ? $this->pick->getUuid()->equals($pickUuid) : null;
         }
 
         return $this->pick === null;

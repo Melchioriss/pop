@@ -287,7 +287,7 @@ class EventParticipant
     public function findReward(RewardReason $desiredReason, ?UuidInterface $pickUuid): ?EventEarnedReward
     {
         foreach ($this->rewards as $earnedReward) {
-            if ($earnedReward->getReason()->equalTo($desiredReason) && $earnedReward->isForPick($pickUuid)) {
+            if ($earnedReward->isFor($desiredReason, $pickUuid)) {
                 return $earnedReward;
             }
         }
@@ -327,7 +327,7 @@ class EventParticipant
      * @throws AmbiguousValueException
      * @throws ReflectionException
      */
-    private function removeReward(RewardReason $reason, ?UuidInterface $pickUuid): self
+    public function removeReward(RewardReason $reason, ?UuidInterface $pickUuid): self
     {
         $earnedReward = $this->findReward($reason, $pickUuid);
         if (!$earnedReward) {
@@ -347,24 +347,35 @@ class EventParticipant
      * @return EventParticipant
      * @throws Exception
      */
-    private function setupReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): self
+    public function setupReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): self
     {
         $earnedReward = $this->findReward($reward->getReason(), $pickUuid);
         if ($earnedReward) {
-            $earnedReward->updateValue($value);
+            if ($value !== null && $earnedReward->getValue() !== $value) {
+                $earnedReward->updateValue($value);
+            }
 
             return $this;
         }
 
-        $earnedReward = $this->makeReward($reward, $pickUuid, $value);
-        $this->insertReward($earnedReward);
+        $this->addReward($reward, $pickUuid, $value);
 
         return $this;
     }
 
-    private function insertReward(EventEarnedReward $achievement): self
+    /**
+     * @param EventReward $reward
+     * @param UuidInterface|null $pickUuid
+     * @param int|null $value
+     *
+     * @return EventParticipant
+     *
+     * @throws Exception
+     */
+    public function addReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): self
     {
-        $this->rewards->add($achievement);
+        $reward = $this->makeReward($reward, $pickUuid, $value);
+        $this->rewards->add($reward);
 
         return $this;
     }
@@ -389,5 +400,80 @@ class EventParticipant
     public function getRewards(): array
     {
         return $this->rewards->toArray();
+    }
+
+    /**
+     * @param UuidInterface|null $pickUuid
+     * @return EventEarnedReward[]
+     */
+    public function findRewardsOfPick(?UuidInterface $pickUuid): array
+    {
+        $suitableRewards = [];
+        foreach ($this->rewards as $reward) {
+            if ($reward->isForPick($pickUuid)) {
+                $suitableRewards[] = $reward;
+            }
+        }
+
+        return $suitableRewards;
+    }
+
+    /**
+     * @param EventEarnedReward[] $rewards
+     */
+    public function removeRewards(array $rewards)
+    {
+        Assert::thatAll($rewards)->isInstanceOf(EventEarnedReward::class);
+
+        foreach ($rewards as $reward) {
+            if (!$this->rewards->contains($reward)) {
+                throw new DomainException("You're trying to remove reward that doesn't exist");
+            }
+
+            $this->rewards->removeElement($reward);
+        }
+    }
+
+    /**
+     * @return EventPick[]
+     */
+    public function getPicks(): array
+    {
+        $picks = [];
+        foreach ($this->pickers as $picker) {
+            array_push($picks, ...$picker->getPicks());
+        }
+        return $picks;
+    }
+
+    public function hasAllPicksMade(): bool
+    {
+        foreach ($this->pickers as $picker) {
+            if (!$picker->hasDoneAllPicks()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function hasBeatenAllPicks(): bool
+    {
+        if (!$this->hasAllPicksMade()) {
+            return false;
+        }
+
+        foreach ($this->getPicks() as $pick) {
+            if (!$pick->isBeaten(false)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function hasReward(EventReward $reward, ?UuidInterface $pickUuid): bool
+    {
+        return !!$this->findReward($reward->getReason(), $pickUuid);
     }
 }

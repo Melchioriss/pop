@@ -38,7 +38,6 @@ class UpdateEventPickerUserTest extends FunctionalTest
             'userId'     => (string) $newUser->getSteamId(),
         ]);
 
-        $this->assertSuccessfulResponse();
         $this->assertSame($newUser, $updatedPicker->getUser());
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Domain\Event\DomainEvent;
+namespace PlayOrPay\Domain\Event\DomainEvent\Event;
 
 use PlayOrPay\Domain\Contracts\DomainEvent\DomainEventInterface;
 use PlayOrPay\Domain\Event\EventPick;
@@ -9,13 +9,13 @@ use PlayOrPay\Domain\Event\EventPickPlayedStatus;
 class PickPlayedStatusChanged implements DomainEventInterface
 {
     /** @var EventPick */
-    private $pick;
+    public $pick;
 
     /** @var EventPickPlayedStatus */
-    private $from;
+    public $from;
 
     /** @var EventPickPlayedStatus */
-    private $to;
+    public $to;
 
     public function __construct(EventPick $pick, EventPickPlayedStatus $from, EventPickPlayedStatus $to)
     {

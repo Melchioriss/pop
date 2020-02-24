@@ -26,8 +26,6 @@ class PutBlockTest extends FunctionalTest
             'content' => $content,
         ]);
 
-        $this->assertSuccessfulResponse();
-
         $responseBody = $this->request('get_block', [
             'code' => $code,
         ])->getContent();

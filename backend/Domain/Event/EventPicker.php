@@ -240,4 +240,9 @@ class EventPicker
     {
         return $this->getPickQuota() - $this->picks->count();
     }
+
+    public function hasDoneAllPicks(): bool
+    {
+        return $this->getRestPickQuota() === 0;
+    }
 }

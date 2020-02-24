@@ -51,12 +51,16 @@ class Enum extends SplEnum
     }
 
     /**
-     * @param Enum|int|string ...$anotherEnums
+     * @param Enum|int|string|Enum[]|int[]|string[] ...$anotherEnums
      *
      * @return bool
      */
     public function equalToOneOf(...$anotherEnums): bool
     {
+        if (count($anotherEnums) === 1 && is_array($anotherEnums[0])) {
+            $anotherEnums = $anotherEnums[0];
+        }
+
         foreach ($anotherEnums as $anotherEnum) {
             if ($this->equalTo($anotherEnum)) {
                 return true;

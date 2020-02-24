@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Domain\Event;
 
+use Assert\Assert;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
@@ -10,7 +11,7 @@ use League\Period\Period;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
-use PlayOrPay\Domain\Event\DomainEvent\PickPlayedStatusChanged;
+use PlayOrPay\Domain\Event\DomainEvent\Event\PickPlayedStatusChanged;
 use PlayOrPay\Domain\Event\Exception\WrongParticipantException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
@@ -265,7 +266,9 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         return $this->uuid;
     }
 
-    /** @return EventParticipant[] */
+    /**
+     * @return EventParticipant[]
+     */
     public function getParticipants(): array
     {
         return $this->participants->toArray();
@@ -612,5 +615,84 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         }
 
         return $participant->findReward($reason, $pickUuid);
+    }
+
+    /**
+     * @param UuidInterface $participantUuid
+     * @param UuidInterface|null $pickUuid
+     *
+     * @return EventEarnedReward[]
+     */
+    public function fetchRewards(UuidInterface $participantUuid, ?UuidInterface $pickUuid): array
+    {
+        $participant = $this->findParticipant($participantUuid);
+        if (!$participant) {
+            return null;
+        }
+
+        return $this->getParticipant($participantUuid)->findRewardsOfPick($pickUuid);
+    }
+
+    /**
+     * @param UuidInterface $pickUuid
+     * @param EventReward[] $untouchableRewards
+     *
+     * @throws NotFoundException
+     */
+    public function removePickRewards(UuidInterface $pickUuid, array $untouchableRewards = [])
+    {
+        $pick = $this->getPick($pickUuid);
+        $participant = $pick->getParticipant();
+
+        $toRemove = array_filter(
+            $this->fetchRewards($pick->getParticipant()->getUuid(), $pick->getUuid()),
+            function (EventEarnedReward $earnedReward) use ($untouchableRewards) {
+                foreach ($untouchableRewards as $untouchableReward) {
+                    if ($untouchableReward->getReason()->equalTo($earnedReward->getReason())) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
+
+        $participant->removeRewards($toRemove);
+    }
+
+    /**
+     * Adds those rewards from $rewards which weren't added earlier
+     *
+     * @param UuidInterface $participantUuid
+     * @param EventReward[] $rewards
+     * @param UuidInterface $pickUuid
+     *
+     * @throws Exception
+     */
+    public function setupRewards(UuidInterface $participantUuid, array $rewards, ?UuidInterface $pickUuid)
+    {
+        Assert::thatAll($rewards)->isInstanceOf(EventReward::class);
+
+        $participant = $this->getParticipant($participantUuid);
+        foreach ($rewards as $reward) {
+            $participant->setupReward($reward, $pickUuid, null);
+        }
+    }
+
+    /**
+     * Completely rewriting rewards for a pick
+     *
+     * @param UuidInterface $participantUuid
+     * @param EventReward[] $rewards
+     * @param UuidInterface $pickUuid
+     *
+     * @throws NotFoundException
+     * @throws Exception
+     */
+    public function setupPickRewards(UuidInterface $participantUuid, array $rewards, UuidInterface $pickUuid)
+    {
+        Assert::thatAll($rewards)->isInstanceOf(EventReward::class);
+        $this->removePickRewards($pickUuid, $rewards);
+        $this->setupRewards($participantUuid, $rewards, $pickUuid);
     }
 }

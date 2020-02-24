@@ -13,8 +13,7 @@ services:
             $queryBus: '@tactician.commandbus.query'
             $commandBus: '@tactician.commandbus.command'
             $securityBus: '@tactician.commandbus.security'
-            $eventBus: '@broadway.event_handling.event_bus'
-            $eventStore: '@Broadway\EventStore\Dbal\DBALEventStore'
+            $domainBus: '@tactician.commandbus.domain'
             $dateFormat: '%date_format%'
             $steamApiKey: '%steam_api_key%'
 
@@ -37,10 +36,10 @@ services:
             tags:
                 - { name: tactician.handler, typehints: true, bus: security }
 
-        Broadway\EventHandling\EventListener:
+        PlayOrPay\Domain\Contracts\DomainEvent\DomainEventHandlerInterface:
             public: true
             tags:
-                - { name: broadway.domain.event_listener }
+                - { name: tactician.handler, typehints: true, bus: domain }
 
         Go\Aop\Aspect:
             tags:
@@ -49,17 +48,6 @@ services:
     PlayOrPay\:
         resource: '../backend/*'
         exclude: '../backend/**/{Migrations}'
-
-    ### Event Store
-    Broadway\EventStore\Dbal\DBALEventStore:
-        public: true
-        arguments:
-            - '@doctrine.dbal.default_connection'
-            - '@broadway.serializer.payload'
-            - '@broadway.serializer.metadata'
-            - 'events'
-            - true
-            - '@broadway.uuid.converter'
 
     ### UI
     PlayOrPay\UI\Cli\Command\:

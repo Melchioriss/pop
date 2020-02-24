@@ -44,7 +44,6 @@ class MakePickTest extends FunctionalTest
             'gameId'     => (string) $game->getId(),
         ]);
 
-        $this->assertSuccessfulResponse();
         $this->assertSame($game, $picker->getPickOfType($pickType)->getGame());
     }
 

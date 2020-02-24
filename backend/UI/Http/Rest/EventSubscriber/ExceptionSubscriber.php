@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PlayOrPay\UI\Http\Rest\EventSubscriber;
 
-use Broadway\Repository\AggregateNotFoundException;
 use Exception;
 use InvalidArgumentException;
 use PlayOrPay\Domain\Exception\NotFoundException;
@@ -88,7 +87,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 $statusCode = Response::HTTP_FORBIDDEN;
 
                 break;
-            case $exception instanceof AggregateNotFoundException || $exception instanceof NotFoundException:
+            case $exception instanceof NotFoundException:
                 $statusCode = Response::HTTP_NOT_FOUND;
 
                 break;

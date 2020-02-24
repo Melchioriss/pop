@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Domain\Event\DomainEvent;
+namespace PlayOrPay\Domain\Event\DomainEvent\Event;
 
 use PlayOrPay\Domain\Contracts\DomainEvent\DomainEventInterface;
 

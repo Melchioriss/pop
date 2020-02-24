@@ -53,8 +53,6 @@ class AddEventParticipantTest extends FunctionalTest
             'eventUuid'       => $this->event->getUuid()->toString(),
             'steamId'         => (int) (string) $admin->getSteamId(),
         ]);
-
-        $this->assertSuccessfulResponse();
     }
 
     /**

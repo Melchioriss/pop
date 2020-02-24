@@ -11,6 +11,7 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use League\Tactician\CommandBus;
 use PlayOrPay\Application\Query\PaginatedQuery;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\DomainEvent\DomainEventRecord;
@@ -18,12 +19,11 @@ use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationExcept
 use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository
 {
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
+    /** @var CommandBus */
+    private $domainBus;
 
     /** @var ActorFinder */
     private $actorFinder;
@@ -37,11 +37,11 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
 
     public function __construct(
         ManagerRegistry $registry,
-        EventDispatcherInterface $eventDispatcher,
+        CommandBus $domainBus,
         ActorFinder $actorFinder
     ) {
         parent::__construct($registry, $this->getEntityClass());
-        $this->eventDispatcher = $eventDispatcher;
+        $this->domainBus = $domainBus;
         $this->actorFinder = $actorFinder;
     }
 
@@ -93,7 +93,7 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
                     $eventRecord = DomainEventRecord::fromEvent($event, $this->actorFinder->findActor());
                     $this->_em->persist($eventRecord);
 
-                    $this->eventDispatcher->dispatch($event);
+                    $this->domainBus->handle($event);
                 }
             }
         }

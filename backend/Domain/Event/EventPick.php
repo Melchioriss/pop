@@ -136,4 +136,19 @@ class EventPick
     {
         return $this->getPicker()->getParticipant();
     }
+
+    public function isCompleted(): bool
+    {
+        return $this->playedStatus->equalTo(EventPickPlayedStatus::COMPLETED);
+    }
+
+    public function isBeaten(bool $strict = true)
+    {
+        return $strict
+            ? $this->playedStatus->equalTo(EventPickPlayedStatus::BEATEN)
+            : $this->playedStatus->equalToOneOf([
+                EventPickPlayedStatus::BEATEN,
+                EventPickPlayedStatus::COMPLETED,
+            ]);
+    }
 }

@@ -5,6 +5,7 @@ namespace PlayOrPay\Application\Command\Event\Event\ImportSteamPlaystats;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Application\Query\Steam\PlayerService\GetOwnedGamesQuery;
@@ -64,7 +65,11 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
     {
         $event = $this->eventRepo->get($command->getEventUuid());
         foreach ($event->getParticipants() as $participant) {
-            $this->updateParticipantPlayingStates($participant);
+            try {
+                $this->updateParticipantPlayingStates($participant);
+            } catch (Exception $e) {
+                continue;
+            }
         }
 
         $this->eventRepo->save($event);

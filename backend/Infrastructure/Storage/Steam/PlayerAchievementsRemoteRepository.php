@@ -56,7 +56,7 @@ class PlayerAchievementsRemoteRepository
         }
 
         if (!array_key_exists('achievements', $responseData['playerstats'])) {
-            throw UnexpectedResponseException::becauseFieldDoentExists('achievements');
+            throw UnexpectedResponseException::becauseFieldDoesntExist('achievements');
         }
 
         $achievements = [];

@@ -47,7 +47,7 @@ class RecentlyPlayedRemoteRepository
         $responseData = json_decode($responseContent, true);
 
         if (!array_key_exists('games', $responseData['response'])) {
-            throw UnexpectedResponseException::becauseFieldDoentExists('games');
+            throw UnexpectedResponseException::becauseFieldDoesntExist('games');
         }
 
         $recentlyPlayedGames = [];

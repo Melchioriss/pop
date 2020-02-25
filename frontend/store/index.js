@@ -16,6 +16,7 @@ export default new Vuex.Store({
         picks: {},
         games: {},
         blocks: {},
+        logs: {},
 
         BLAEO_USER_BASE_LINK: 'https://www.backlog-assassins.net/users/',
         MAJOR: 20,
@@ -26,13 +27,17 @@ export default new Vuex.Store({
         LONG: 30,
         VERY_LONG: 40,
 
-        NOT_PLAYED: 0,
+        NOT_PLAYED: 5,
         UNFINISHED: 10,
         BEATEN: 20,
         COMPLETED: 30,
         ABANDONED: 40,
 
         MAIN_PAGE_CONTENT_CODE: 'main_page',
+
+        LOG_TYPES: {
+            STATUS_CHANGE: 'PickPlayedStatusChanged'
+        }
     },
     getters: {
         statusTexts: (state) => ({
@@ -97,6 +102,19 @@ export default new Vuex.Store({
         getGame: (state) => (gameId) => state.games[gameId],
 
         getMainPageContent: (state) => state.blocks[ state.MAIN_PAGE_CONTENT_CODE ],
+
+        getLogsByDate: (state) => {
+            let logsByDate = {};
+
+            Object.values(state.logs).forEach(log => {
+                let date = Vue.prototype.$getExactDate(log.createdAt);
+                if (!logsByDate[date])
+                    logsByDate[date] = [];
+                logsByDate[date].push(log);
+            });
+
+            return logsByDate;
+        }
     },
     actions: {
         loadGroups: function({commit}) {
@@ -457,6 +475,41 @@ export default new Vuex.Store({
                 .then(() => {
                     commit('setBlock', {code: state.MAIN_PAGE_CONTENT_CODE, content})
                 })
+        },
+
+        loadLogs: function ({commit, state}, page) {
+            return api.logs.getList(page)
+                .then(({data: logResult}) => {
+
+                    if (logResult.meta.refs.user)
+                    {
+                        let users = {};
+                        logResult.meta.refs.user.forEach(user => {
+                            users[user.steamId] = user;
+                        });
+                        commit('setUsers', users);
+                    }
+
+                    if (logResult.meta.refs.game)
+                    {
+                        let games = {};
+                        logResult.meta.refs.game.forEach(game => {
+                            games[game.id] = game;
+                        });
+                        commit('setGames', games);
+                    }
+
+                    if (logResult.meta.refs.eventPick)
+                    {
+                        let picks = {};
+                        logResult.meta.refs.eventPick.forEach(pick => {
+                            picks[pick.uuid] = pick;
+                        });
+                        commit('setPicks', picks);
+                    }
+
+                    commit('setLogs', logResult.data);
+                });
         }
     },
     mutations: {
@@ -486,6 +539,8 @@ export default new Vuex.Store({
 
         setPick: (state, pick) => Vue.set(state.picks, pick.uuid, pick),
 
-        setBlock: (state, block) => Vue.set(state.blocks, block.code, block.content)
+        setBlock: (state, block) => Vue.set(state.blocks, block.code, block.content),
+
+        setLogs: (state, logs) => state.logs = logs
     }
 });

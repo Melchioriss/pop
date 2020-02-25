@@ -7,6 +7,9 @@ class LogGame
     /** @var string */
     public $id;
 
+    /** @var int */
+    public $localId;
+
     /** @var string */
     public $name;
 

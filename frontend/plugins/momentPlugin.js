@@ -8,6 +8,12 @@ const momentPlugin = {
 
             return moment(datetime).format('LL');
         };
+        Vue.prototype.$getExactTime = function(datetime) {
+            if (!datetime)
+                return 'never';
+
+            return moment(datetime).format('LT');
+        };
         Vue.prototype.$getExactDatetime = function(datetime) {
             if (!datetime)
                 return 'never';

@@ -62,7 +62,7 @@ class GetDomainEventRecordsLogHandler implements QueryHandlerInterface
         $this->mapping->configure($config = new AutoMapperConfig());
 
         /** @var DomainEventRecord[]|Paginator $eventRecords */
-        $eventRecords = $this->domainEventRecordRepo->paginateAll($query);
+        $eventRecords = $this->domainEventRecordRepo->getSortedList($query);
 
         $refs = [];
         foreach ($eventRecords as $eventRecord) {

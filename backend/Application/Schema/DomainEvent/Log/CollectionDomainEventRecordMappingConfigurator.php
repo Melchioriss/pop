@@ -25,6 +25,9 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
         $config->registerMapping(Game::class, LogGame::class)
             ->forMember('id', function (Game $game) {
                 return (string) $game->getId();
+            })
+            ->forMember('localId', function (Game $game) {
+                return $game->getId()->getLocalId();
             });
 
         $config->registerMapping(EventPick::class, LogPick::class)

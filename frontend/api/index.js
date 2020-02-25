@@ -8,6 +8,7 @@ import pickers from './pickers';
 import picks from './picks';
 import groups from './groups';
 import games from './games';
+import logs from './logs';
 
 
 Object.assign(axios.defaults, {
@@ -25,4 +26,5 @@ export default {
     picks,
     groups,
     games,
+    logs
 }

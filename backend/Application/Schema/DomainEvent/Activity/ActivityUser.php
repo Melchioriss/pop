@@ -1,8 +1,8 @@
 <?php
 
-namespace PlayOrPay\Application\Schema\DomainEvent\Log;
+namespace PlayOrPay\Application\Schema\DomainEvent\Activity;
 
-class LogUser
+class ActivityUser
 {
     /** @var string */
     public $steamId;

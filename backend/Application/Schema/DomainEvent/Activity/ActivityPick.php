@@ -1,11 +1,11 @@
 <?php
 
-namespace PlayOrPay\Application\Schema\DomainEvent\Log;
+namespace PlayOrPay\Application\Schema\DomainEvent\Activity;
 
 use PlayOrPay\Domain\Event\EventPickPlayedStatus;
 use PlayOrPay\Domain\Event\PlayingState;
 
-class LogPick
+class ActivityPick
 {
     /** @var string */
     public $uuid;

@@ -1,8 +1,8 @@
 <?php
 
-namespace PlayOrPay\Application\Schema\DomainEvent\Log;
+namespace PlayOrPay\Application\Schema\DomainEvent\Activity;
 
-class LogGame
+class ActivityGame
 {
     /** @var string */
     public $id;

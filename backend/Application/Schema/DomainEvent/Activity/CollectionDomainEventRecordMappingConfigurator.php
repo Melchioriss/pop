@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Application\Schema\DomainEvent\Log;
+namespace PlayOrPay\Application\Schema\DomainEvent\Activity;
 
 use AutoMapperPlus\AutoMapperPlusBundle\AutoMapperConfiguratorInterface;
 use AutoMapperPlus\Configuration\AutoMapperConfigInterface;
@@ -22,7 +22,7 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
                 return (string) $record->getActor()->getSteamId();
             });
 
-        $config->registerMapping(Game::class, LogGame::class)
+        $config->registerMapping(Game::class, ActivityGame::class)
             ->forMember('id', function (Game $game) {
                 return (string) $game->getId();
             })
@@ -30,7 +30,7 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
                 return $game->getId()->getLocalId();
             });
 
-        $config->registerMapping(EventPick::class, LogPick::class)
+        $config->registerMapping(EventPick::class, ActivityPick::class)
             ->forMember('playedStatus', function (EventPick $pick) {
                 return (int)(string) $pick->getPlayedStatus();
             })
@@ -38,7 +38,7 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
                 return (int)(string) $pick->getType();
             });
 
-        $config->registerMapping(User::class, LogUser::class)
+        $config->registerMapping(User::class, ActivityUser::class)
             ->forMember('steamId', function (User $user) {
                 return (string) $user->getSteamId();
             });

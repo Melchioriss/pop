@@ -25,7 +25,7 @@
         </header>
         <main class="app__main">
             <div class="app__wrapper app__main-area">
-                <router-view :key="$route.path" />
+                <router-view :key="$route.fullPath" />
             </div>
         </main>
         <footer class="app__footer">

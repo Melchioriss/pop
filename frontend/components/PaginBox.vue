@@ -1,30 +1,35 @@
 <template>
     <div class="pagin">
-        <a
+        <component
             v-if="currentPageNumber > 1"
+            :is="linkComponentName"
+            :to="getRoute(1)"
             :title="1"
             class="pagin__link"
             @click.prevent="changePageNumber(1)"
         >
             <i class="fas fa-fw fa-angle-double-left"></i>
-        </a>
+        </component>
 
         <component
             v-for="i in range(minPageToShow, maxPageToShow)"
-            :is="(i === currentPageNumber) ? 'span' : 'a'"
+            :is="(i === currentPageNumber) ? 'span' : linkComponentName"
+            :to="getRoute(i)"
             :key="'page_'+i"
             :class="(i === currentPageNumber) ? 'pagin__cur' : 'pagin__link'"
-            @click.prevent="(i !== currentPageNumber) ? changePageNumber(i) : null"
+            @click.prevent="changePageNumber(i)"
         >{{i}}</component>
 
-        <a
+        <component
             v-if="currentPageNumber < maxPageNumber"
+            :is="linkComponentName"
+            :to="getRoute(maxPageNumber)"
             :title="maxPageNumber"
             class="pagin__link"
             @click.prevent="changePageNumber(maxPageNumber)"
         >
             <i class="fas fa-fw fa-angle-double-right"></i>
-        </a>
+        </component>
 
     </div>
 </template>
@@ -40,6 +45,10 @@
             maxPageNumber: {
                 type: Number,
                 default: 1
+            },
+            useRoute: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
@@ -61,6 +70,9 @@
                     maxPage = this.maxPageNumber;
 
                 return maxPage;
+            },
+            linkComponentName: function () {
+                return this.useRoute ? 'router-link' : 'a';
             }
         },
         methods: {
@@ -69,7 +81,29 @@
             },
 
             changePageNumber(pageNum){
-                this.$emit('change-page-number', pageNum);
+                if (pageNum === this.currentPageNumber)
+                    return;
+
+                if (!this.useRoute)
+                    this.$emit('change-page-number', pageNum);
+            },
+
+            getRoute(pageNum){
+                if (!this.useRoute)
+                    return null;
+
+                let newRoute = {
+                    name: this.$route.name,
+                    params: this.$route.params ? {...this.$route.params} : {},
+                    query: this.$route.query ? {...this.$route.query} : {}
+                };
+
+                if (pageNum === 1)
+                    delete newRoute.query.page;
+                else
+                    newRoute.query.page = pageNum;
+
+                return newRoute;
             }
         }
     }

@@ -8,45 +8,57 @@
             class="activity"
         >
             <template
-                v-for="(logs, date) in logsByDate"
+                v-for="(activity, date) in activityByDate"
             >
                 <div class="activity__date">{{date}}</div>
                 <activity-item
-                    v-for="log in logs"
-                    :key="log.uuid"
-                    :log="log"
+                    v-for="activityItem in activity"
+                    :key="activityItem.uuid"
+                    :activity="activityItem"
                 />
             </template>
-
+            <pagin-box
+                v-if="pages > 1"
+                class="activity__pagin"
+                :currentPageNumber="currentPage"
+                :maxPageNumber="pages"
+                :use-route="true"
+            />
         </div>
 
     </div>
 </template>
 
 <script>
-    import {mapState, mapGetters} from 'vuex';
+    import {mapGetters} from 'vuex';
     import LoadingIndicator from "../components/LoadingIndicator";
     import ActivityItem from "../components/ActivityItem";
+    import PaginBox from "../components/PaginBox";
     export default {
         name: "ActivityFeed",
-        components: {ActivityItem, LoadingIndicator},
+        components: {PaginBox, ActivityItem, LoadingIndicator},
         props: {},
         data() {
             return {
                 isLoading: false,
-                pageNum: 1
+                currentPage: 1,
+                pages: 1
             };
         },
         computed: {
             ...mapGetters({
-                logsByDate: 'getLogsByDate'
+                activityByDate: 'getActivityByDate'
             })
         },
         methods: {},
         created() {
             this.isLoading = true;
-            this.pageNum = parseInt(this.$route.query.page) || 1;
-            this.$store.dispatch('loadLogs', this.pageNum)
+            this.currentPage = parseInt(this.$route.query.page) || 1;
+            this.$store.dispatch('loadActivity', this.currentPage)
+                .then((pagin) => {
+                    this.currentPage = pagin.page;
+                    this.pages = pagin.pages;
+                })
                 .finally(() => this.isLoading = false);
         }
     }

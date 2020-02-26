@@ -1,7 +1,7 @@
 <template>
     <div class="activity-item">
         <div class="activity-item__row">
-            <div class="activity-item__time">{{$getExactTime(log.createdAt)}}</div>
+            <div class="activity-item__time">{{$getExactTime(activity.createdAt)}}</div>
             <div class="activity-item__pic-block">
                 <img
                     :src="user.avatar"
@@ -38,6 +38,16 @@
                     </span>
                 </span>
 
+                <span
+                    v-if="user.steamId !== actor.steamId"
+                    class="activity-item__fix"
+                >
+                    <i class="fa-icon fas fa-tools"></i>changed by
+                    <a
+                        :href="actor.profileUrl"
+                    >{{actor.profileName}}</a>
+                </span>
+
                 <!--<a href="#">Ardiffaz</a> left a review for <a href="#">Pathfinder: Kingmaker - Enhanced Edition</a>:-->
                 <!--<a href="#">insideone</a> joined the group-->
             </div>
@@ -53,7 +63,7 @@
     export default {
         name: "ActivityItem",
         props: {
-            log: {
+            activity: {
                 type: Object,
                 default: () => ({
                     uuid: '',
@@ -69,7 +79,7 @@
         },
         computed: {
             ...mapState([
-                'LOG_TYPES'
+                'ACTIVITY_TYPES'
             ]),
 
             ...mapGetters([
@@ -80,19 +90,19 @@
             ]),
 
             user: function () {
-                return this.getUser(this.log.payload.participantUser);
+                return this.getUser(this.activity.payload.participantUser);
             },
 
             game: function () {
-                return this.getGame(this.log.payload.game);
+                return this.getGame(this.activity.payload.game);
             },
 
             pick: function () {
-                return this.getPick(this.log.payload.pick);
+                return this.getPick(this.activity.payload.pick);
             },
 
             pickStatusText: function () {
-                return this.statusTexts[ this.log.payload.to ];
+                return this.statusTexts[ this.activity.payload.to ];
             },
 
             playHours: function () {
@@ -100,7 +110,11 @@
             },
 
             isChangedStatusType: function () {
-                return this.log.name === this.LOG_TYPES.STATUS_CHANGE;
+                return this.activity.name === this.ACTIVITY_TYPES.STATUS_CHANGE;
+            },
+
+            actor: function () {
+                return this.getUser(this.activity.actor);
             }
         },
         methods: {
@@ -161,6 +175,11 @@
 
         &__stat-item{
             margin-left: 14px;
+        }
+
+        &__fix{
+            margin-left: 20px;
+            color: @color-cobalt;
         }
     }
 

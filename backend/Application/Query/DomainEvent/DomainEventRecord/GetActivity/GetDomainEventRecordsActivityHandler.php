@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Application\Query\DomainEvent\DomainEventRecord\GetLog;
+namespace PlayOrPay\Application\Query\DomainEvent\DomainEventRecord\GetActivity;
 
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
@@ -9,11 +9,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use PlayOrPay\Application\Query\Collection;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
-use PlayOrPay\Application\Schema\DomainEvent\Log\CollectionDomainEventRecord;
-use PlayOrPay\Application\Schema\DomainEvent\Log\CollectionDomainEventRecordMappingConfigurator;
-use PlayOrPay\Application\Schema\DomainEvent\Log\LogGame;
-use PlayOrPay\Application\Schema\DomainEvent\Log\LogPick;
-use PlayOrPay\Application\Schema\DomainEvent\Log\LogUser;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecord;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecordMappingConfigurator;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityGame;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityPick;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityUser;
 use PlayOrPay\Domain\Contracts\DomainEvent\DomainEventInterface;
 use PlayOrPay\Domain\DomainEvent\DomainEventRecord;
 use PlayOrPay\Domain\Event\EventPick;
@@ -22,7 +22,7 @@ use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Infrastructure\Storage\DomainEvent\DomainEventRecordRepository;
 
-class GetDomainEventRecordsLogHandler implements QueryHandlerInterface
+class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
 {
     /** @var DomainEventRecordRepository */
     private $domainEventRecordRepo;
@@ -34,9 +34,9 @@ class GetDomainEventRecordsLogHandler implements QueryHandlerInterface
     private $em;
 
     const REFS_MAPPING = [
-        Game::class => LogGame::class,
-        EventPick::class => LogPick::class,
-        User::class => LogUser::class,
+        Game::class => ActivityGame::class,
+        EventPick::class => ActivityPick::class,
+        User::class => ActivityUser::class,
     ];
 
     public function __construct(
@@ -51,13 +51,13 @@ class GetDomainEventRecordsLogHandler implements QueryHandlerInterface
     }
 
     /**
-     * @param GetDomainEventRecordsLogQuery $query
+     * @param GetDomainEventRecordsActivityQuery $query
      * @return Collection
      *
      * @throws NotFoundException
      * @throws InvalidArgumentException
      */
-    public function __invoke(GetDomainEventRecordsLogQuery $query)
+    public function __invoke(GetDomainEventRecordsActivityQuery $query)
     {
         $this->mapping->configure($config = new AutoMapperConfig());
 

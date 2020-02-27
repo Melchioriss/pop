@@ -261,6 +261,12 @@
                             <div class="participation__total-line">
                                 <i class="fa-icon fa-fw far fa-clock"></i>{{totalPlayStats.playtimeHours}} hours played
                             </div>
+                            <div class="participation__total-line participation__reward-info">
+                                <div class="participation__reward-info">
+                                    <span class="participation__reward-title">Total points achieved:</span>
+                                    <div class="medal medal--total" title="Total points achieved">{{participant.totalRewardValue}}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,7 +310,8 @@
                         active: true,
                         groupWins: '',
                         blaeoGames: '',
-                        pickers: []
+                        pickers: [],
+                        totalRewardValue: 0
                     };
                 }
             },

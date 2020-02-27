@@ -109,4 +109,15 @@ class EventPickerComment
     {
         return $this->picker;
     }
+
+    public function findPick(): ?EventPick
+    {
+        $reviewedGame = $this->getReviewedGame();
+        if (!$reviewedGame)
+            return null;
+
+        $picker = $this->getPicker();
+        $pick = $picker->findPickOfGame($reviewedGame->getId());
+        return $pick ? $pick : null;
+    }
 }

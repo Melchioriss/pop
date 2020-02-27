@@ -23,6 +23,16 @@
                     <div class="pick__stats-item">
                         <i class="fa-icon far fa-fw fa-clock"></i>{{playedHours}} hrs
                     </div>
+                    <div
+                        v-if="hasRewards"
+                        class="pick__rewards"
+                    >
+                        <div
+                            v-for="reward in rewards"
+                            :class="['pick__reward', 'medal', {'medal--completed': reward.reason === reasonCompleted}]"
+                            :title="rewardHints[reward.reason]"
+                        >{{reward.value}}</div>
+                    </div>
                 </div>
             </div>
             <div class="pick__links">
@@ -52,6 +62,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
     import StatusItem from "./StatusItem";
     import PickingGameForm from "./PickingGameForm";
     export default {
@@ -82,6 +93,10 @@
             isParticipant: {
                 type: Boolean,
                 default: false
+            },
+            rewards: {
+                type: Object,
+                default: () => ({})
             }
         },
         data() {
@@ -90,6 +105,8 @@
             };
         },
         computed: {
+            ...mapGetters(['rewardReasons', 'rewardHints']),
+
             game: function () {
                 return this.$store.getters.getGame(this.pick.game);
             },
@@ -111,6 +128,14 @@
                     ||
                     (this.pick.playedStatus === this.$store.state.COMPLETED)
                 );
+            },
+
+            hasRewards: function () {
+                return Object.values(this.rewards).length > 0;
+            },
+
+            reasonCompleted: function () {
+                return this.rewardReasons['GAME_COMPLETED'];
             }
         },
         watch: {
@@ -166,18 +191,28 @@
 
         &__stats{
             display: flex;
-            align-items: baseline;
+            align-items: center;
             justify-content: center;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
 
         &__stats-item{
             margin: 0 5px;
             color: @color-text;
+            white-space: nowrap;
 
             a&:hover{
                 color: fade(@color-text, 60%);
             }
+        }
+
+        &__rewards{
+            white-space: nowrap;
+        }
+
+        &__reward{
+            margin: 0 3px;
         }
 
         &__links{

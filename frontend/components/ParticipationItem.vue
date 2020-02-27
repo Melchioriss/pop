@@ -31,6 +31,17 @@
                         </div>
                     </div>
                 </div>
+                <div
+                    v-if="all7BeatenReward"
+                    class="participation__reward-info"
+                >
+                    <span class="participation__reward-title">All 7 games finished!</span>
+                    <div
+                        :title="rewardHints[ rewardReasons.ALL_PICKS_BEATEN ]"
+                        class="medal"
+                    >{{all7BeatenReward.value}}</div>
+                </div>
+
             </div>
             <div class="participation__main-area">
 
@@ -131,7 +142,10 @@
                     <div
                         v-else-if="blaeoPoints"
                     >
-                        <div class="medal">{{+blaeoPoints}}</div>
+                        <div
+                            :title="rewardHints[ rewardReasons.BLAEO_POINTS ]"
+                            class="medal"
+                        >{{+blaeoPoints}}</div>
                     </div>
                     <span
                         v-if="isAdmin && !isEditingBlaeoPoints"
@@ -221,6 +235,7 @@
                                 :user-id="participant.user"
                                 :is-picker="isPicker(pickerType)"
                                 :is-participant="isParticipant"
+                                :rewards="participant.rewards[ participant.picks[pickerType][pickType] ]"
                                 @select-game="selectGame($event, pickType, pickerType)"
                                 @change-status="changeStatus($event, pickType, pickerType)"
                             />
@@ -325,7 +340,8 @@
                 getPick: 'getPick',
                 getGame: 'getGame',
                 getComment: 'getComment',
-                rewardReasons: 'rewardReasons'
+                rewardReasons: 'rewardReasons',
+                rewardHints: 'rewardHints'
             }),
 
             canEditFields: function () {
@@ -341,6 +357,9 @@
             blaeoPoints: function () {
                 let reward = this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ] : null;
                 return reward ? reward.value : null;
+            },
+            all7BeatenReward: function () {
+                return this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.ALL_PICKS_BEATEN ] : null;
             },
             pickers: function () {
                 let pickers = {};
@@ -564,7 +583,8 @@
                         playingState: {
                             playtime: null,
                             achievements: null
-                        }
+                        },
+                        playedStatus: this.$store.state.NOT_PLAYED
                     };
                 }
 
@@ -671,7 +691,6 @@
             & > p:last-child{
                 margin-bottom: 0;
             }
-
         }
 
         &__picker{
@@ -752,6 +771,18 @@
 
         &__comments{
             padding: 10px 10px 10px 260px;
+        }
+
+        &__reward-info{
+            display: flex;
+            align-items: center;
+        }
+
+        &__reward-title{
+            color: @color-beaten;
+            font-weight: bold;
+            font-size: 13px;
+            margin-right: 6px;
         }
     }
 

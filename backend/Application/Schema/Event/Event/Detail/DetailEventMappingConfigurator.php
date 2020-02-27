@@ -57,12 +57,7 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
                 return $reviewedGame ? (string) $reviewedGame->getId() : null;
             })
             ->forMember('pickUuid', function (EventPickerComment $comment) {
-                $reviewedGame = $comment->getReviewedGame();
-                if (!$reviewedGame)
-                    return null;
-                
-                $picker = $comment->getPicker();
-                $pick = $picker->findPickOfGame($reviewedGame->getId());
+                $pick = $comment->findPick();
                 return $pick ? (string) $pick->getUuid() : null;
             });
 
@@ -94,17 +89,6 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             })
             ->forMember('localId', function (Game $game) {
                 return (string) $game->getId()->getLocalId();
-            });
-
-        $config
-            ->registerMapping(EventPickerComment::class, DetailEventPickerComment::class)
-            ->forMember('user', function (EventPickerComment $comment) {
-                return (string) $comment->getUser()->getSteamId();
-            })
-            ->forMember('reviewedGame', function (EventPickerComment $comment) {
-                $game = $comment->getReviewedGame();
-
-                return $game ? $game->getId() : null;
             });
 
         $config

@@ -61,6 +61,16 @@ export default new Vuex.Store({
             ALL_PICKS_BEATEN: 700
         }),
 
+        rewardHints: (state, getters) => ({
+            [ getters.rewardReasons.GAME_BEATEN[ state.SHORT ] ]: 'For finishing a short game',
+            [ getters.rewardReasons.GAME_BEATEN[ state.MEDIUM ] ]: 'For finishing a medium game',
+            [ getters.rewardReasons.GAME_BEATEN[ state.LONG ] ]: 'For finishing a long game',
+            [ getters.rewardReasons.GAME_BEATEN[ state.VERY_LONG ] ]: 'For finishing a very long game',
+            [ getters.rewardReasons.GAME_COMPLETED ]: 'For completing a game',
+            [ getters.rewardReasons.BLAEO_POINTS ]: 'For playing games that fit BLAEO theme',
+            [ getters.rewardReasons.ALL_PICKS_BEATEN ]: 'For finishing all picked games'
+        }),
+
         getMainGroup: (state) => state.groups[0],
 
         getSortedUsers: (state) => {
@@ -284,7 +294,8 @@ export default new Vuex.Store({
                             let rewards = {};
                             participant.rewards.forEach(reward => {
                                 let key = reward.pick ? reward.pick : 'global';
-                                rewards[key] = {};
+                                if (!rewards[key])
+                                    rewards[key] = {};
                                 rewards[key][reward.reason] = reward;
                             });
 

@@ -8,6 +8,6 @@
         </id>
         <field name="content" type="text" />
         <field name="createdAt" type="datetime_immutable" />
-        <field name="updatedAt" type="datetime_immutable" />
+        <field name="updatedAt" type="datetime_immutable" nullable="true" />
     </entity>
 </doctrine-mapping>

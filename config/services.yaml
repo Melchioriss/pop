@@ -41,6 +41,10 @@ services:
             tags:
                 - { name: tactician.handler, typehints: true, bus: domain }
 
+        Doctrine\Common\EventSubscriber:
+            tags:
+                - { name: doctrine.event_subscriber }
+
         Go\Aop\Aspect:
             tags:
                 - { name: goaop.aspect }

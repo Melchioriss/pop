@@ -6,6 +6,7 @@ namespace PlayOrPay\Domain\User;
 
 use Assert\Assert;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Knojector\SteamAuthenticationBundle\User\SteamUserInterface;
@@ -71,10 +72,10 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     /** @var string */
     private $extraRules;
 
-    /** @var DateTime */
+    /** @var DateTimeImmutable */
     private $createdAt;
 
-    /** @var DateTime */
+    /** @var DateTimeImmutable|null */
     private $updatedAt;
 
     /** @var Group[] */
@@ -82,7 +83,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function __construct()
     {
-        $this->updatedAt = $this->createdAt = new DateTime();
+        $this->createdAt = new DateTimeImmutable();
         $this->roles = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
@@ -431,12 +432,12 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         return $this;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -456,7 +457,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function onUpdate(): void
     {
-        $this->updatedAt = new DateTime();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function eraseCredentials()

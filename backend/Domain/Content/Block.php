@@ -21,7 +21,7 @@ class Block implements OnUpdateEventListenerInterface, AggregateInterface
     /** @var DateTimeImmutable */
     private $createdAt;
 
-    /** @var DateTimeImmutable */
+    /** @var DateTimeImmutable|null */
     private $updatedAt;
 
     public function __construct(string $code, string $content)
@@ -30,7 +30,6 @@ class Block implements OnUpdateEventListenerInterface, AggregateInterface
         $this->code = $code;
         $this->content = $content;
         $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function updateContent(string $content): self
@@ -60,7 +59,7 @@ class Block implements OnUpdateEventListenerInterface, AggregateInterface
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }

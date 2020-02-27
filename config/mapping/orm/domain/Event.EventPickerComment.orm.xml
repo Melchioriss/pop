@@ -13,6 +13,7 @@
         <field name="text" type="text" />
         <field name="history" type="json_array" />
         <field name="createdAt" type="datetime_immutable" />
+        <field name="updatedAt" type="datetime_immutable" nullable="true" />
         <many-to-one field="reviewedGame" target-entity="PlayOrPay\Domain\Game\Game">
             <join-column referenced-column-name="complex_id" />
         </many-to-one>

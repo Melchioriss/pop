@@ -7,8 +7,8 @@
         <field name="name" />
         <embedded name="activePeriod" class="League\Period\Period" />
         <field name="description" type="text" />
-        <field name="createdAt" type="datetime" />
-        <field name="updatedAt" type="datetime" />
+        <field name="createdAt" type="datetime_immutable" />
+        <field name="updatedAt" type="datetime_immutable" nullable="true" />
         <one-to-many field="participants" target-entity="PlayOrPay\Domain\Event\EventParticipant" mapped-by="event">
             <cascade><cascade-persist /></cascade>
         </one-to-many>

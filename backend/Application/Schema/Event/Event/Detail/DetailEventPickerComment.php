@@ -2,8 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\Event\Event\Detail;
 
-use DateTimeImmutable;
-
 class DetailEventPickerComment
 {
     /** @var string */
@@ -15,7 +13,7 @@ class DetailEventPickerComment
     /** @var string */
     public $text;
 
-    /** @var DateTimeImmutable */
+    /** @var string */
     public $createdAt;
 
     /** @var string */
@@ -23,4 +21,7 @@ class DetailEventPickerComment
 
     /** @var string */
     public $reviewedPickUuid;
+
+    /** @var string|null */
+    public $updatedAt;
 }

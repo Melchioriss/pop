@@ -8,8 +8,8 @@
                 <option name="unsigned">true</option>
             </options>
         </id>
-        <field name="createdAt" type="datetime" />
-        <field name="updatedAt" type="datetime" />
+        <field name="createdAt" type="datetime_immutable" />
+        <field name="updatedAt" type="datetime_immutable" nullable="true" />
         <field name="communityVisibilityState" type="integer" nullable="true" />
         <field name="profileState" type="integer" nullable="true" />
         <field name="profileName" />

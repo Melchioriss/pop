@@ -89,6 +89,26 @@ class EventPickerCommentTest extends FunctionalTest
     }
 
     /**
+     * @test
+     *
+     * @throws EntityNotFoundException
+     */
+    public function updated_at_field_should_refresh_after_edit()
+    {
+        $comment = $this->prepareComment();
+
+        $this->assertNull($comment->getUpdatedAt());
+
+        $this->request('update_comment', [
+            'commentUuid' => (string) $comment->getUuid(),
+            'text' => 'something else',
+        ]);
+
+        $comment = $this->getComment($comment->getUuid());
+        $this->assertNotNull($comment->getUpdatedAt());
+    }
+
+    /**
      * @param string $commentText
      * @param UuidInterface|null $reviewedPickUuid
      * @param bool $shouldBeSuccessfull
@@ -99,7 +119,7 @@ class EventPickerCommentTest extends FunctionalTest
      * @throws Exception
      */
     private function prepareComment(
-        string $commentText,
+        string $commentText = 'anything',
         ?UuidInterface $reviewedPickUuid = null,
         bool $shouldBeSuccessfull = true
     ): EventPickerComment {

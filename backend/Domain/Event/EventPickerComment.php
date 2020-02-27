@@ -4,6 +4,7 @@ namespace PlayOrPay\Domain\Event;
 
 use DateTimeImmutable;
 use DomainException;
+use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
@@ -11,7 +12,7 @@ use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionException;
 
-class EventPickerComment
+class EventPickerComment implements OnUpdateEventListenerInterface
 {
     /** @var UuidInterface */
     private $uuid;
@@ -33,6 +34,9 @@ class EventPickerComment
 
     /** @var string[] */
     private $history = [];
+
+    /** @var DateTimeImmutable|null */
+    private $updatedAt;
 
     /**
      * @param UuidInterface $uuid
@@ -119,5 +123,15 @@ class EventPickerComment
         $picker = $this->getPicker();
         $pick = $picker->findPickOfGame($reviewedGame->getId());
         return $pick ? $pick : null;
+    }
+
+    public function onUpdate(): void
+    {
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
     }
 }

@@ -3,7 +3,7 @@
 namespace PlayOrPay\Domain\Event;
 
 use Assert\Assert;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use Exception;
@@ -42,10 +42,10 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     /** @var string */
     private $description;
 
-    /** @var DateTime */
+    /** @var DateTimeImmutable */
     private $createdAt;
 
-    /** @var DateTime */
+    /** @var DateTimeImmutable|null */
     private $updatedAt;
 
     /** @var EventParticipant[] */
@@ -68,7 +68,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         $this->name = $name;
         $this->activePeriod = $activePeriod;
         $this->description = $description;
-        $this->createdAt = $this->updatedAt = new DateTime();
+        $this->createdAt = new DateTimeImmutable();
         $this->participants = new ArrayCollection();
         $this->fillParticipants($group);
     }
@@ -252,12 +252,12 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         return $this->description;
     }
 
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
@@ -277,10 +277,11 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
 
     /**
      * @param User $user
-     *
-     * @throws Exception
+     * @param UuidInterface|null $participantUuid
      *
      * @return Event
+     *
+     * @throws Exception
      */
     public function addParticipant(User $user, UuidInterface $participantUuid = null): self
     {
@@ -310,7 +311,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
 
     public function onUpdate(): void
     {
-        $this->updatedAt = new DateTime();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function getGroup(): Group

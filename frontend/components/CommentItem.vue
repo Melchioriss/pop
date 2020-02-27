@@ -77,7 +77,8 @@
                     user: '',
                     createdAt: '',
                     text: '',
-                    reviewedGame: null
+                    reviewedGame: null,
+                    reviewedPickUuid: null
                 })
             }
         },
@@ -101,7 +102,7 @@
             },
 
             pick: function () {
-                return this.getPick(this.comment.pickUuid);
+                return this.getPick(this.comment.reviewedPickUuid);
             },
 
             game: function () {

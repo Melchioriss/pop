@@ -192,9 +192,9 @@ class EventPicker
      * @throws NotFoundException
      * @throws ReflectionException
      *
-     * @return EventPicker
+     * @return EventPickerComment
      */
-    public function addComment(UuidInterface $uuid, User $user, string $text, ?UuidInterface $reviewedPickUuid): self
+    public function addComment(UuidInterface $uuid, User $user, string $text, ?UuidInterface $reviewedPickUuid): EventPickerComment
     {
         if ($reviewedPickUuid) {
             $pick = $this->getPick($reviewedPickUuid);
@@ -206,7 +206,7 @@ class EventPicker
         $comment = new EventPickerComment($uuid, $this, $user, $text, $reviewedPickUuid);
         $this->comments->add($comment);
 
-        return $this;
+        return $comment;
     }
 
     public function hasRewiew(Game $game): bool

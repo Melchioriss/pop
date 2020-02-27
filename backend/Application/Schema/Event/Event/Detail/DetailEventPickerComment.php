@@ -22,5 +22,5 @@ class DetailEventPickerComment
     public $reviewedGame;
 
     /** @var string */
-    public $pickUuid;
+    public $reviewedPickUuid;
 }

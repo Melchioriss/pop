@@ -422,7 +422,8 @@
                         games[gameId].pickUuid = pickUuid;
                     });
 
-                    this.pickers[pickerType].comments.forEach(comment => {
+                    this.pickers[pickerType].comments.forEach(commentUuid => {
+                        let comment = this.getComment(commentUuid);
                         if (comment.reviewedGame)
                             games[comment.reviewedGame].commentExists = true;
                     });
@@ -438,7 +439,7 @@
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
                         if (comment.reviewedGame)
-                            commentsForPicks[comment.pickUuid] = comment.uuid;
+                            commentsForPicks[comment.reviewedPickUuid] = comment.uuid;
                     });
                 });
 

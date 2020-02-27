@@ -93,7 +93,9 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
                     $eventRecord = DomainEventRecord::fromEvent($event, $this->actorFinder->findActor());
                     $this->_em->persist($eventRecord);
 
-                    $this->domainBus->handle($event);
+                    try {
+                        $this->domainBus->handle($event);
+                    } catch (Exception $e) {}
                 }
             }
         }

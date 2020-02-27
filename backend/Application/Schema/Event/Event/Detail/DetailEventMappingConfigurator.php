@@ -64,7 +64,7 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
                 $reviewedGame = $comment->getReviewedGame();
                 return $reviewedGame ? (string) $reviewedGame->getId() : null;
             })
-            ->forMember('pickUuid', function (EventPickerComment $comment) {
+            ->forMember('reviewedPickUuid', function (EventPickerComment $comment) {
                 $pick = $comment->findPick();
                 return $pick ? (string) $pick->getUuid() : null;
             });

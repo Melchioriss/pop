@@ -12,6 +12,7 @@ use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 use PlayOrPay\Domain\Event\DomainEvent\Event\PickPlayedStatusChanged;
+use PlayOrPay\Domain\Event\DomainEvent\Event\ReviewAdded;
 use PlayOrPay\Domain\Event\Exception\WrongParticipantException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
@@ -462,7 +463,11 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         string $text,
         ?UuidInterface $reviewedPickUuid
     ): self {
-        $this->getPicker($pickerUuid)->addComment($commentUuid, $user, $text, $reviewedPickUuid);
+        $comment = $this->getPicker($pickerUuid)->addComment($commentUuid, $user, $text, $reviewedPickUuid);
+
+        if ($reviewedPickUuid) {
+            $this->addDomainEvent(new ReviewAdded($comment));
+        }
 
         return $this;
     }

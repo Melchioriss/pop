@@ -34,6 +34,14 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->forMember('pickers', Operation::mapCollectionTo(DetailEventPickerView::class))
             ->forMember('rewards', function (EventParticipant $participant, AutoMapperInterface $mapper) {
                 return $mapper->mapMultiple($participant->getRewards(), DetailEventEarnedReward::class);
+            })
+            ->forMember('totalRewardValue', function(EventParticipant $participant) {
+                $rewards = $participant->getRewards();
+                $totalRewardValue = 0;
+                foreach ($rewards as $reward) {
+                    $totalRewardValue += $reward->getValue();
+                }
+                return $totalRewardValue;
             });
 
         $config

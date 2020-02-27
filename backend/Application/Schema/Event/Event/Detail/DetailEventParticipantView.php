@@ -29,4 +29,7 @@ class DetailEventParticipantView
 
     /** @var DetailEventEarnedReward[] */
     public $rewards;
+
+    /** @var int */
+    public $totalRewardValue;
 }

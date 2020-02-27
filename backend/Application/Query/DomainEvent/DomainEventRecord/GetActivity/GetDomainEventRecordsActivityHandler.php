@@ -21,6 +21,7 @@ use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Infrastructure\Storage\DomainEvent\DomainEventRecordRepository;
+use PlayOrPay\Infrastructure\Storage\User\ActorFinder;
 
 class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
 {
@@ -38,16 +39,20 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
         EventPick::class => ActivityPick::class,
         User::class => ActivityUser::class,
     ];
+    /** @var ActorFinder */
+    private $actorFinder;
 
     public function __construct(
         DomainEventRecordRepository $domainEventRecordRepo,
         CollectionDomainEventRecordMappingConfigurator $mapping,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ActorFinder $actorFinder
     )
     {
         $this->domainEventRecordRepo = $domainEventRecordRepo;
         $this->mapping = $mapping;
         $this->em = $em;
+        $this->actorFinder = $actorFinder;
     }
 
     /**
@@ -59,6 +64,8 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
      */
     public function __invoke(GetDomainEventRecordsActivityQuery $query)
     {
+        $actor = $this->actorFinder->findActor();
+
         $this->mapping->configure($config = new AutoMapperConfig());
 
         /** @var DomainEventRecord[]|Paginator $eventRecords */
@@ -103,12 +110,15 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
             $repo = $this->em->getRepository($refClass);
             $classMetadata = $this->em->getClassMetadata($refClass);
 
+            $classObjects = $repo->findBy([ $classMetadata->identifier[0] => $classRefs ]);
+            if ($refClass === User::class && $actor) {
+                $classObjects[] = $actor;
+            }
+
             $collection->addRefs(
                 lcfirst($classMetadata->getReflectionClass()->getShortName()),
                 $mapper->mapMultiple(
-                    $repo->findBy([
-                        $classMetadata->identifier[0] => $classRefs
-                    ]),
+                    $classObjects,
                     self::REFS_MAPPING[$refClass]
                 )
             );

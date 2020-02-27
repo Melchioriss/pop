@@ -61,10 +61,10 @@
                     <span
                         v-else
                         class="text"
-                        v-html="$getMarkedResult(participant.groupWins)"
+                        v-html="$getMarkedContent(participant.groupWins)"
                     ></span>
                     <span
-                        v-if="!isEditingGroupWins"
+                        v-if="canEditFields && !isEditingGroupWins"
                         @click="startEditingGroupWins"
                         class="edit-link"
                     >edit</span>
@@ -96,10 +96,10 @@
                     <span
                         v-else
                         class="text"
-                        v-html="$getMarkedResult(participant.blaeoGames)"
+                        v-html="$getMarkedContent(participant.blaeoGames)"
                     ></span>
                     <span
-                        v-if="!isEditingBlaeoGames"
+                        v-if="canEditFields && !isEditingBlaeoGames"
                         @click="startEditingBlaeoGames"
                         class="edit-link"
                     >edit</span>
@@ -134,7 +134,7 @@
                         <div class="medal">{{+blaeoPoints}}</div>
                     </div>
                     <span
-                        v-if="!isEditingBlaeoPoints"
+                        v-if="isAdmin && !isEditingBlaeoPoints"
                         @click="startEditingBlaeoPoints"
                         class="edit-link"
                     >edit</span>
@@ -143,7 +143,7 @@
                 <div class="participation__sub-title">
                     <span>Extra rules by <b>{{participantUser.profileName}}</b> for this event:</span>
                     <span
-                        v-if="!isEditingExtraRules"
+                        v-if="canEditFields && !isEditingExtraRules"
                         @click="startEditingExtraRules"
                         class="edit-link"
                     >edit</span>
@@ -169,7 +169,7 @@
                 <div
                     v-else
                     class="participation__rules text"
-                    v-html="$getMarkedResult(participant.extraRules)"
+                    v-html="$getMarkedContent(participant.extraRules)"
                 ></div>
             </div>
         </div>
@@ -225,7 +225,8 @@
                                 @change-status="changeStatus($event, pickType, pickerType)"
                             />
                             <div
-                                v-if="commentExistsForPicks[ participant.picks[pickerType][pickType] ]"
+                                v-if="commentsForPicks[ participant.picks[pickerType][pickType] ]"
+                                @click="scrollToReview(commentsForPicks[ participant.picks[pickerType][pickType] ], pickerType)"
                                 class="participation__pick-review"
                             >
                                 <i class="fa-icon fa-fw far fa-file-alt"></i>Review
@@ -257,6 +258,7 @@
                 <comments-area
                     :comments="pickers[pickerType].comments"
                     :can-comment="canComment(pickerType)"
+                    :is-participant="isParticipant"
                     :picked-games="pickedGames[pickerType]"
                     @add-comment="addComment($event, pickerType)"
                 />
@@ -322,8 +324,13 @@
                 isAdmin: 'loggedUserIsAdmin',
                 getPick: 'getPick',
                 getGame: 'getGame',
+                getComment: 'getComment',
                 rewardReasons: 'rewardReasons'
             }),
+
+            canEditFields: function () {
+                return this.isAdmin || this.isParticipant;
+            },
 
             participantUser: function () {
                 return this.$store.getters.getUser(this.participant.user);
@@ -338,7 +345,9 @@
             pickers: function () {
                 let pickers = {};
                 [this.MAJOR, this.MINOR].forEach(type => {
-                    pickers[type] = this.$store.getters.getPicker( this.participant.pickers[type] );
+                    let picker = this.$store.getters.getPicker( this.participant.pickers[type] );
+                    if (picker)
+                        pickers[type] = picker;
                 });
                 return pickers;
             },
@@ -397,28 +406,17 @@
 
                 return gamesByPicker;
             },
-            commentExistsForPicks: function () {
-                let pickUuidsByGames = {};
-                let commentExistsForPicks = {};
+            commentsForPicks: function () {
+                let commentsForPicks = {};
                 Object.keys(this.participant.picks).forEach(pickerType => {
-                    let pickerPicks = this.participant.picks[pickerType];
-
-                    Object.values(pickerPicks).forEach(pickUuid => {
-                        let pick = this.getPick(pickUuid);
-                        let game = this.getGame(pick.game);
-                        pickUuidsByGames[game.id] = pickUuid;
-                    });
-
-                    this.pickers[pickerType].comments.forEach(comment => {
+                    this.pickers[pickerType].comments.forEach(commentUuid => {
+                        let comment = this.getComment(commentUuid);
                         if (comment.reviewedGame)
-                        {
-                            let pickUuid = pickUuidsByGames[comment.reviewedGame];
-                            commentExistsForPicks[pickUuid] = true;
-                        }
+                            commentsForPicks[comment.pickUuid] = comment.uuid;
                     });
                 });
 
-                return commentExistsForPicks;
+                return commentsForPicks;
             }
         },
         watch: {
@@ -595,6 +593,13 @@
                     picker: this.$store.getters.getPicker(this.participant.pickers[pickerType]),
                     comment: Object.assign(comment, {user: this.loggedUserSteamId, createdAt: this.$getDateNow()})
                 });
+            },
+
+            scrollToReview(commentUuid, pickerType) {
+                this.showComments(pickerType);
+                setTimeout(() => {
+                    document.getElementById('comment_'+commentUuid).scrollIntoView({behavior: 'smooth'});
+                }, 25);
             }
         },
         created() {
@@ -731,6 +736,7 @@
             color: @color-light-orange;
             background: @color-cobalt;
             padding: 2px 6px;
+            cursor: pointer;
         }
 
         &__total-title{

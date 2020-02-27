@@ -32,7 +32,7 @@
         </div>
         <div
             v-if="!isEditing && content"
-            class="text" v-html="$getMarkedResult(content)"
+            class="text" v-html="$getMarkedContent(content)"
         ></div>
         <span
             v-if="isAdmin && !isEditing"

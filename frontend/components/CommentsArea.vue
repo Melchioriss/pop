@@ -1,9 +1,8 @@
 <template>
     <div class="comments">
         <comment-item
-            v-for="comment in comments"
-            :comment="comment"
-            :pickUuid="pickedGames[comment.reviewedGame] ? pickedGames[comment.reviewedGame].pickUuid : ''"
+            v-for="commentUuid in comments"
+            :comment="getComment(commentUuid)"
         />
 
         <div
@@ -23,7 +22,10 @@
                     class="button"
                 >Reply</button>
             </div>
-            <div class="comments__game-block">
+            <div
+                v-if="canSelectGames"
+                class="comments__game-block"
+            >
                 <label class="form__label">If you want this comment to be a game review, then select a game:</label>
                 <select
                     v-model="selectedPickUuid"
@@ -63,6 +65,8 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
+    import uuid from 'uuid';
     import CommentItem from "./CommentItem";
     export default {
         name: "CommentsArea",
@@ -73,6 +77,10 @@
                 default: []
             },
             canComment: {
+                type: Boolean,
+                default: false
+            },
+            isParticipant: {
                 type: Boolean,
                 default: false
             },
@@ -89,12 +97,22 @@
             };
         },
         computed: {
+            ...mapGetters([
+                'getComment'
+            ]),
+
             commentsCount: function () {
                 return this.comments.length;
             },
             selectedGame: function () {
                 let pick = this.$store.getters.getPick(this.selectedPickUuid);
                 return pick ? this.$store.getters.getGame(pick.game): null;
+            },
+            canSelectGames: function () {
+                if (!this.isParticipant)
+                    return false;
+
+                return Object.values(this.pickedGames).length > 0;
             }
         },
         watch: {
@@ -110,6 +128,7 @@
 
             addComment () {
                 this.$emit('add-comment', {
+                    uuid: uuid.v4(),
                     text: this.commentText,
                     reviewedPickUuid: this.selectedPickUuid,
                     reviewedGame: this.selectedGame ? this.selectedGame.id: ''

@@ -17,7 +17,7 @@
 
             <div
                 v-if="event.description"
-                v-html="$getMarkedResult(event.description)"
+                v-html="$getMarkedContent(event.description)"
                 class="event__description text"
             ></div>
 

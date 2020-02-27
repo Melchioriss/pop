@@ -15,6 +15,7 @@ export default new Vuex.Store({
         pickers: {},
         picks: {},
         games: {},
+        comments: {},
         blocks: {},
         activity: {},
 
@@ -100,6 +101,8 @@ export default new Vuex.Store({
         getPick: (state) => (pickUuid) => state.picks[pickUuid],
 
         getGame: (state) => (gameId) => state.games[gameId],
+
+        getComment: (state) => (commentUuid) => state.comments[commentUuid],
 
         getMainPageContent: (state) => state.blocks[ state.MAIN_PAGE_CONTENT_CODE ],
 
@@ -248,6 +251,7 @@ export default new Vuex.Store({
                         let pickers = {};
                         let picks = {};
                         let games = {};
+                        let comments = {};
                         Object.keys(participants).forEach(participantUuid => {
                             let participant = participants[participantUuid];
                             participant.picks = {};
@@ -266,12 +270,20 @@ export default new Vuex.Store({
                                     participant.picks[picker.type][pick.type] = pick.uuid;
                                 });
                                 delete picker.picks;
+
+                                let pickerCommentUuids = [];
+                                picker.comments.forEach(comment => {
+                                    comments[comment.uuid] = comment;
+                                    pickerCommentUuids.push(comment.uuid);
+                                });
+                                picker.comments = pickerCommentUuids;
+
                             });
                             participant.pickers = pickersNormalized;
 
                             let rewards = {};
                             participant.rewards.forEach(reward => {
-                                let key = reward.pick ? reward.pick : 'global'
+                                let key = reward.pick ? reward.pick : 'global';
                                 rewards[key] = {};
                                 rewards[key][reward.reason] = reward;
                             });
@@ -280,6 +292,7 @@ export default new Vuex.Store({
                         });
 
 
+                        commit('setComments', comments);
                         commit('setGames', games);
                         commit('setPicks', picks);
                         commit('setPickers', pickers);
@@ -457,9 +470,18 @@ export default new Vuex.Store({
         addPickerComment: function ({commit}, {picker, comment}) {
             return api.pickers.addComment(picker, comment)
                 .then(() => {
-                    picker.comments.push(comment);
+                    commit('setComment', comment);
+
+                    picker.comments.push(comment.uuid);
                     commit('setPicker', picker);
                 });
+        },
+
+        updateComment: function({commit, state}, comment) {
+            return api.comments.update(comment)
+                .then(() => {
+                    commit('setComment', comment);
+                })
         },
 
         loadMainPageContent: function({commit, state}) {
@@ -547,6 +569,10 @@ export default new Vuex.Store({
         setGames: (state, games) => state.games = games,
 
         setGame: (state, game) => Vue.set(state.games, game.id, game),
+
+        setComments: (state, comments) => state.comments = comments,
+
+        setComment: (state, comment) => Vue.set(state.comments, comment.uuid, comment),
 
         setPick: (state, pick) => Vue.set(state.picks, pick.uuid, pick),
 

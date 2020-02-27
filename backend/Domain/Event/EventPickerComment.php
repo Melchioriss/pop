@@ -104,4 +104,9 @@ class EventPickerComment
     {
         return $this->history;
     }
+
+    public function getPicker(): EventPicker
+    {
+        return $this->picker;
+    }
 }

@@ -3,7 +3,7 @@
         <router-link :to="{name: 'event', params: {eventUuid: event.uuid}}" class="event-item__name">{{event.name}}</router-link>
         <div
             v-if="event.description"
-            v-html="$getMarkedResult(event.description)"
+            v-html="$getMarkedContent(event.description)"
             class="event-item__description text"
         ></div>
         <div class="event-item__dates">

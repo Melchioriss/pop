@@ -134,7 +134,7 @@
                 </div>
                 <template v-if="user.extraRules && !isEditingRules">
                     <div
-                        v-html="$getMarkedResult(user.extraRules)"
+                        v-html="$getMarkedContent(user.extraRules)"
                         class="member__rules text"
                     ></div>
                 </template>

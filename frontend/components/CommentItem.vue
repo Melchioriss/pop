@@ -1,5 +1,8 @@
 <template>
-    <div class="comment">
+    <div
+        class="comment"
+        :id="'comment_'+comment.uuid"
+    >
         <div class="comment__user-img-block">
             <img
                 :src="user.avatar"
@@ -14,6 +17,11 @@
                     :title="$getExactDatetime(comment.createdAt)"
                     class="comment__date"
                 >{{$getRelativeDate(comment.createdAt)}}</div>
+                <span
+                    v-if="isAuthor"
+                    @click="startEditing"
+                    class="edit-link comment__edit-link"
+                >edit</span>
             </div>
             <div
                 v-if="comment.reviewedGame"
@@ -21,7 +29,27 @@
             >
                 <div class="comment__game-title">{{game.name}}</div>
             </div>
-            <div>{{comment.text}}</div>
+            <div v-if="isEditing">
+                <textarea
+                    v-model="newText"
+                    class="input input--textarea input--space-bottom"
+                ></textarea>
+                <button
+                    @click="saveEditedComment"
+                    type="button"
+                    class="button button--space-right"
+                >save</button>
+                <button
+                    @click="endEditing"
+                    type="button"
+                    class="button button--space-right"
+                >cancel</button>
+            </div>
+            <div
+                v-else
+                v-html="$getMarkedContent(comment.text)"
+                class="text"
+            ></div>
         </div>
         <a
             v-if="comment.reviewedGame"
@@ -45,26 +73,27 @@
             comment: {
                 type: Object,
                 default: () => ({
+                    uuid: '',
                     user: '',
                     createdAt: '',
                     text: '',
                     reviewedGame: null
                 })
-            },
-            pickUuid: {
-                type: String,
-                default: ''
             }
         },
         data() {
-            return {};
+            return {
+                isEditing: false,
+                newText: ''
+            };
         },
         computed: {
             ...mapGetters([
                 'getUser',
                 'getPick',
                 'getGame',
-                'statusTexts'
+                'statusTexts',
+                'loggedUserSteamId'
             ]),
 
             user: function () {
@@ -72,7 +101,7 @@
             },
 
             pick: function () {
-                return this.getPick(this.pickUuid);
+                return this.getPick(this.comment.pickUuid);
             },
 
             game: function () {
@@ -81,9 +110,27 @@
 
             playedStatusLowerCase: function () {
                 return this.pick ? this.statusTexts[this.pick.playedStatus].toLowerCase() : '';
+            },
+
+            isAuthor: function () {
+                return this.comment.user === this.loggedUserSteamId;
             }
         },
-        methods: {}
+        methods: {
+            startEditing: function () {
+                this.newText = this.comment.text;
+                this.isEditing = true;
+            },
+
+            endEditing: function () {
+                this.isEditing = false;
+            },
+
+            saveEditedComment: function () {
+                this.$store.dispatch('updateComment', {...this.comment, text: this.newText})
+                    .finally(() => this.endEditing());
+            }
+        }
     }
 </script>
 
@@ -104,6 +151,8 @@
 
         &__user-img{
             width: 100%;
+            display: block;
+            border: 1px solid @color-cobalt;
         }
 
         &__body{
@@ -126,6 +175,10 @@
         &__date{
             color: @color-cobalt;
             font-size: 13px;
+        }
+
+        &__edit-link{
+            margin-left: 20px;
         }
 
         &__game-line{

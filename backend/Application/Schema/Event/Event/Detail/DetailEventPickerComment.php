@@ -7,6 +7,9 @@ use DateTimeImmutable;
 class DetailEventPickerComment
 {
     /** @var string */
+    public $uuid;
+
+    /** @var string */
     public $user;
 
     /** @var string */
@@ -17,4 +20,7 @@ class DetailEventPickerComment
 
     /** @var string */
     public $reviewedGame;
+
+    /** @var string */
+    public $pickUuid;
 }

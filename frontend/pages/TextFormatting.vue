@@ -15,14 +15,14 @@
                     <td>
                     <pre>{{headersExample1}}</pre>
                     </td>
-                    <td v-html="$getMarkedResult(headersExample1)"></td>
+                    <td v-html="$getMarkedContent(headersExample1)"></td>
                 </tr>
                 <tr>
                     <td>
                         <p>Alternative syntax</p>
                         <pre>{{headersExample2}}</pre>
                     </td>
-                    <td v-html="$getMarkedResult(headersExample2)"></td>
+                    <td v-html="$getMarkedContent(headersExample2)"></td>
                 </tr>
             </table>
 
@@ -37,7 +37,7 @@
                     <td>
                         <pre>{{textEmphasisExample}}</pre>
                     </td>
-                    <td v-html="$getMarkedResult(textEmphasisExample)"></td>
+                    <td v-html="$getMarkedContent(textEmphasisExample)"></td>
                 </tr>
             </table>
 
@@ -49,7 +49,7 @@
                 </tr>
                 <tr>
                     <td><pre>{{quoteExample}}</pre></td>
-                    <td v-html="$getMarkedResult(quoteExample)"></td>
+                    <td v-html="$getMarkedContent(quoteExample)"></td>
                 </tr>
             </table>
 
@@ -70,11 +70,11 @@
                     </td>
                     <td>
                         <p>Ordered list:</p>
-                        <div v-html="$getMarkedResult(listExample1)"></div>
+                        <div v-html="$getMarkedContent(listExample1)"></div>
                         <p>Unordered list:</p>
-                        <div v-html="$getMarkedResult(listExample2)"></div>
+                        <div v-html="$getMarkedContent(listExample2)"></div>
                         <p>Lists can be nested:</p>
-                        <div v-html="$getMarkedResult(listExample3)"></div>
+                        <div v-html="$getMarkedContent(listExample3)"></div>
                     </td>
                 </tr>
             </table>
@@ -87,7 +87,7 @@
                 </tr>
                 <tr>
                     <td><pre>{{codeExample}}</pre></td>
-                    <td v-html="$getMarkedResult(codeExample)"></td>
+                    <td v-html="$getMarkedContent(codeExample)"></td>
                 </tr>
             </table>
 
@@ -99,7 +99,7 @@
                 </tr>
                 <tr>
                     <td><pre>{{linkExample}}</pre></td>
-                    <td v-html="$getMarkedResult(linkExample)"></td>
+                    <td v-html="$getMarkedContent(linkExample)"></td>
                 </tr>
             </table>
 
@@ -111,7 +111,7 @@
                 </tr>
                 <tr>
                     <td><pre>{{imageExample}}</pre></td>
-                    <td v-html="$getMarkedResult(imageExample)"></td>
+                    <td v-html="$getMarkedContent(imageExample)"></td>
                 </tr>
             </table>
 
@@ -123,7 +123,7 @@
                 </tr>
                 <tr>
                     <td><pre>{{hrExample}}</pre></td>
-                    <td v-html="$getMarkedResult(hrExample)"></td>
+                    <td v-html="$getMarkedContent(hrExample)"></td>
                 </tr>
             </table>
 
@@ -135,11 +135,11 @@
                 </tr>
                 <tr>
                     <td><pre>{{tableExample1}}</pre></td>
-                    <td v-html="$getMarkedResult(tableExample1)"></td>
+                    <td v-html="$getMarkedContent(tableExample1)"></td>
                 </tr>
                 <tr>
                     <td><pre>{{tableExample2}}</pre></td>
-                    <td v-html="$getMarkedResult(tableExample2)"></td>
+                    <td v-html="$getMarkedContent(tableExample2)"></td>
                 </tr>
             </table>
 

@@ -8,6 +8,7 @@ use PlayOrPay\Domain\DomainEvent\DomainEventRecord;
 use PlayOrPay\Domain\Event\EventPick;
 use PlayOrPay\Domain\Event\EventPickerComment;
 use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\User\User;
 use ReflectionClass;
 
@@ -42,6 +43,11 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
         $config->registerMapping(User::class, ActivityUser::class)
             ->forMember('steamId', function (User $user) {
                 return (string) $user->getSteamId();
+            });
+
+        $config->registerMapping(Group::class, ActivityGroup::class)
+            ->forMember('id', function (Group $group) {
+                return (string) $group->getId();
             });
 
         $config->registerMapping(EventPickerComment::class, ActivityComment::class);

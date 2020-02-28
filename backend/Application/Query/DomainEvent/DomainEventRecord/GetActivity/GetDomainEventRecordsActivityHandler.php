@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use PlayOrPay\Application\Query\Collection;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityComment;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityGroup;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecord;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecordMappingConfigurator;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityGame;
@@ -21,6 +22,7 @@ use PlayOrPay\Domain\Event\EventPick;
 use PlayOrPay\Domain\Event\EventPickerComment;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
+use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\User\User;
 use PlayOrPay\Infrastructure\Storage\DomainEvent\DomainEventRecordRepository;
 
@@ -39,7 +41,8 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
         Game::class => ActivityGame::class,
         EventPick::class => ActivityPick::class,
         User::class => ActivityUser::class,
-        EventPickerComment::class => ActivityComment::class
+        EventPickerComment::class => ActivityComment::class,
+        Group::class => ActivityGroup::class,
     ];
 
     public function __construct(

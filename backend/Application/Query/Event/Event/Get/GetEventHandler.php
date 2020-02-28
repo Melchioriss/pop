@@ -4,12 +4,15 @@ namespace PlayOrPay\Application\Query\Event\Event\Get;
 
 use AutoMapperPlus\AutoMapper;
 use AutoMapperPlus\Configuration\AutoMapperConfig;
+use AutoMapperPlus\Exception\InvalidArgumentException;
 use AutoMapperPlus\Exception\UnregisteredMappingException;
 use Doctrine\ORM\EntityNotFoundException;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
 use PlayOrPay\Application\Schema\Event\Event\Detail\DetailEventMappingConfigurator;
+use PlayOrPay\Application\Schema\Event\Event\Detail\DetailEventReward;
 use PlayOrPay\Application\Schema\Event\Event\Detail\DetailEventView;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
+use PlayOrPay\Infrastructure\Storage\Event\EventRewardRepository;
 
 class GetEventHandler implements QueryHandlerInterface
 {
@@ -19,19 +22,27 @@ class GetEventHandler implements QueryHandlerInterface
     /** @var DetailEventMappingConfigurator */
     private $mapping;
 
-    public function __construct(EventRepository $eventRepo, DetailEventMappingConfigurator $mapping)
-    {
+    /** @var EventRewardRepository */
+    private $eventRewardRepo;
+
+    public function __construct(
+        EventRepository $eventRepo,
+        EventRewardRepository $eventRewardRepo,
+        DetailEventMappingConfigurator $mapping
+    ) {
         $this->eventRepo = $eventRepo;
+        $this->eventRewardRepo = $eventRewardRepo;
         $this->mapping = $mapping;
     }
 
     /**
      * @param GetEventQuery $query
      *
-     * @throws EntityNotFoundException
-     * @throws UnregisteredMappingException
-     *
      * @return DetailEventView
+     *
+     * @throws UnregisteredMappingException
+     * @throws InvalidArgumentException
+     * @throws EntityNotFoundException
      */
     public function __invoke(GetEventQuery $query)
     {
@@ -39,6 +50,13 @@ class GetEventHandler implements QueryHandlerInterface
 
         $this->mapping->configure($config = new AutoMapperConfig());
 
-        return (new AutoMapper($config))->map($event, DetailEventView::class);
+        $mapper = (new AutoMapper($config));
+
+        /** @var DetailEventView $responseEvent */
+        $responseEvent = $mapper->map($event, DetailEventView::class);
+
+        $responseEvent->rewards = $mapper->mapMultiple($this->eventRewardRepo->findAll(), DetailEventReward::class);
+
+        return $responseEvent;
     }
 }

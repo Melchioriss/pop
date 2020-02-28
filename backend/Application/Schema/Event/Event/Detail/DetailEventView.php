@@ -23,4 +23,7 @@ class DetailEventView
 
     /** @var DetailEventUserView */
     public $users;
+
+    /** @var  */
+    public $rewards;
 }

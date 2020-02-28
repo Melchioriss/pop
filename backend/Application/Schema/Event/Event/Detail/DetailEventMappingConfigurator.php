@@ -12,6 +12,7 @@ use PlayOrPay\Domain\Event\EventParticipant;
 use PlayOrPay\Domain\Event\EventPick;
 use PlayOrPay\Domain\Event\EventPicker;
 use PlayOrPay\Domain\Event\EventPickerComment;
+use PlayOrPay\Domain\Event\EventReward;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
 
@@ -106,6 +107,11 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
                 return $pick ? (string) $pick->getUuid() : null;
             })
             ->forMember('reason', function (EventEarnedReward $reward) {
+                return (int)(string) $reward->getReason();
+            });
+
+        $config->registerMapping(EventReward::class, DetailEventReward::class)
+            ->forMember('reason', function (EventReward $reward) {
                 return (int)(string) $reward->getReason();
             });
     }

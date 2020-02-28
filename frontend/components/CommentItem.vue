@@ -13,10 +13,15 @@
         <div class="comment__body">
             <div class="comment__head-line">
                 <div class="comment__user-name">{{user.profileName}}</div>
-                <div
-                    :title="$getExactDatetime(comment.createdAt)"
-                    class="comment__date"
-                >{{$getRelativeDate(comment.createdAt)}}</div>
+                <div class="comment__date">
+                    <span
+                        :title="$getExactDatetime(comment.createdAt)"
+                    >{{$getRelativeDate(comment.createdAt)}}</span>
+                    <span
+                        v-if="comment.updatedAt"
+                        :title="$getExactDatetime(comment.updatedAt)"
+                    >(edited {{$getRelativeDate(comment.updatedAt)}})</span>
+                </div>
                 <span
                     v-if="isAuthor"
                     @click="startEditing"

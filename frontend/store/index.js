@@ -501,6 +501,7 @@ export default new Vuex.Store({
         updateComment: function({commit, state}, comment) {
             return api.comments.update(comment)
                 .then(() => {
+                    comment.updatedAt = Vue.prototype.$getDateNow();
                     commit('setComment', comment);
                 })
         },

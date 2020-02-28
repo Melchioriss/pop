@@ -348,7 +348,8 @@
                 getGame: 'getGame',
                 getComment: 'getComment',
                 rewardReasons: 'rewardReasons',
-                rewardHints: 'rewardHints'
+                rewardHints: 'rewardHints',
+                pickTypes: 'pickTypes'
             }),
 
             canEditFields: function () {
@@ -379,12 +380,6 @@
             },
             pickersUserIds: function () {
                 return Object.values(this.pickers).reduce((prev, cur) => ({...prev, ...{[cur.type]: cur.user}}), {});
-            },
-            pickTypes: function () {
-                return {
-                    [this.MAJOR]: [this.SHORT, this.MEDIUM, this.LONG, this.VERY_LONG],
-                    [this.MINOR]: [this.SHORT, this.MEDIUM, this.LONG]
-                };
             },
             isParticipant: function () {
                 return this.participant.user === this.loggedUserSteamId;

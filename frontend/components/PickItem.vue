@@ -16,6 +16,7 @@
                 <div class="pick__stats">
                     <a
                         :href="'https://steamcommunity.com/profiles/'+userId+'/stats/'+game.localId+'/achievements/'"
+                        target="_blank"
                         class="pick__stats-item"
                     >
                         <i class="fa-icon fas fa-fw fa-trophy"></i>{{+pick.playingState.achievements}} / {{+game.achievements}}
@@ -201,10 +202,6 @@
             margin: 0 5px;
             color: @color-text;
             white-space: nowrap;
-
-            a&:hover{
-                color: fade(@color-text, 60%);
-            }
         }
 
         &__rewards{

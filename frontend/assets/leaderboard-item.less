@@ -1,0 +1,71 @@
+@import "./_colors";
+
+.leaderboard-item{
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid @color-cobalt;
+  padding: 20px 0;
+  font-size: 14px;
+
+  &--head{
+    padding: 20px 0 0;
+  }
+
+  &__user{width: 190px;}
+  &__games{flex-grow: 1;}
+  &__bonus{width: 60px;}
+  &__blaeo{width: 60px;}
+  &__total{width: 70px;}
+
+  &__user, &__bonus, &__blaeo, &__total{
+    flex-shrink: 0;
+  }
+
+  &__bonus, &__blaeo, &__total{
+    text-align: center;
+  }
+
+  &__games-head{
+    width: 100%;
+    margin-bottom: 6px;
+    border-bottom: 1px solid @color-cobalt-hover;
+  }
+
+  &__position{
+    padding-bottom: 10px;
+    color: @color-cobalt;
+  }
+
+  &__user-name{
+    font-size: 16px;
+  }
+
+  &__status{
+    font-size: 18px;
+    color: @color-green;
+    margin: 16px 0;
+
+    &--failed{
+      color: @color-red;
+    }
+  }
+
+  &__games{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: -20px;
+
+    &--total{
+      display: block;
+    }
+  }
+
+  &__game{
+    width: 25%;
+    box-sizing: border-box;
+    padding-right: 10px;
+    margin-bottom: 30px;
+  }
+
+
+}

@@ -34,6 +34,8 @@ export default new Vuex.Store({
         COMPLETED: 30,
         ABANDONED: 40,
 
+        POINTS_THRESHOLD: 5,
+
         MAIN_PAGE_CONTENT_CODE: 'main_page',
 
         ACTIVITY_TYPES: {
@@ -70,6 +72,11 @@ export default new Vuex.Store({
             [ getters.rewardReasons.GAME_COMPLETED ]: 'For completing a game',
             [ getters.rewardReasons.BLAEO_POINTS ]: 'For playing games that fit BLAEO theme',
             [ getters.rewardReasons.ALL_PICKS_BEATEN ]: 'For finishing all picked games'
+        }),
+
+        pickTypes: (state) => ({
+            [state.MAJOR]: [state.SHORT, state.MEDIUM, state.LONG, state.VERY_LONG],
+            [state.MINOR]: [state.SHORT, state.MEDIUM, state.LONG]
         }),
 
         getMainGroup: (state) => state.groups[0],

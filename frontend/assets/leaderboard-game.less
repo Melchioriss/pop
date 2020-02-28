@@ -1,0 +1,45 @@
+@import "./_colors";
+
+.leaderboard-game{
+
+  &__name{
+    color: @color-cobalt;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+
+  &__stats{
+    display: flex;
+    margin-bottom: 4px;
+  }
+
+  &__stat{
+    margin-right: 16px;
+    color: @color-text;
+  }
+
+  &__points{
+
+  }
+
+  &__status{
+    width: 60%;
+    height: 4px;
+    margin: 4px 0 6px;
+
+    &--unfinished{background: @color-unfinished;}
+    &--beaten{background: @color-beaten;}
+    &--completed{background: @color-completed;}
+    &--abandoned{background: @color-abandoned;}
+  }
+
+  &__inline-medal{
+    margin-right: 12px;
+  }
+
+  &__no-pick{
+    color: @color-cobalt;
+  }
+}

@@ -1,183 +1,129 @@
 <template>
     <div>
-        <h1 class="title">PoP May-June-July</h1>
+        <loading-indicator v-if="isLoading" />
 
-        <button type="button" class="button">Back to event</button>
+        <template v-else>
+            <h1 class="title">{{event.name}}</h1>
+
+            <router-link
+                :to="{name: 'event', params: {eventUuid: uuid}}"
+                class="button button--space-right"
+            >Back to event</router-link>
+
+            <button type="button" class="button button--space-right">Sort Alphabetically</button>
+            <button type="button" class="button button--space-right">Sort By total points</button>
+            <button type="button" class="button button--space-right">Show TOP15</button>
+
+
+            <div class="leaderboard">
+                <div class="leaderboard-item leaderboard-item--head">
+                    <div class="leaderboard-item__user">Member</div>
+                    <div class="leaderboard-item__games">
+                        <div class="leaderboard-item__games-head">Games</div>
+                        <div class="leaderboard-item__game">Short</div>
+                        <div class="leaderboard-item__game">Medium</div>
+                        <div class="leaderboard-item__game">Long</div>
+                        <div class="leaderboard-item__game">Very long</div>
+                    </div>
+                    <div class="leaderboard-item__bonus">All 7</div>
+                    <div class="leaderboard-item__blaeo">BLAEO points</div>
+                    <div class="leaderboard-item__total">Total</div>
+                </div>
+
+                <leaderboard-item
+                    v-for="(participant, i) in participants"
+                    :key="participant.uuid"
+                    :participant="participant"
+                    :number="i"
+                />
+
+            </div>
+
+        </template>
+
 
         <div class="leaderboard">
-            <div class="leaderboard__item leaderboard__item--head">
-                <div class="leaderboard__user">Member</div>
-                <div class="leaderboard__games">
-                    <div class="leaderboard__games-head">Games</div>
-                    <div class="leaderboard__game">Short</div>
-                    <div class="leaderboard__game">Medium</div>
-                    <div class="leaderboard__game">Long</div>
-                    <div class="leaderboard__game">Very long</div>
-                </div>
-                <div class="leaderboard__bonus">All 7</div>
-                <div class="leaderboard__blaeo">BLAEO points</div>
-                <div class="leaderboard__total">Total</div>
-            </div>
-            <div class="leaderboard__item" v-for="i in 10">
-                <div class="leaderboard__user">
-                    <div class="leaderboard__position">#1</div>
-                    <div>Ardiffaz Melchioriss</div>
-                    <div class="leaderboard__status">
-                        <i class="fa-icon fas fa-fw fa-check-circle"></i>Completed
-                    </div>
-                    <div class="leaderboard__status leaderboard__status--failed">
-                        <i class="fa-icon fas fa-fw fa-times-circle"></i>Not completed
-                    </div>
-                </div>
-                <div class="leaderboard__games">
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Stories: The Path of Destinies</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>7 / 7</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>3.7 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">2</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Dex</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>0 / 18</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>2.4 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">4</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Batman: Arkham Origins</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>35 / 35</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>25.8 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">6</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
 
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">DISTRAINT: Deluxe Edition</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>14 / 14</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>2.4 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">2</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Root Double -Before Crime * After Days</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>18 / 42</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>30.1 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">8</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Battle Chef Brigade</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>24 / 35</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>12.8 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">4</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Resident Evil 5</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>42 / 42</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>26.1 hrs</div>
-                        </div>
-                        <div class="leaderboard__game-points">
-                            <div class="medal leaderboard__medal-inline">6</div>
-                            <div class="medal medal--completed leaderboard__medal-inline">1</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard__bonus">
-                    <div class="medal medal--completed">1</div>
-                </div>
-                <div class="leaderboard__blaeo">
-                    <div class="medal medal--blaeo">18</div>
-                </div>
-                <div class="leaderboard__total">
-                    <div class="medal medal--total">58</div>
-                </div>
-            </div>
 
-            <div class="leaderboard__item">
-                <div class="leaderboard__user">
+
+            <div class="leaderboard-item">
+                <div class="leaderboard-item__user">
                     Total per categories:
                 </div>
-                <div class="leaderboard__games">
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Short games</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>777</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>1258 hrs</div>
+                <div class="leaderboard-item__games">
+                    <div class="leaderboard-item__game leaderboard-game">
+                        <div class="leaderboard-game__name">Short games</div>
+                        <div class="leaderboard-game__stats">
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[SHORT].achievements}}
+                            </div>
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[SHORT].playtimeHours}} hrs
+                            </div>
                         </div>
                     </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Medium games</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>777</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>1258 hrs</div>
+                    <div class="leaderboard-item__game leaderboard-game">
+                        <div class="leaderboard-game__name">Medium games</div>
+                        <div class="leaderboard-game__stats">
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[MEDIUM].achievements}}
+                            </div>
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[MEDIUM].playtimeHours}} hrs
+                            </div>
                         </div>
                     </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Long games</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>777</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>1258 hrs</div>
+                    <div class="leaderboard-item__game leaderboard-game">
+                        <div class="leaderboard-game__name">Long games</div>
+                        <div class="leaderboard-game__stats">
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[LONG].achievements}}
+                            </div>
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[LONG].playtimeHours}} hrs
+                            </div>
                         </div>
                     </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Very long games</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>777</div>
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>1258 hrs</div>
+                    <div class="leaderboard-item__game leaderboard-game">
+                        <div class="leaderboard-game__name">Very long games</div>
+                        <div class="leaderboard-game__stats">
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[VERY_LONG].achievements}}
+                            </div>
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[VERY_LONG].playtimeHours}} hrs
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="leaderboard__bonus"></div>
-                <div class="leaderboard__blaeo"></div>
-                <div class="leaderboard__total"></div>
+                <div class="leaderboard-item__bonus"></div>
+                <div class="leaderboard-item__blaeo"></div>
+                <div class="leaderboard-item__total"></div>
             </div>
 
-            <div class="leaderboard__item">
-                <div class="leaderboard__user">Total stats</div>
-                <div class="leaderboard__games leaderboard__games--total">
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Total hours played</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon far fa-fw fa-clock"></i>5712 hrs</div>
+            <div class="leaderboard-item">
+                <div class="leaderboard-item__user">Total stats</div>
+                <div class="leaderboard-item__games leaderboard-item__games--total">
+                    <div class="leaderboard-item__game leaderboard-game">
+                        <div class="leaderboard-game__name">Total hours played</div>
+                        <div class="leaderboard-game__stats">
+                            <div class="leaderboard-game__stat">
+                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats.all.playtimeHours}} hrs
+                            </div>
                         </div>
                     </div>
-                    <div class="leaderboard__game">
-                        <div class="leaderboard__game-name">Total achievements unlocked</div>
-                        <div class="leaderboard__game-stats">
-                            <div class="leaderboard__game-stat"><i class="fa-icon fas fa-fw fa-trophy"></i>2584</div>
+                    <div class="leaderboard-item__game leaderboard-game">
+                        <div class="leaderboard-game__name">Total achievements unlocked</div>
+                        <div class="leaderboard-game__stats">
+                            <div class="lleaderboard-game__stat">
+                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats.all.achievements}}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="leaderboard__bonus"></div>
-                <div class="leaderboard__blaeo"></div>
-                <div class="leaderboard__total"></div>
+                <div class="leaderboard-item__bonus"></div>
+                <div class="leaderboard-item__blaeo"></div>
+                <div class="leaderboard-item__total"></div>
             </div>
 
         </div>
@@ -185,112 +131,85 @@
 </template>
 
 <script>
+    import {mapState, mapGetters} from 'vuex';
+    import LoadingIndicator from "../components/LoadingIndicator";
+    import LeaderboardItem from "../components/LeaderboardItem";
     export default {
         name: "EventLeaderboard",
+        components: {LeaderboardItem, LoadingIndicator},
         props: {},
         data() {
-            return {};
+            return {
+                isLoading: false
+            };
         },
-        methods: {}
+        computed: {
+            ...mapState([
+                'SHORT', 'MEDIUM', 'LONG', 'VERY_LONG'
+            ]),
+
+            ...mapGetters([
+                'getPick',
+                'getSortedParticipants'
+            ]),
+
+            participants: function () {
+                return this.getSortedParticipants;
+            },
+
+            uuid: function () {
+                return this.$route.params.eventUuid;
+            },
+            event: function () {
+                return this.$store.state.events[this.uuid];
+            },
+            totalStats: function () {
+                let totals = {
+                    [this.SHORT]: {playtime: 0, achievements: 0},
+                    [this.MEDIUM]: {playtime: 0, achievements: 0},
+                    [this.LONG]: {playtime: 0, achievements: 0},
+                    [this.VERY_LONG]: {playtime: 0, achievements: 0},
+                    all: {playtime: 0, achievements: 0}
+                };
+                Object.values(this.participants).forEach(participant => {
+                    Object.values(participant.picks).forEach(pickerPicks => {
+                        Object.values(pickerPicks).forEach(pickUuid => {
+                            let pick = this.getPick(pickUuid);
+                            totals.all.achievements += +pick.playingState.achievements;
+                            totals.all.playtime += +pick.playingState.playtime;
+                            totals[pick.type].achievements += +pick.playingState.achievements;
+                            totals[pick.type].playtime += +pick.playingState.playtime;
+                        });
+                    })
+                });
+
+                Object.keys(totals).forEach(totalKey => {
+                    let totalItem = totals[totalKey];
+                    totalItem.playtimeHours = (totalItem.playtime / 60).toFixed(1);
+                });
+
+                return totals;
+            }
+        },
+        methods: {},
+        created() {
+            this.isLoading = true;
+            this.$store.dispatch('loadEvent', this.uuid)
+                .then(() => {})
+                .catch(e => console.log(e))
+                .finally(() => this.isLoading = false);
+        }
     }
 </script>
 
 <style lang="less">
     @import "../assets/_colors";
     @import "../assets/medal";
+    @import "../assets/leaderboard-item";
+    @import "../assets/leaderboard-game";
 
     .leaderboard{
         font-size: 14px;
-
-        &__item{
-            display: flex;
-            align-items: flex-start;
-            border-bottom: 1px solid @color-cobalt;
-            padding: 20px 0;
-
-            &--head{
-                padding: 20px 0 0;
-            }
-        }
-
-        &__user{width: 190px;}
-        &__games{flex-grow: 1;}
-        &__bonus{width: 60px;}
-        &__blaeo{width: 60px;}
-        &__total{width: 70px;}
-
-        &__user, &__bonus, &__blaeo, &__total{
-            flex-shrink: 0;
-        }
-
-        &__bonus, &__blaeo, &__total{
-            text-align: center;
-        }
-
-        &__games-head{
-            width: 100%;
-            margin-bottom: 6px;
-        }
-
-        &__position{
-            padding-bottom: 10px;
-            color: @color-cobalt;
-        }
-
-        &__user{
-
-        }
-
-        &__status{
-            font-size: 18px;
-            color: @color-green;
-            margin: 16px 0;
-
-            &--failed{
-                color: @color-red;
-            }
-        }
-
-        &__games{
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: -20px;
-
-            &--total{
-                display: block;
-            }
-        }
-
-        &__game{
-            width: 25%;
-            box-sizing: border-box;
-            padding-right: 10px;
-            margin-bottom: 30px;
-        }
-
-        &__game-name{
-            color: @color-cobalt;
-            font-weight: bold;
-            line-height: 1.2;
-            margin-bottom: 2px;
-        }
-
-        &__game-stats{
-            display: flex;
-            margin-bottom: 4px;
-        }
-
-        &__game-stat{
-            margin-right: 16px;
-        }
-
-        &__game-points{
-            padding-left: 20px;
-        }
-
-        &__medal-inline{
-            margin-right: 12px;
-        }
     }
 
 </style>

@@ -46,8 +46,16 @@
                     >{{game.name}}</a>:
                 </span>
 
+                <span v-if="isMemberAddedType">
+                    joined the group
+                </span>
+
+                <span v-if="isMemberRemovedType">
+                    left the group
+                </span>
+
                 <span
-                    v-if="user.steamId !== actor.steamId"
+                    v-if="!isMemberAddedType && !isMemberRemovedType && user.steamId !== actor.steamId"
                     class="activity-item__fix"
                 >
                     <i class="fa-icon fas fa-tools"></i>changed by
@@ -55,8 +63,6 @@
                         :href="actor.profileUrl"
                     >{{actor.profileName}}</a>
                 </span>
-
-                <!--<a href="#">insideone</a> joined the group-->
             </div>
         </div>
         <div
@@ -103,6 +109,9 @@
                 if (this.activity.payload.participantUser)
                     return this.getUser(this.activity.payload.participantUser);
 
+                if (this.activity.payload.member)
+                    return this.getUser(this.activity.payload.member);
+
                 return this.getUser(this.activity.payload.user);
             },
 
@@ -128,6 +137,14 @@
 
             isReviewAddedType: function () {
                 return this.activity.name === this.ACTIVITY_TYPES.REVIEW_ADDED;
+            },
+
+            isMemberAddedType: function () {
+                return this.activity.name === this.ACTIVITY_TYPES.MEMBER_ADDED;
+            },
+
+            isMemberRemovedType: function () {
+                return this.activity.name === this.ACTIVITY_TYPES.MEMBER_REMOVED;
             },
 
             actor: function () {

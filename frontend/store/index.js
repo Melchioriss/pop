@@ -40,7 +40,9 @@ export default new Vuex.Store({
 
         ACTIVITY_TYPES: {
             STATUS_CHANGE: 'PickPlayedStatusChanged',
-            REVIEW_ADDED: 'ReviewAdded'
+            REVIEW_ADDED: 'ReviewAdded',
+            MEMBER_ADDED: 'MemberAdded',
+            MEMBER_REMOVED: 'MemberRemoved'
         }
     },
     getters: {

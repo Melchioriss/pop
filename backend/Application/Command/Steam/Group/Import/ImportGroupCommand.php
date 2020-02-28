@@ -7,17 +7,16 @@ use Assert\Assert;
 class ImportGroupCommand
 {
     /** @var string */
-    private $code;
+    public $code;
 
-    public function __construct(string $code)
+    /** @var bool */
+    public $force;
+
+    public function __construct(string $code, bool $force = false)
     {
         Assert::that($code)->minLength(1);
 
         $this->code = $code;
-    }
-
-    public function getCode(): string
-    {
-        return $this->code;
+        $this->force = $force;
     }
 }

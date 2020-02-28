@@ -5,6 +5,8 @@ namespace PlayOrPay\Domain\Steam;
 use Doctrine\Common\Collections\ArrayCollection;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
+use PlayOrPay\Domain\Steam\DomainEvent\MemberAdded;
+use PlayOrPay\Domain\Steam\DomainEvent\MemberRemoved;
 use PlayOrPay\Domain\User\User;
 
 class Group implements AggregateInterface
@@ -134,5 +136,45 @@ class Group implements AggregateInterface
         return $this->members->filter(function (User $user) {
             return $user->isActive();
         })->toArray();
+    }
+
+    /**
+     * @param User[] $actualMembers
+     *
+     * @return Group
+     */
+    public function updateMembers(array $actualMembers): self
+    {
+        $omitEvents = $this->members->count() === 0;
+
+        /** @var User[]|ArrayCollection $actualMembersCollection */
+        $actualMembersCollection = new ArrayCollection($actualMembers);
+        foreach ($this->members as $member) {
+            if ($actualMembersCollection->contains($member)) {
+                // still here
+                continue;
+            }
+
+            // was removed
+            $this->members->removeElement($member);
+            if (!$omitEvents) {
+                $this->addDomainEvent(new MemberRemoved((string) $this->id, (string) $member->getSteamId()));
+            }
+        }
+
+        foreach ($actualMembersCollection as $newMember) {
+            // was already here
+            if ($this->members->contains($newMember)) {
+                continue;
+            }
+
+            // new one
+            $this->members->add($newMember);
+            if (!$omitEvents) {
+                $this->addDomainEvent(new MemberAdded((string) $this->id, (string) $newMember->getSteamId()));
+            }
+        }
+
+        return $this;
     }
 }

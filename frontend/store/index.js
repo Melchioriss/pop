@@ -37,7 +37,8 @@ export default new Vuex.Store({
         MAIN_PAGE_CONTENT_CODE: 'main_page',
 
         ACTIVITY_TYPES: {
-            STATUS_CHANGE: 'PickPlayedStatusChanged'
+            STATUS_CHANGE: 'PickPlayedStatusChanged',
+            REVIEW_ADDED: 'ReviewAdded'
         }
     },
     getters: {
@@ -540,6 +541,15 @@ export default new Vuex.Store({
                                 picks[pick.uuid] = pick;
                             });
                             commit('setPicks', picks);
+                        }
+
+                        if (activityResult.meta.refs.eventPickerComment)
+                        {
+                            let comments = {};
+                            activityResult.meta.refs.eventPickerComment.forEach(comment => {
+                                comments[comment.uuid] = comment;
+                            });
+                            commit('setComments', comments);
                         }
 
                         let pagin = {

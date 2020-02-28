@@ -38,6 +38,14 @@
                     </span>
                 </span>
 
+                <span v-if="isReviewAddedType">
+                    left a review for
+                    <a
+                        :href="'https://store.steampowered.com/app/'+game.localId"
+                        target="_blank"
+                    >{{game.name}}</a>:
+                </span>
+
                 <span
                     v-if="user.steamId !== actor.steamId"
                     class="activity-item__fix"
@@ -48,13 +56,14 @@
                     >{{actor.profileName}}</a>
                 </span>
 
-                <!--<a href="#">Ardiffaz</a> left a review for <a href="#">Pathfinder: Kingmaker - Enhanced Edition</a>:-->
                 <!--<a href="#">insideone</a> joined the group-->
             </div>
         </div>
-        <!--<div class="activity__review text">-->
-            <!--<p>With the help of over 18,000 Kickstarter backers, Narrative Designer Chris Avellone and composer Inon Zur, Owlcat Games is proud to bring you the first isometric computer RPG set in the beloved Pathfinder tabletop universe. Enjoy a classic RPG experience inspired by games like Baldur's Gate, Fallout 1 and 2 and Arcanum. Explore and conquer the Stolen Lands and make them your kingdom!</p>-->
-        <!--</div>-->
+        <div
+            v-if="isReviewAddedType"
+            class="activity-item__review text"
+            v-html="$getMarkedContent(comment.text)"
+        ></div>
     </div>
 </template>
 
@@ -86,11 +95,15 @@
                 'statusTexts',
                 'getUser',
                 'getGame',
-                'getPick'
+                'getPick',
+                'getComment'
             ]),
 
             user: function () {
-                return this.getUser(this.activity.payload.participantUser);
+                if (this.activity.payload.participantUser)
+                    return this.getUser(this.activity.payload.participantUser);
+
+                return this.getUser(this.activity.payload.user);
             },
 
             game: function () {
@@ -113,8 +126,16 @@
                 return this.activity.name === this.ACTIVITY_TYPES.STATUS_CHANGE;
             },
 
+            isReviewAddedType: function () {
+                return this.activity.name === this.ACTIVITY_TYPES.REVIEW_ADDED;
+            },
+
             actor: function () {
                 return this.getUser(this.activity.actor);
+            },
+
+            comment: function () {
+                return this.getComment(this.activity.payload.comment);
             }
         },
         methods: {

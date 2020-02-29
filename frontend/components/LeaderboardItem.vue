@@ -22,6 +22,7 @@
 
                 <leaderboard-game
                     v-for="pickType in pickTypes[pickerType]"
+                    :key="'lb_game_'+pickerType+'_'+pickType"
                     :pick="getPick(participant.picks[pickerType][pickType])"
                     :rewards="participant.rewards[ participant.picks[pickerType][pickType] ]"
                     :user-id="participant.user"

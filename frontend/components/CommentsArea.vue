@@ -2,6 +2,7 @@
     <div class="comments">
         <comment-item
             v-for="commentUuid in comments"
+            :key="'c_'+commentUuid"
             :comment="getComment(commentUuid)"
         />
 

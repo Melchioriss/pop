@@ -3,6 +3,7 @@
 
         <div
             v-for="(game, key) in games"
+            :key="'game_'+game.id"
             class="game-options__item"
             @click="selectGame(game)"
         >

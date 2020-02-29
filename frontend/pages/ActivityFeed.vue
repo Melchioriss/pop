@@ -13,7 +13,7 @@
                 <div class="activity__date">{{date}}</div>
                 <activity-item
                     v-for="activityItem in activity"
-                    :key="activityItem.uuid"
+                    :key="'act_'+activityItem.uuid"
                     :activity="activityItem"
                 />
             </template>

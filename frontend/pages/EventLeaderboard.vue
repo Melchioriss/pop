@@ -11,13 +11,13 @@
             >Back to event</router-link>
 
             <button
-                v-if="sortField !== 'name'"
+                v-show="sortField !== 'name'"
                 @click="setSortByName"
                 type="button"
                 class="button button--space-right"
             >Sort Alphabetically</button>
             <button
-                v-if="sortField !== 'points'"
+                v-show="sortField !== 'points'"
                 @click="setSortByPoints"
                 type="button"
                 class="button button--space-right"
@@ -64,7 +64,7 @@
 
             <leaderboard-item
                 v-for="(participant, i) in participants"
-                :key="participant.uuid"
+                :key="'lb_'+participant.uuid"
                 :participant="participant"
                 :number="i+1"
             />

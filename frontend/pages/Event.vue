@@ -27,13 +27,13 @@
                     class="button button--light button--space-right"
                 >Leaderboard</router-link>
                 <button
-                    v-if="!isShowingOnlyMine"
+                    v-show="!isShowingOnlyMine"
                     @click="showOnlyMineParticipations"
                     type="button"
                     class="button button--space-right"
                 >Show only Mine</button>
                 <button
-                    v-if="isShowingOnlyMine"
+                    v-show="isShowingOnlyMine"
                     @click="showAllParticipations"
                     type="button"
                     class="button button--space-right"

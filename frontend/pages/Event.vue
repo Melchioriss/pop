@@ -169,7 +169,7 @@
             ]),
 
             ...mapGetters({
-                participants: 'getSortedParticipants',
+                participants: 'getParticipantsSortedByName',
                 isAdmin: 'loggedUserIsAdmin',
                 loggedUserSteamId: 'loggedUserSteamId'
             }),

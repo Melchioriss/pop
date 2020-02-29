@@ -104,7 +104,7 @@ export default new Vuex.Store({
             return state.loggedUser? state.loggedUser.steamId : -1;
         },
 
-        getSortedParticipants: (state) => {
+        getParticipantsSortedByName: (state) => {
             let sortedParticipants = Object.values(state.participants);
             sortedParticipants.sort((a, b) => {
                 let userA = state.users[ a.user ];
@@ -112,6 +112,24 @@ export default new Vuex.Store({
 
                 if (userA.profileName.toLowerCase() === userB.profileName.toLowerCase()) return 0;
                 return userA.profileName.toLowerCase() > userB.profileName.toLowerCase();
+            });
+            return sortedParticipants;
+        },
+
+        getParticipantsSortedByPoints: (state) => {
+
+            let sortedParticipants = Object.values(state.participants);
+            sortedParticipants.sort((a, b) => {
+                // if points are equal we sort by name
+                if (a.totalRewardValue === b.totalRewardValue)
+                {
+                    let userA = state.users[ a.user ];
+                    let userB = state.users[ b.user ];
+
+                    if (userA.profileName.toLowerCase() === userB.profileName.toLowerCase()) return 0;
+                    return userA.profileName.toLowerCase() > userB.profileName.toLowerCase();
+                }
+                return a.totalRewardValue < b.totalRewardValue;
             });
             return sortedParticipants;
         },

@@ -10,8 +10,18 @@
                 class="button button--space-right"
             >Back to event</router-link>
 
-            <button type="button" class="button button--space-right">Sort Alphabetically</button>
-            <button type="button" class="button button--space-right">Sort By total points</button>
+            <button
+                v-if="sortField !== 'name'"
+                @click="setSortByName"
+                type="button"
+                class="button button--space-right"
+            >Sort Alphabetically</button>
+            <button
+                v-if="sortField !== 'points'"
+                @click="setSortByPoints"
+                type="button"
+                class="button button--space-right"
+            >Sort By total points</button>
             <button type="button" class="button button--space-right">Show TOP15</button>
 
 
@@ -37,96 +47,64 @@
                     :number="i"
                 />
 
+                <div class="leaderboard-item">
+                    <div class="leaderboard-item__user">
+                        Total per categories:
+                    </div>
+                    <div class="leaderboard-item__games">
+
+                        <div
+                            v-for="pickType in [SHORT, MEDIUM, LONG, VERY_LONG]"
+                            class="leaderboard-item__game leaderboard-game"
+                        >
+                            <div v-if="pickType === SHORT" class="leaderboard-game__name">Short games</div>
+                            <div v-if="pickType === MEDIUM" class="leaderboard-game__name">Medium games</div>
+                            <div v-if="pickType === LONG" class="leaderboard-game__name">Long games</div>
+                            <div v-if="pickType === VERY_LONG" class="leaderboard-game__name">Very long games</div>
+
+                            <div class="leaderboard-game__stats">
+                                <div class="leaderboard-game__stat">
+                                    <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[pickType].achievements}}
+                                </div>
+                                <div class="leaderboard-game__stat">
+                                    <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[pickType].playtimeHours}} hrs
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item__bonus"></div>
+                    <div class="leaderboard-item__blaeo"></div>
+                    <div class="leaderboard-item__total"></div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="leaderboard-item__user">Total stats</div>
+                    <div class="leaderboard-item__games leaderboard-item__games--total">
+                        <div class="leaderboard-item__game leaderboard-game">
+                            <div class="leaderboard-game__name">Total hours played</div>
+                            <div class="leaderboard-game__stats">
+                                <div class="leaderboard-game__stat">
+                                    <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats.all.playtimeHours}} hrs
+                                </div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-item__game leaderboard-game">
+                            <div class="leaderboard-game__name">Total achievements unlocked</div>
+                            <div class="leaderboard-game__stats">
+                                <div class="lleaderboard-game__stat">
+                                    <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats.all.achievements}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item__bonus"></div>
+                    <div class="leaderboard-item__blaeo"></div>
+                    <div class="leaderboard-item__total"></div>
+                </div>
+
             </div>
 
         </template>
-
-
-        <div class="leaderboard">
-
-
-
-            <div class="leaderboard-item">
-                <div class="leaderboard-item__user">
-                    Total per categories:
-                </div>
-                <div class="leaderboard-item__games">
-                    <div class="leaderboard-item__game leaderboard-game">
-                        <div class="leaderboard-game__name">Short games</div>
-                        <div class="leaderboard-game__stats">
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[SHORT].achievements}}
-                            </div>
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[SHORT].playtimeHours}} hrs
-                            </div>
-                        </div>
-                    </div>
-                    <div class="leaderboard-item__game leaderboard-game">
-                        <div class="leaderboard-game__name">Medium games</div>
-                        <div class="leaderboard-game__stats">
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[MEDIUM].achievements}}
-                            </div>
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[MEDIUM].playtimeHours}} hrs
-                            </div>
-                        </div>
-                    </div>
-                    <div class="leaderboard-item__game leaderboard-game">
-                        <div class="leaderboard-game__name">Long games</div>
-                        <div class="leaderboard-game__stats">
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[LONG].achievements}}
-                            </div>
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[LONG].playtimeHours}} hrs
-                            </div>
-                        </div>
-                    </div>
-                    <div class="leaderboard-item__game leaderboard-game">
-                        <div class="leaderboard-game__name">Very long games</div>
-                        <div class="leaderboard-game__stats">
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats[VERY_LONG].achievements}}
-                            </div>
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats[VERY_LONG].playtimeHours}} hrs
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item__bonus"></div>
-                <div class="leaderboard-item__blaeo"></div>
-                <div class="leaderboard-item__total"></div>
-            </div>
-
-            <div class="leaderboard-item">
-                <div class="leaderboard-item__user">Total stats</div>
-                <div class="leaderboard-item__games leaderboard-item__games--total">
-                    <div class="leaderboard-item__game leaderboard-game">
-                        <div class="leaderboard-game__name">Total hours played</div>
-                        <div class="leaderboard-game__stats">
-                            <div class="leaderboard-game__stat">
-                                <i class="fa-icon far fa-fw fa-clock"></i>{{totalStats.all.playtimeHours}} hrs
-                            </div>
-                        </div>
-                    </div>
-                    <div class="leaderboard-item__game leaderboard-game">
-                        <div class="leaderboard-game__name">Total achievements unlocked</div>
-                        <div class="leaderboard-game__stats">
-                            <div class="lleaderboard-game__stat">
-                                <i class="fa-icon fas fa-fw fa-trophy"></i>{{totalStats.all.achievements}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="leaderboard-item__bonus"></div>
-                <div class="leaderboard-item__blaeo"></div>
-                <div class="leaderboard-item__total"></div>
-            </div>
-
-        </div>
     </div>
 </template>
 
@@ -140,7 +118,8 @@
         props: {},
         data() {
             return {
-                isLoading: false
+                isLoading: false,
+                sortField: 'name'
             };
         },
         computed: {
@@ -150,11 +129,12 @@
 
             ...mapGetters([
                 'getPick',
-                'getSortedParticipants'
+                'getParticipantsSortedByName',
+                'getParticipantsSortedByPoints'
             ]),
 
             participants: function () {
-                return this.getSortedParticipants;
+                return this.sortField === 'points' ? this.getParticipantsSortedByPoints : this.getParticipantsSortedByName;
             },
 
             uuid: function () {
@@ -191,7 +171,15 @@
                 return totals;
             }
         },
-        methods: {},
+        methods: {
+            setSortByName: function () {
+                this.sortField = 'name';
+            },
+
+            setSortByPoints: function () {
+                this.sortField = 'points';
+            }
+        },
         created() {
             this.isLoading = true;
             this.$store.dispatch('loadEvent', this.uuid)

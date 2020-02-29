@@ -363,8 +363,7 @@
                 return this.participantUser.blaeoName ? this.BLAEO_USER_BASE_LINK + this.participantUser.blaeoName : '';
             },
             blaeoPoints: function () {
-                let reward = this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ] : null;
-                return reward ? reward.value : null;
+                return this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ].value : null;
             },
             all7BeatenReward: function () {
                 return this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.ALL_PICKS_BEATEN ] : null;
@@ -483,7 +482,8 @@
                         uuid: uuid.v4(),
                         type: pickerType,
                         user: newPickerSteamId,
-                        picks: []
+                        picks: [],
+                        comments: []
                     };
 
                     this.$store.dispatch(

@@ -55,7 +55,7 @@
                 </span>
 
                 <span
-                    v-if="!isMemberAddedType && !isMemberRemovedType && user.steamId !== actor.steamId"
+                    v-if="isChangedStatusType && user.steamId !== actor.steamId"
                     class="activity-item__fix"
                 >
                     <i class="fa-icon fas fa-tools"></i>changed by

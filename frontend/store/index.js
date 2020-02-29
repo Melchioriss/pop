@@ -364,18 +364,20 @@ export default new Vuex.Store({
         updateParticipantBlaeoPoints: function ({commit, state, getters}, {participant, blaeoPoints}) {
             return api.participants.updateBlaeoPoints(participant, blaeoPoints)
                 .then(() => {
-                    if (!participant.rewards)
-                        participant.rewards = {};
+                    let updatedParticipant = {...participant};
+                    if (!updatedParticipant.rewards)
+                        updatedParticipant.rewards = {};
 
-                    if (!participant.rewards.global)
-                        participant.rewards.global = {};
+                    if (!updatedParticipant.rewards.global)
+                        updatedParticipant.rewards.global = {};
 
-                    participant.rewards.global[getters.rewardReasons.BLAEO_POINTS] = {
+                    updatedParticipant.rewards.global[getters.rewardReasons.BLAEO_POINTS] = {
                         pick: null,
                         reason: getters.rewardReasons.BLAEO_POINTS,
                         value: blaeoPoints
                     };
-                    commit('setParticipant', participant)
+
+                    commit('setParticipant', updatedParticipant)
                 })
         },
 

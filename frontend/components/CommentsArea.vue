@@ -1,10 +1,13 @@
 <template>
     <div class="comments">
-        <comment-item
-            v-for="commentUuid in comments"
-            :key="'c_'+commentUuid"
-            :comment="getComment(commentUuid)"
-        />
+
+        <div class="comments__items">
+            <comment-item
+                v-for="commentUuid in comments"
+                :key="'c_'+commentUuid"
+                :comment="getComment(commentUuid)"
+            />
+        </div>
 
         <div
             v-if="canComment && isShowingReplyForm"
@@ -169,6 +172,10 @@
 
     .comments{
         margin-bottom: 10px;
+
+        &__items{
+            margin-bottom: 10px;
+        }
 
         &__form-area{
             display: flex;

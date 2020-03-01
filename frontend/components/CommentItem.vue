@@ -1,6 +1,6 @@
 <template>
     <div
-        class="comment"
+        :class="['comment', {'comment--new': isNew}]"
         :id="'comment_'+comment.uuid"
     >
         <div class="comment__user-img-block">
@@ -120,6 +120,18 @@
 
             isAuthor: function () {
                 return this.comment.user === this.loggedUserSteamId;
+            },
+
+            isNew: function () {
+                let lastVisit = new Date(this.$store.state.lastVisit).getTime();
+
+                if (!lastVisit)
+                    return false;
+
+                let commentDate = new Date(this.comment.createdAt).getTime();
+                let updatedDate = new Date(this.comment.updatedAt).getTime();
+
+                return ((lastVisit <= commentDate) || (lastVisit <= updatedDate));
             }
         },
         methods: {
@@ -145,9 +157,24 @@
 
     .comment{
         display: flex;
-        padding-bottom: 10px;
+        padding: 10px 0;
         border-bottom: 1px solid @color-dark-orange;
-        margin-bottom: 10px;
+
+        &--new{
+            background: @color-gray;
+            position: relative;
+
+            &:after{
+                content: 'New';
+                display: block;
+                font-size: 12px;
+                color: @color-dark-orange;
+                padding: 2px 4px;
+                position: absolute;
+                top: -1px;
+                right: 0;
+            }
+        }
 
         &__user-img-block{
             width: 40px;

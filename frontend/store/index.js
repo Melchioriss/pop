@@ -18,6 +18,7 @@ export default new Vuex.Store({
         comments: {},
         blocks: {},
         activity: {},
+        lastVisit: '',
 
         rewardsMap: {},
 
@@ -603,6 +604,10 @@ export default new Vuex.Store({
                     })
                     .catch(e => reject(e));
             });
+        },
+
+        setLastVisit: function ({commit}, lastVisit) {
+            commit('setLastVisit', lastVisit);
         }
     },
     mutations: {
@@ -640,6 +645,8 @@ export default new Vuex.Store({
 
         setActivity: (state, activity) => state.activity = activity,
 
-        setRewardsMap: (state, rewardsMap) => state.rewardsMap = rewardsMap
+        setRewardsMap: (state, rewardsMap) => state.rewardsMap = rewardsMap,
+
+        setLastVisit: (state, lastVisit) => state.lastVisit = lastVisit
     }
 });

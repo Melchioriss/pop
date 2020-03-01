@@ -24,15 +24,24 @@
                     <div class="pick__stats-item">
                         <i class="fa-icon far fa-fw fa-clock"></i>{{playedHours}} hrs
                     </div>
-                    <div
-                        v-if="hasRewards"
-                        class="pick__rewards"
-                    >
+                    <div class="pick__rewards">
                         <div
                             v-for="reward in rewards"
                             :class="['pick__reward', 'medal', {'medal--completed': reward.reason === reasonCompleted}]"
                             :title="rewardHints[reward.reason]"
                         >{{reward.value}}</div>
+
+                        <div
+                            v-if="potentialBeatenReward"
+                            :title="rewardHints[ potentialBeatenReward.reason ]"
+                            class="pick__reward medal medal--absent"
+                        >{{potentialBeatenReward.value}}</div>
+
+                        <div
+                            v-if="potentialCompletedReward"
+                            :title="rewardHints[ potentialCompletedReward.reason ]"
+                            class="pick__reward medal medal--completed medal--absent"
+                        >{{potentialCompletedReward.value}}</div>
                     </div>
                 </div>
             </div>
@@ -63,7 +72,7 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import {mapGetters, mapState} from 'vuex';
     import StatusItem from "./StatusItem";
     import PickingGameForm from "./PickingGameForm";
     export default {
@@ -98,6 +107,10 @@
             rewards: {
                 type: Object,
                 default: () => ({})
+            },
+            potentialRewards: {
+                type: Object,
+                default: () => ({})
             }
         },
         data() {
@@ -106,6 +119,7 @@
             };
         },
         computed: {
+            ...mapState(['BEATEN', 'COMPLETED']),
             ...mapGetters(['rewardReasons', 'rewardHints']),
 
             game: function () {
@@ -125,18 +139,28 @@
                     return false;
 
                 return !(
-                    (this.pick.playedStatus === this.$store.state.BEATEN)
+                    (this.pick.playedStatus === this.BEATEN)
                     ||
-                    (this.pick.playedStatus === this.$store.state.COMPLETED)
+                    (this.pick.playedStatus === this.COMPLETED)
                 );
             },
 
-            hasRewards: function () {
-                return Object.values(this.rewards).length > 0;
+            reasonCompleted: function () {
+                return this.rewardReasons.GAME_COMPLETED;
             },
 
-            reasonCompleted: function () {
-                return this.rewardReasons['GAME_COMPLETED'];
+            potentialCompletedReward: function () {
+                if (this.pick.playedStatus === this.COMPLETED)
+                    return null;
+
+                return this.potentialRewards[this.reasonCompleted];
+            },
+
+            potentialBeatenReward: function () {
+                if ((this.pick.playedStatus === this.COMPLETED) || (this.pick.playedStatus === this.BEATEN))
+                    return null;
+
+                return this.potentialRewards[ this.rewardReasons.GAME_BEATEN_UNI ];
             }
         },
         watch: {

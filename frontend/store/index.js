@@ -19,6 +19,8 @@ export default new Vuex.Store({
         blocks: {},
         activity: {},
 
+        rewardsMap: {},
+
         BLAEO_USER_BASE_LINK: 'https://www.backlog-assassins.net/users/',
         MAJOR: 20,
         MINOR: 10,
@@ -63,7 +65,8 @@ export default new Vuex.Store({
             },
             GAME_COMPLETED: 500,
             BLAEO_POINTS: 600,
-            ALL_PICKS_BEATEN: 700
+            ALL_PICKS_BEATEN: 700,
+            GAME_BEATEN_UNI: 'beaten'
         }),
 
         rewardHints: (state, getters) => ({
@@ -330,6 +333,11 @@ export default new Vuex.Store({
                             participant.rewards = rewards;
                         });
 
+                        let rewardsMap = {};
+                        event.rewards.forEach(rewardItem => {
+                            rewardsMap[ rewardItem.reason ] = rewardItem;
+                        });
+                        delete event.rewards;
 
                         commit('setComments', comments);
                         commit('setGames', games);
@@ -338,6 +346,7 @@ export default new Vuex.Store({
                         commit('setUsers', users);
                         commit('setEvents', {[event.uuid]: event});
                         commit('setParticipants', participants);
+                        commit('setRewardsMap', rewardsMap);
 
                         resolve();
                     })
@@ -629,6 +638,8 @@ export default new Vuex.Store({
 
         setBlock: (state, block) => Vue.set(state.blocks, block.code, block.content),
 
-        setActivity: (state, activity) => state.activity = activity
+        setActivity: (state, activity) => state.activity = activity,
+
+        setRewardsMap: (state, rewardsMap) => state.rewardsMap = rewardsMap
     }
 });

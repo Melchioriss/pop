@@ -42,6 +42,17 @@
                     >{{all7BeatenReward.value}}</div>
                 </div>
 
+                <div
+                    v-if="potentialAll7Reward"
+                    class="participation__reward-info"
+                >
+                    <span class="participation__reward-title participation__reward-title--disabled">All 7:</span>
+                    <div
+                        :title="rewardHints[ potentialAll7Reward.reason ]"
+                        class="medal medal--absent"
+                    >{{potentialAll7Reward.value}}</div>
+                </div>
+
             </div>
             <div class="participation__main-area">
 
@@ -236,6 +247,7 @@
                                 :is-picker="isPicker(pickerType)"
                                 :is-participant="isParticipant"
                                 :rewards="participant.rewards[ participant.picks[pickerType][pickType] ]"
+                                :potential-rewards="getPotentialRewards(pickType)"
                                 @select-game="selectGame($event, pickType, pickerType)"
                                 @change-status="changeStatus($event, pickType, pickerType)"
                             />
@@ -337,20 +349,24 @@
             ...mapState([
                 'BLAEO_USER_BASE_LINK',
                 'MAJOR', 'MINOR',
-                'SHORT', 'MEDIUM', 'LONG', 'VERY_LONG'
+                'SHORT', 'MEDIUM', 'LONG', 'VERY_LONG',
+                'rewardsMap'
             ]),
 
             ...mapGetters({
                 users: 'getSortedUsers',
-                loggedUserSteamId: 'loggedUserSteamId',
                 isAdmin: 'loggedUserIsAdmin',
-                getPick: 'getPick',
-                getGame: 'getGame',
-                getComment: 'getComment',
-                rewardReasons: 'rewardReasons',
-                rewardHints: 'rewardHints',
-                pickTypes: 'pickTypes'
             }),
+
+            ...mapGetters([
+                'loggedUserSteamId',
+                'getPick',
+                'getGame',
+                'getComment',
+                'rewardReasons',
+                'rewardHints',
+                'pickTypes'
+            ]),
 
             canEditFields: function () {
                 return this.isAdmin || this.isParticipant;
@@ -367,6 +383,12 @@
             },
             all7BeatenReward: function () {
                 return this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.ALL_PICKS_BEATEN ] : null;
+            },
+            potentialAll7Reward: function () {
+                if (this.all7BeatenReward)
+                    return null;
+
+                return this.rewardsMap[ this.rewardReasons.ALL_PICKS_BEATEN ];
             },
             pickers: function () {
                 let pickers = {};
@@ -623,6 +645,17 @@
                 setTimeout(() => {
                     document.getElementById('comment_'+commentUuid).scrollIntoView({behavior: 'smooth'});
                 }, 25);
+            },
+
+            getPotentialRewards(pickType) {
+                let potentialRewards = {};
+                let reasonCompleted = this.rewardReasons.GAME_COMPLETED;
+                let reasonBeaten = this.rewardReasons.GAME_BEATEN[pickType];
+
+                potentialRewards[reasonCompleted] = this.rewardsMap[reasonCompleted];
+                potentialRewards[ this.rewardReasons.GAME_BEATEN_UNI ] = this.rewardsMap[reasonBeaten];
+
+                return potentialRewards;
             }
         },
         created() {
@@ -786,6 +819,10 @@
             font-weight: bold;
             font-size: 13px;
             margin-right: 6px;
+
+            &--disabled{
+                color: @color-gray-dark;
+            }
         }
     }
 

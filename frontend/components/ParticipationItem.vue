@@ -293,6 +293,7 @@
                     :can-comment="canComment(pickerType)"
                     :is-participant="isParticipant"
                     :picked-games="pickedGames[pickerType]"
+                    :unique-key="'comments_'+participant.uuid"
                     @add-comment="addComment($event, pickerType)"
                 />
             </div>

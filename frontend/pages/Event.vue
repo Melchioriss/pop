@@ -125,7 +125,8 @@
             <div class="event__participants">
 
                 <participation-item
-                    v-for="participant in shownParticipants"
+                    v-for="participant in participants"
+                    v-show="!hiddenParticipants[participant.uuid]"
                     :key="'p_'+participant.uuid"
                     :participant="participant"
                     :is-hiding-all-comments="isHidingAllComments"
@@ -170,9 +171,14 @@
 
             ...mapGetters({
                 participants: 'getParticipantsSortedByName',
-                isAdmin: 'loggedUserIsAdmin',
-                loggedUserSteamId: 'loggedUserSteamId'
+                isAdmin: 'loggedUserIsAdmin'
             }),
+
+            ...mapGetters([
+                'loggedUserSteamId',
+                'getPicker'
+            ]),
+
             uuid: function () {
                 return this.$route.params.eventUuid;
             },
@@ -199,25 +205,30 @@
 
                 return generated;
             },
-            shownParticipants: function () {
+            hiddenParticipants: function () {
                 if (!this.isShowingOnlyMine)
-                    return this.participants;
+                    return {};
 
-                return this.participants.filter(participant => {
+                let hiddenParticipants = {};
+
+                Object.values(this.participants).forEach(participant => {
+                    let participantUuid = participant.uuid;
+
                     if (participant.user === this.loggedUserSteamId)
-                        return true;
+                        return;
 
-                    let majorPicker = this.$store.getters.getPicker(participant.pickers[this.MAJOR]);
-                    let minorPicker = this.$store.getters.getPicker(participant.pickers[this.MINOR]);
-
+                    let majorPicker = this.getPicker(participant.pickers[this.MAJOR]);
                     if (this.$store.getters.getUser(majorPicker.user).steamId === this.loggedUserSteamId)
-                        return true;
+                        return;
 
+                    let minorPicker = this.getPicker(participant.pickers[this.MINOR]);
                     if (this.$store.getters.getUser(minorPicker.user).steamId === this.loggedUserSteamId)
-                        return true;
+                        return;
 
-                    return false;
-                })
+                    hiddenParticipants[participantUuid] = true;
+                });
+
+                return hiddenParticipants;
             },
             participantPickerTable: function () {
                 let ppTable = [];
@@ -292,15 +303,15 @@
             this.$store.dispatch('loadEvent', this.uuid)
                 .then(() => {
 
-                    setTimeout(() => {
-                        if (this.isAdmin)
-                        {
+                    if (this.isAdmin)
+                    {
+                        setTimeout(() => {
                             this.$store.dispatch('loadEventPotentialParticipants', this.event)
                                 .then((potentialParticipants) => {
                                     this.potentialParticipants = potentialParticipants;
                                 });
-                        }
-                    }, 250);
+                        }, 250);
+                    }
 
                 })
                 .catch(e => {

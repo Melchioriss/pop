@@ -15,7 +15,7 @@
                     v-model="commentText"
                     class="input input--textarea input--space-bottom"
                     placeholder="Your thoughts..."
-                    rows="7"
+                    rows="9"
                 ></textarea>
                 <button
                     @click="addComment"
@@ -27,33 +27,53 @@
                 v-if="canSelectGames"
                 class="comments__game-block"
             >
-                <label class="form__label">If you want this comment to be a game review, then select a game:</label>
-                <select
-                    v-model="selectedPickUuid"
-                    class="input input--space-bottom"
-                >
-                    <option :value="''">-----</option>
-                    <option
-                        v-for="game in pickedGames"
-                        :value="game.pickUuid"
-                        :disabled="!!game.commentExists"
-                    >{{game.name}}</option>
-                </select>
+                <input
+                    v-model="isReview"
+                    type="checkbox"
+                    class="checkbox"
+                    :id="'review_'+uniqueKey"
+                />
+                <label
+                    :for="'review_'+uniqueKey"
+                    class=""
+                >It's a review</label>
                 <div
-                    v-if="selectedPickUuid"
-                    class="comments__game"
+                    v-show="isReview"
+                    class="comments__select-block"
                 >
-                    <a
-                        :href="'https://store.steampowered.com/app/'+selectedGame.localId+'/'"
-                        target="_blank"
-                        class="comments__game-img-block"
+                    <label
+                        :for="'select_'+uniqueKey"
+                    >Select a game you want to write a review for:</label>
+                    <select
+                        :id="'select_'+uniqueKey"
+                        v-model="selectedPickUuid"
+                        class="input input--space-bottom"
                     >
-                        <img
-                            :src="'https://steamcdn-a.akamaihd.net/steam/apps/'+selectedGame.localId+'/capsule_184x69.jpg'"
-                            class="comments__game-img"
-                        />
-                    </a>
-                    <div class="comments__game-name">{{selectedGame.name}}</div>
+                        <option :value="''">-----</option>
+                        <option
+                            v-for="game in pickedGames"
+                            :value="game.pickUuid"
+                            :disabled="!!game.commentExists"
+                        >{{game.name}}</option>
+                    </select>
+
+                    <div
+                        v-if="selectedPickUuid"
+                        class="comments__game"
+                    >
+                        <a
+                            :href="'https://store.steampowered.com/app/'+selectedGame.localId+'/'"
+                            target="_blank"
+                            class="comments__game-img-block"
+                        >
+                            <img
+                                :src="'https://steamcdn-a.akamaihd.net/steam/apps/'+selectedGame.localId+'/capsule_184x69.jpg'"
+                                class="comments__game-img"
+                            />
+                        </a>
+                        <div class="comments__game-name">{{selectedGame.name}}</div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -88,13 +108,18 @@
             pickedGames: {
                 type: Object,
                 default: () => ({})
+            },
+            uniqueKey: {
+                type: String,
+                default: 'comments_'+Math.random()
             }
         },
         data() {
             return {
                 isShowingReplyForm: false,
                 commentText: '',
-                selectedPickUuid: ''
+                selectedPickUuid: '',
+                isReview: false
             };
         },
         computed: {
@@ -131,8 +156,8 @@
                 this.$emit('add-comment', {
                     uuid: uuid.v4(),
                     text: this.commentText,
-                    reviewedPickUuid: this.selectedPickUuid,
-                    reviewedGame: this.selectedGame ? this.selectedGame.id: ''
+                    reviewedPickUuid: this.isReview ? this.selectedPickUuid : '',
+                    reviewedGame: (this.isReview && this.selectedGame) ? this.selectedGame.id: ''
                 });
             }
         }
@@ -153,6 +178,10 @@
             width: 600px;
             flex-shrink: 0;
             margin-right: 20px;
+        }
+
+        &__select-block{
+            margin: 10px 0 6px;
         }
 
         &__game-block{

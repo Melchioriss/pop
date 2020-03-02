@@ -85,12 +85,17 @@
                     reviewedGame: null,
                     reviewedPickUuid: null
                 })
+            },
+            isRelevantToMe: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
             return {
                 isEditing: false,
-                newText: ''
+                newText: '',
+                isNotificationSet: false
             };
         },
         computed: {
@@ -123,15 +128,25 @@
             },
 
             isNew: function () {
+                let isNew = false;
                 let lastVisit = new Date(this.$store.state.lastVisit).getTime();
 
                 if (!lastVisit)
-                    return false;
+                    isNew = false;
+                else
+                {
+                    let commentDate = new Date(this.comment.createdAt).getTime();
+                    let updatedDate = new Date(this.comment.updatedAt).getTime();
 
-                let commentDate = new Date(this.comment.createdAt).getTime();
-                let updatedDate = new Date(this.comment.updatedAt).getTime();
+                    isNew = ((lastVisit <= commentDate) || (lastVisit <= updatedDate));
+                }
 
-                return ((lastVisit <= commentDate) || (lastVisit <= updatedDate));
+                if (isNew && !this.isNotificationSet && this.isRelevantToMe)
+                {
+                    this.$store.dispatch('setCommentNotification', this.comment.uuid);
+                }
+
+                return isNew;
             }
         },
         methods: {

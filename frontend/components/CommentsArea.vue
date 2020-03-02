@@ -6,6 +6,7 @@
                 v-for="commentUuid in comments"
                 :key="'c_'+commentUuid"
                 :comment="getComment(commentUuid)"
+                :is-relevant-to-me="canComment"
             />
         </div>
 

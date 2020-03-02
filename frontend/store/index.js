@@ -19,6 +19,9 @@ export default new Vuex.Store({
         blocks: {},
         activity: {},
         lastVisit: '',
+        notifications: {
+            comments: []
+        },
 
         rewardsMap: {},
 
@@ -159,7 +162,9 @@ export default new Vuex.Store({
             });
 
             return activityByDate;
-        }
+        },
+
+        getCommentNotification: (state) => state.notifications.comments
     },
     actions: {
         loadGroups: function({commit}) {
@@ -608,6 +613,10 @@ export default new Vuex.Store({
 
         setLastVisit: function ({commit}, lastVisit) {
             commit('setLastVisit', lastVisit);
+        },
+
+        setCommentNotification: function ({commit}, commentUuid) {
+            commit('addCommentNotification', commentUuid);
         }
     },
     mutations: {
@@ -647,6 +656,11 @@ export default new Vuex.Store({
 
         setRewardsMap: (state, rewardsMap) => state.rewardsMap = rewardsMap,
 
-        setLastVisit: (state, lastVisit) => state.lastVisit = lastVisit
+        setLastVisit: (state, lastVisit) => state.lastVisit = lastVisit,
+
+        addCommentNotification: (state, commentUuid) => {
+            if (!state.notifications.comments.includes(commentUuid))
+                state.notifications.comments.push(commentUuid)
+        }
     }
 });

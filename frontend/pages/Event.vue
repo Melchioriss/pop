@@ -71,6 +71,9 @@
                     type="button"
                     class="button button--cobalt button--space-right"
                 >Update playing stats</button>
+                <div class="event__new-indicator">
+                    <i class="fa-icon far fa-comments"></i>{{newCommentsCount}} new comments since last visit
+                </div>
             </div>
 
             <loading-indicator
@@ -176,7 +179,8 @@
 
             ...mapGetters([
                 'loggedUserSteamId',
-                'getPicker'
+                'getPicker',
+                'getCommentNotification'
             ]),
 
             uuid: function () {
@@ -244,6 +248,9 @@
                     ppTable.push(ppTableItem);
                 });
                 return ppTable;
+            },
+            newCommentsCount: function () {
+                return this.getCommentNotification.length;
             }
         },
         methods: {
@@ -355,6 +362,7 @@
         &__buttons{
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             margin-bottom: 20px;
         }
 
@@ -373,6 +381,13 @@
 
         &__potential-item{
             margin-bottom: 10px;
+        }
+
+        &__new-indicator{
+            color: @color-cobalt;
+            margin-left: auto;
+            padding: 9px 6px;
+            line-height: 1.2;
         }
     }
 

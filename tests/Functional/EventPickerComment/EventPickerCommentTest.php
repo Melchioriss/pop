@@ -5,6 +5,7 @@ namespace PlayOrPay\Tests\Functional\EventPickerComment;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
 use PlayOrPay\Domain\Event\Event;
+use PlayOrPay\Domain\Event\EventCommentGameReferenceType;
 use PlayOrPay\Domain\Event\EventPicker;
 use PlayOrPay\Domain\Event\EventPickerComment;
 use PlayOrPay\Domain\Event\EventPickPlayedStatus;
@@ -25,6 +26,14 @@ class EventPickerCommentTest extends FunctionalTest
     /** @var EventPicker  */
     private $picker;
 
+    /** @var EventCommentGameReferenceType */
+    private $reviewRef;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->reviewRef = new EventCommentGameReferenceType(EventCommentGameReferenceType::REVIEW);
+    }
 
     /**
      * @test
@@ -81,11 +90,11 @@ class EventPickerCommentTest extends FunctionalTest
             'status' => EventPickPlayedStatus::BEATEN,
         ]);
 
-        $this->prepareComment('first', $pick->getUuid());
+        $this->prepareComment('first', $pick->getUuid(), $this->reviewRef);
 
         $this->expectException(EntityNotFoundException::class);
 
-        $this->prepareComment('second', $pick->getUuid(), false);
+        $this->prepareComment('second', $pick->getUuid(), $this->reviewRef, false);
     }
 
     /**
@@ -110,7 +119,8 @@ class EventPickerCommentTest extends FunctionalTest
 
     /**
      * @param string $commentText
-     * @param UuidInterface|null $reviewedPickUuid
+     * @param UuidInterface|null $referencedPickUuid
+     * @param EventCommentGameReferenceType $gameReferenceType
      * @param bool $shouldBeSuccessfull
      *
      * @return EventPickerComment
@@ -120,7 +130,8 @@ class EventPickerCommentTest extends FunctionalTest
      */
     private function prepareComment(
         string $commentText = 'anything',
-        ?UuidInterface $reviewedPickUuid = null,
+        ?UuidInterface $referencedPickUuid = null,
+        ?EventCommentGameReferenceType $gameReferenceType = null,
         bool $shouldBeSuccessfull = true
     ): EventPickerComment {
         $this->prepare();
@@ -131,7 +142,8 @@ class EventPickerCommentTest extends FunctionalTest
             'commentUuid' => (string) $commentUuid,
             'pickerUuid' => (string) $this->picker->getUuid(),
             'text' => $commentText,
-            'reviewedPickUuid' => $reviewedPickUuid ? (string) $reviewedPickUuid : null,
+            'referencedPickUuid' => $referencedPickUuid ? (string) $referencedPickUuid : null,
+            'gameReferenceType' => $gameReferenceType ? (string) $gameReferenceType : null,
         ], $shouldBeSuccessfull);
 
         /** @var EventPickerCommentRepository $commentRepo */

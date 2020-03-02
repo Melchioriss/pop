@@ -186,24 +186,29 @@ class EventPicker
      * @param UuidInterface $uuid
      * @param User $user
      * @param string $text
-     * @param UuidInterface|null $reviewedPickUuid
+     * @param UuidInterface|null $referencedPickUuid
+     * @param EventCommentGameReferenceType|null $gameReferenceType
      *
+     * @return EventPickerComment
      * @throws AmbiguousValueException
      * @throws NotFoundException
      * @throws ReflectionException
-     *
-     * @return EventPickerComment
      */
-    public function addComment(UuidInterface $uuid, User $user, string $text, ?UuidInterface $reviewedPickUuid): EventPickerComment
-    {
-        if ($reviewedPickUuid) {
-            $pick = $this->getPick($reviewedPickUuid);
+    public function addComment(
+        UuidInterface $uuid,
+        User $user,
+        string $text,
+        ?UuidInterface $referencedPickUuid,
+        ?EventCommentGameReferenceType $gameReferenceType
+    ): EventPickerComment {
+        if ($referencedPickUuid) {
+            $pick = $this->getPick($referencedPickUuid);
             if ($this->hasRewiew($pick->getGame())) {
                 throw new DomainException('This game already has a review');
             }
         }
 
-        $comment = new EventPickerComment($uuid, $this, $user, $text, $reviewedPickUuid);
+        $comment = new EventPickerComment($uuid, $this, $user, $text, $referencedPickUuid, $gameReferenceType);
         $this->comments->add($comment);
 
         return $comment;
@@ -212,7 +217,7 @@ class EventPicker
     public function hasRewiew(Game $game): bool
     {
         foreach ($this->comments as $comment) {
-            if ($comment->getReviewedGame() === $game) {
+            if ($comment->isReviewFor($game)) {
                 return true;
             }
         }
@@ -266,5 +271,13 @@ class EventPicker
     public function hasDoneAllPicks(): bool
     {
         return $this->getRestPickQuota() === 0;
+    }
+
+    /**
+     * @return EventPickerComment[]
+     */
+    public function getComments(): array
+    {
+        return $this->comments->toArray();
     }
 }

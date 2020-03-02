@@ -24,6 +24,9 @@ class DetailEventView
     /** @var DetailEventUserView */
     public $users;
 
-    /** @var  */
+    /** @var DetailEventReward[] */
     public $rewards;
+
+    /** @var DetailGameView[] */
+    public $games;
 }

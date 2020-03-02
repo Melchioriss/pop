@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Domain\Event;
 
+use Assert\Assert;
 use DateTimeImmutable;
 use DomainException;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
@@ -29,8 +30,11 @@ class EventPickerComment implements OnUpdateEventListenerInterface
     /** @var DateTimeImmutable */
     private $createdAt;
 
+    /** @var EventCommentGameReferenceType|null */
+    private $gameReferenceType;
+
     /** @var Game|null */
-    private $reviewedGame;
+    private $referencedGame;
 
     /** @var string[] */
     private $history = [];
@@ -43,24 +47,36 @@ class EventPickerComment implements OnUpdateEventListenerInterface
      * @param EventPicker $picker
      * @param User $user
      * @param string $text
-     * @param UuidInterface|null $reviewedPickUuid
+     * @param UuidInterface|null $referencedPickUuid
+     * @param EventCommentGameReferenceType|null $gameReferenceType
      *
      * @throws AmbiguousValueException
      * @throws NotFoundException
      * @throws ReflectionException
      */
-    public function __construct(UuidInterface $uuid, EventPicker $picker, User $user, string $text, ?UuidInterface $reviewedPickUuid)
-    {
-        if ($reviewedPickUuid) {
-            $reviewedPick = $picker->getPick($reviewedPickUuid);
-            if ($reviewedPick->getPlayedStatus()->equalToOneOf([
+    public function __construct(
+        UuidInterface $uuid,
+        EventPicker $picker,
+        User $user,
+        string $text,
+        ?UuidInterface $referencedPickUuid,
+        ?EventCommentGameReferenceType $gameReferenceType
+    ) {
+        if ($referencedPickUuid) {
+            $referencedPick = $picker->getPick($referencedPickUuid);
+            if ($referencedPick->getPlayedStatus()->equalToOneOf([
                 EventPickPlayedStatus::UNFINISHED,
                 EventPickPlayedStatus::NOT_PLAYED,
             ])) {
-                throw new DomainException(sprintf("You can't review '%s' game", $reviewedPick->getPlayedStatus()->getCodename()));
+                throw new DomainException(
+                    sprintf("You can't review '%s' game", $referencedPick->getPlayedStatus()->getCodename())
+                );
             }
 
-            $this->reviewedGame = $reviewedPick->getGame();
+            Assert::that($gameReferenceType)->notNull('Game reference type is required to make a comment');
+
+            $this->referencedGame = $referencedPick->getGame();
+            $this->gameReferenceType = $gameReferenceType;
         }
 
         $this->uuid = $uuid;
@@ -75,9 +91,14 @@ class EventPickerComment implements OnUpdateEventListenerInterface
         return $this->user;
     }
 
-    public function getReviewedGame(): ?Game
+    public function getGameReferenceType(): ?EventCommentGameReferenceType
     {
-        return $this->reviewedGame;
+        return $this->gameReferenceType;
+    }
+
+    public function getReferencedGame(): ?Game
+    {
+        return $this->referencedGame;
     }
 
     public function getEvent(): Event
@@ -116,12 +137,12 @@ class EventPickerComment implements OnUpdateEventListenerInterface
 
     public function findPick(): ?EventPick
     {
-        $reviewedGame = $this->getReviewedGame();
-        if (!$reviewedGame)
+        if (!$this->referencedGame) {
             return null;
+        }
 
         $picker = $this->getPicker();
-        $pick = $picker->findPickOfGame($reviewedGame->getId());
+        $pick = $picker->findPickOfGame($this->referencedGame->getId());
         return $pick ? $pick : null;
     }
 
@@ -133,5 +154,23 @@ class EventPickerComment implements OnUpdateEventListenerInterface
     public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function isReview(): bool
+    {
+        return $this->gameReferenceType
+            && $this->gameReferenceType->equalTo(
+                new EventCommentGameReferenceType(EventCommentGameReferenceType::REVIEW)
+            );
+    }
+
+    public function isReviewFor(Game $game): bool
+    {
+        return $this->isReview() && $this->referencedGame === $game;
+    }
+
+    public function hasReferencedGame(): bool
+    {
+        return !!$this->referencedGame;
     }
 }

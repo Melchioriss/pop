@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Package\EnumFramework;
 
+use Assert\Assert;
 use Ducks\Component\SplTypes\SplEnum;
 use ReflectionClass;
 use ReflectionException;
@@ -9,6 +10,12 @@ use UnexpectedValueException;
 
 class Enum extends SplEnum
 {
+    public function __construct($value, $strict = null)
+    {
+        Assert::that($value)->notNull();
+        parent::__construct($value, $strict);
+    }
+
     /**
      * @param bool $getFirstOnAmbiguous
      *

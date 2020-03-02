@@ -20,6 +20,7 @@ doctrine:
           event_pick_played_status: PlayOrPay\Infrastructure\Storage\Doctrine\Type\EventPickPlayedStatusType
           game_store_id: PlayOrPay\Infrastructure\Storage\Doctrine\Type\Game\StoreIdType
           reward_reason: PlayOrPay\Infrastructure\Storage\Doctrine\Type\Event\RewardReasonType
+          event_comment_game_reference_type: \PlayOrPay\Infrastructure\Storage\Doctrine\Type\Event\EventCommentGameReferenceType
         mapping_types:
           uuid_binary: binary
     orm:

@@ -449,24 +449,27 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      * @param UuidInterface $pickerUuid
      * @param User $user
      * @param string $text
-     * @param UuidInterface $reviewedPickUuid
+     * @param UuidInterface $referencedPickUuid
+     * @param EventCommentGameReferenceType|null $gameReferenceType
      *
+     * @return Event
      * @throws AmbiguousValueException
      * @throws NotFoundException
      * @throws ReflectionException
-     *
-     * @return Event
      */
     public function addPickerComment(
         UuidInterface $commentUuid,
         UuidInterface $pickerUuid,
         User $user,
         string $text,
-        ?UuidInterface $reviewedPickUuid
+        ?UuidInterface $referencedPickUuid,
+        ?EventCommentGameReferenceType $gameReferenceType
     ): self {
-        $comment = $this->getPicker($pickerUuid)->addComment($commentUuid, $user, $text, $reviewedPickUuid);
+        $comment = $this
+            ->getPicker($pickerUuid)
+            ->addComment($commentUuid, $user, $text, $referencedPickUuid, $gameReferenceType);
 
-        if ($reviewedPickUuid) {
+        if ($comment->isReview()) {
             $this->addDomainEvent(new ReviewAdded($comment));
         }
 
@@ -707,5 +710,80 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         Assert::thatAll($rewards)->isInstanceOf(EventReward::class);
         $this->removePickRewards($pickUuid, $rewards);
         $this->setupRewards($participantUuid, $rewards, $pickUuid);
+    }
+
+    /**
+     * @return EventPick[]
+     */
+    private function getPicks(): array
+    {
+        $picks = [];
+        foreach ($this->getPickers() as $picker) {
+            array_push($picks, ...$picker->getPicks());
+        }
+
+        return $picks;
+    }
+
+    /**
+     * @return Game[]
+     */
+    public function getGames(): array
+    {
+        $games = new ArrayCollection();
+        foreach ([$this->getPickedGames(), $this->getCommentedGames()] as $gameBatch) {
+            foreach ($gameBatch as $game) {
+                if ($games->contains($game)) {
+                    continue;
+                }
+
+                $games->add($game);
+            }
+        }
+
+        return $games->toArray();
+    }
+
+    /**
+     * @return Game[]
+     */
+    private function getPickedGames(): array
+    {
+        $games = [];
+        foreach ($this->getPicks() as $pick) {
+            $games[] = $pick->getGame();
+        }
+
+        return $games;
+    }
+
+    /**
+     * @return Game[]
+     */
+    private function getCommentedGames(): array
+    {
+        $games = [];
+        foreach ($this->getComments() as $comment) {
+            if (!$comment->hasReferencedGame()) {
+                continue;
+            }
+
+            $games[] = $comment->getReferencedGame();
+        }
+
+        return $games;
+    }
+
+    /**
+     * @return EventPickerComment[]
+     */
+    private function getComments(): array
+    {
+        $comments = [];
+        foreach ($this->getPickers() as $picker) {
+            array_push($comments, ...$picker->getComments());
+        }
+
+        return $comments;
     }
 }

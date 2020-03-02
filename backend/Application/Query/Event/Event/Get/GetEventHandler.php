@@ -11,6 +11,7 @@ use PlayOrPay\Application\Query\QueryHandlerInterface;
 use PlayOrPay\Application\Schema\Event\Event\Detail\DetailEventMappingConfigurator;
 use PlayOrPay\Application\Schema\Event\Event\Detail\DetailEventReward;
 use PlayOrPay\Application\Schema\Event\Event\Detail\DetailEventView;
+use PlayOrPay\Application\Schema\Event\Event\Detail\DetailGameView;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRewardRepository;
 
@@ -56,6 +57,7 @@ class GetEventHandler implements QueryHandlerInterface
         $responseEvent = $mapper->map($event, DetailEventView::class);
 
         $responseEvent->rewards = $mapper->mapMultiple($this->eventRewardRepo->findAll(), DetailEventReward::class);
+        $responseEvent->games = $mapper->mapMultiple($event->getGames(), DetailGameView::class);
 
         return $responseEvent;
     }

@@ -14,8 +14,9 @@
         <field name="history" type="json_array" />
         <field name="createdAt" type="datetime_immutable" />
         <field name="updatedAt" type="datetime_immutable" nullable="true" />
-        <many-to-one field="reviewedGame" target-entity="PlayOrPay\Domain\Game\Game">
+        <many-to-one field="referencedGame" target-entity="PlayOrPay\Domain\Game\Game">
             <join-column referenced-column-name="complex_id" />
         </many-to-one>
+        <field name="gameReferenceType" type="event_comment_game_reference_type" nullable="true" />
     </entity>
 </doctrine-mapping>

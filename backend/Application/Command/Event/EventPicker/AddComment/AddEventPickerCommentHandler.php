@@ -67,7 +67,8 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
             $picker->getUuid(),
             $actor,
             $command->text,
-            $command->reviewedPickUuid
+            $command->referencedPickUuid,
+            $command->gameReferenceType
         );
 
         $this->eventRepo->save($event);

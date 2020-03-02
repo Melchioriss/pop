@@ -16,11 +16,14 @@ class DetailEventPickerComment
     /** @var string */
     public $createdAt;
 
-    /** @var string */
-    public $reviewedGame;
+    /** @var int|null */
+    public $gameReferenceType;
 
-    /** @var string */
-    public $reviewedPickUuid;
+    /** @var string|null */
+    public $referencedGame;
+
+    /** @var string|null */
+    public $referencedPick;
 
     /** @var string|null */
     public $updatedAt;

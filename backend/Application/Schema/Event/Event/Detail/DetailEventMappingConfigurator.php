@@ -61,11 +61,15 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->forMember('user', function (EventPickerComment $comment) {
                 return (string) $comment->getUser()->getSteamId();
             })
-            ->forMember('reviewedGame', function (EventPickerComment $comment) {
-                $reviewedGame = $comment->getReviewedGame();
-                return $reviewedGame ? (string) $reviewedGame->getId() : null;
+            ->forMember('gameReferenceType', function (EventPickerComment $comment) {
+                $referenceType = $comment->getGameReferenceType();
+                return $referenceType ? (int)(string) $referenceType : null;
             })
-            ->forMember('reviewedPickUuid', function (EventPickerComment $comment) {
+            ->forMember('referencedGame', function (EventPickerComment $comment) {
+                $referencedGame = $comment->getReferencedGame();
+                return $referencedGame ? (string) $referencedGame->getId() : null;
+            })
+            ->forMember('referencedPick', function (EventPickerComment $comment) {
                 $pick = $comment->findPick();
                 return $pick ? (string) $pick->getUuid() : null;
             });

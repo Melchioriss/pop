@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Domain\Event\DomainEvent\Event;
 
+use Assert\Assert;
 use PlayOrPay\Domain\Contracts\DomainEvent\DomainEventInterface;
 use PlayOrPay\Domain\Event\Event;
 use PlayOrPay\Domain\Event\EventPick;
@@ -16,12 +17,14 @@ class ReviewAdded implements DomainEventInterface
 
     public function __construct(EventPickerComment $comment)
     {
+        Assert::that($comment->isReview())->true('ReviewAdded event accepts only review comments');
+
         $this->comment = $comment;
     }
 
     public function jsonSerialize()
     {
-        $game = $this->comment->getReviewedGame();
+        $game = $this->comment->getReferencedGame();
         $pick = $this->comment->findPick();
 
         return [

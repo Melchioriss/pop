@@ -250,20 +250,18 @@ export default new Vuex.Store({
         },
 
         createEvent: function ({commit}, event) {
-
             return new Promise((resolve, reject) => {
                 return api.events.create(event)
                     .then(() => resolve())
-                    .catch(e => reject(e));
+                    .catch(e => reject(e.response.data.errors.detail));
             })
         },
 
         updateEvent: function ({commit}, event) {
-
             return new Promise((resolve, reject) => {
                 return api.events.update(event)
                     .then(() => resolve())
-                    .catch(e => reject(e));
+                    .catch(e => reject(e.response.data.errors.detail));
             })
         },
 
@@ -464,44 +462,51 @@ export default new Vuex.Store({
         },
 
         makePick: function ({commit, state}, {picker, pick, participantUuid}) {
-            return api.pickers.makePick(picker, pick)
-                .then(() => {
+            return new Promise((resolve, reject) => {
+                return api.pickers.makePick(picker, pick)
+                    .then(() => {
 
-                    let participant = {...state.participants[participantUuid]};
-                    let game = pick.game;
-                    pick.game = game.id;
+                        let participant = {...state.participants[participantUuid]};
+                        let game = pick.game;
+                        pick.game = game.id;
 
-                    participant.picks[picker.type][pick.type] = pick.uuid;
+                        participant.picks[picker.type][pick.type] = pick.uuid;
 
-                    commit('setGame', game);
-                    commit('setParticipant', participant);
-                    commit('setPick', pick);
-                });
+                        commit('setGame', game);
+                        commit('setParticipant', participant);
+                        commit('setPick', pick);
+                        resolve();
+                    })
+                    .catch(e => reject(e.response.data.errors.detail));
+            })
         },
 
         changePickGame: function ({commit, state}, {picker, pick, participantUuid}) {
-            return api.picks.changeGame(pick)
-                .then(() => {
+            return new Promise((resolve, reject) => {
+                return api.picks.changeGame(pick)
+                    .then(() => {
 
-                    if (pick.game.id.toString() !== state.picks[pick.uuid].game.toString())
-                    {
-                        pick.playedStatus = state.NOT_PLAYED;
-                        pick.playingState = {
-                            achievements: null,
-                            playtime: null
-                        };
-                    }
+                        if (pick.game.id.toString() !== state.picks[pick.uuid].game.toString())
+                        {
+                            pick.playedStatus = state.NOT_PLAYED;
+                            pick.playingState = {
+                                achievements: null,
+                                playtime: null
+                            };
+                        }
 
-                    let participant = {...state.participants[participantUuid]};
-                    let game = pick.game;
-                    pick.game = game.id;
+                        let participant = {...state.participants[participantUuid]};
+                        let game = pick.game;
+                        pick.game = game.id;
 
-                    participant.picks[picker.type][pick.type] = pick.uuid;
+                        participant.picks[picker.type][pick.type] = pick.uuid;
 
-                    commit('setGame', game);
-                    commit('setParticipant', participant);
-                    commit('setPick', pick);
-                });
+                        commit('setGame', game);
+                        commit('setParticipant', participant);
+                        commit('setPick', pick);
+                    })
+                    .catch(e => reject(e.response.data.errors.detail));
+            })
         },
 
         changePickStatus: function ({commit}, {pick, status}) {
@@ -537,10 +542,10 @@ export default new Vuex.Store({
                         commit('setComment', comment);
 
                         picker.comments.push(comment.uuid);
-                        commit('setPicker', picker);
+                        commit('setPicker', {...picker});
                         resolve();
                     })
-                    .catch(e => reject(e));
+                    .catch(e => reject(e.response.data.errors.detail));
             })
         },
 

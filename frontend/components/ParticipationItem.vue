@@ -248,6 +248,7 @@
                                 :is-participant="isParticipant"
                                 :rewards="participant.rewards[ participant.picks[pickerType][pickType] ]"
                                 :potential-rewards="getPotentialRewards(pickType)"
+                                :pick-error="pickErrors[pickerType][pickType]"
                                 @select-game="selectGame($event, pickType, pickerType)"
                                 @change-status="changeStatus($event, pickType, pickerType)"
                             />
@@ -346,7 +347,8 @@
                 newGroupWins: '',
                 newBlaeoGames: '',
                 newBlaeoPoints: '',
-                commentError: ''
+                commentError: '',
+                pickErrors: {}
             };
         },
         computed: {
@@ -594,6 +596,9 @@
             },
 
             selectGame(game, gameType, pickerType) {
+                let errors = this.pickErrors[pickerType];
+                errors[gameType] = '';
+                this.$set(this.pickErrors, pickerType, {...errors});
                 let existedPick = this.getPick(this.participant.picks[pickerType][gameType]);
                 let actionName = 'makePick';
                 let pick = {};
@@ -624,7 +629,11 @@
                         pick,
                         participantUuid: this.participant.uuid
                     })
-                    .then();
+                    .catch(e => {
+                        let errors = this.pickErrors[pickerType];
+                        errors[gameType] = e;
+                        this.$set(this.pickErrors, pickerType, {...errors});
+                    });
             },
 
             changeStatus(status, gameType, pickerType) {
@@ -643,7 +652,7 @@
                     picker: this.$store.getters.getPicker(this.participant.pickers[pickerType]),
                     comment: Object.assign(comment, {user: this.loggedUserSteamId, createdAt: this.$getDateNow()})
                 })
-                    .catch(e => this.commentError = e.response.data.errors.detail);
+                    .catch(e => this.commentError = e);
             },
 
             scrollToReview(commentUuid, pickerType) {
@@ -674,6 +683,11 @@
             {
                 this.isCommentsShown[this.MAJOR] = false;
                 this.isCommentsShown[this.MINOR] = false;
+            }
+
+            this.pickErrors = {
+                [this.MAJOR]: {},
+                [this.MINOR]: {}
             }
         }
     }

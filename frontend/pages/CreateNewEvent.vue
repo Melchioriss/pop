@@ -134,10 +134,7 @@
                             }
                         })
                     })
-                    .catch(e => {
-
-                        this.errors = e.response.data.errors.detail;
-                    })
+                    .catch(e => this.errors = e);
             }
         },
         created() {
@@ -154,9 +151,7 @@
                             endingOn: this.$getHtmlFormat(storeEvent.activePeriod.endDate)
                         }, storeEvent );
                     })
-                    .catch(e => {
-                        this.isNotFoundError = true;
-                    })
+                    .catch(e => this.isNotFoundError = true)
                     .finally(() => this.isLoading = false);
 
             }

@@ -68,6 +68,7 @@
             v-if="!pick.uuid && !isPicker"
             class="pick__placeholder"
         >Not picked yet.</div>
+        <error-box v-if="pickError">{{pickError}}</error-box>
     </div>
 </template>
 
@@ -75,9 +76,10 @@
     import {mapGetters, mapState} from 'vuex';
     import StatusItem from "./StatusItem";
     import PickingGameForm from "./PickingGameForm";
+    import ErrorBox from "./ErrorBox";
     export default {
         name: "PickItem",
-        components: {PickingGameForm, StatusItem},
+        components: {ErrorBox, PickingGameForm, StatusItem},
         props: {
             pick: {
                 type: Object,
@@ -111,6 +113,10 @@
             potentialRewards: {
                 type: Object,
                 default: () => ({})
+            },
+            pickError: {
+                type: String,
+                default: ''
             }
         },
         data() {

@@ -19,7 +19,7 @@
                     v-model="commentText"
                     class="input input--textarea input--space-bottom"
                     placeholder="Your thoughts..."
-                    rows="9"
+                    rows="6"
                 ></textarea>
                 <button
                     @click="addComment"
@@ -27,27 +27,47 @@
                     class="button"
                 >Reply</button>
             </div>
+
             <div
                 v-if="canSelectGames"
                 class="comments__game-block"
             >
-                <input
-                    v-model="isReview"
-                    type="checkbox"
-                    class="checkbox"
-                    :id="'review_'+uniqueKey"
-                />
-                <label
-                    :for="'review_'+uniqueKey"
-                    class=""
-                >It's a review</label>
+                <div>
+                    <input
+                        v-model="isReview"
+                        type="checkbox"
+                        class="checkbox"
+                        :id="'review_'+uniqueKey"
+                    />
+                    <label
+                        :for="'review_'+uniqueKey"
+                    >It's a review</label>
+                </div>
+
+                <div>
+                    <input
+                        v-model="isRepick"
+                        type="checkbox"
+                        class="checkbox"
+                        :id="'repick_'+uniqueKey"
+                    />
+                    <label
+                        :for="'repick_'+uniqueKey"
+                    >I want to get a pick changed</label>
+                </div>
+
                 <div
-                    v-show="isReview"
+                    v-show="isReview || isRepick"
                     class="comments__select-block"
                 >
                     <label
+                        v-if="isReview"
                         :for="'select_'+uniqueKey"
                     >Select a game you want to write a review for:</label>
+                    <label
+                        v-if="isRepick"
+                        :for="'select_'+uniqueKey"
+                    >Select a game you want to get changed:</label>
                     <select
                         :id="'select_'+uniqueKey"
                         v-model="selectedPickUuid"
@@ -57,7 +77,7 @@
                         <option
                             v-for="game in pickedGames"
                             :value="game.pickUuid"
-                            :disabled="!!game.commentExists"
+                            :disabled="isReview && !!game.commentExists"
                         >{{game.name}}</option>
                     </select>
 
@@ -90,7 +110,7 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import {mapGetters, mapState} from 'vuex';
     import uuid from 'uuid';
     import CommentItem from "./CommentItem";
     export default {
@@ -123,10 +143,15 @@
                 isShowingReplyForm: false,
                 commentText: '',
                 selectedPickUuid: '',
-                isReview: false
+                isReview: false,
+                isRepick: false
             };
         },
         computed: {
+            ...mapState({
+                commentTypes: 'GAME_REFERENCE_TYPE'
+            }),
+
             ...mapGetters([
                 'getComment'
             ]),
@@ -149,6 +174,19 @@
             commentsCount: function () {
                 this.isShowingReplyForm = false;
                 this.commentText = '';
+            },
+            isRepick: function (newValue) {
+                if (newValue)
+                    this.isReview = false;
+            },
+            isReview: function (newValue) {
+                if (newValue)
+                    this.isRepick = false;
+
+                let selectedGame = Object.values(this.pickedGames).filter(game => game.pickUuid === this.selectedPickUuid).shift();
+
+                if (selectedGame && selectedGame.commentExists)
+                    this.selectedPickUuid = '';
             }
         },
         methods: {
@@ -157,11 +195,15 @@
             },
 
             addComment () {
+
+                let referenceType = this.isReview ? this.commentTypes.REVIEW : this.isRepick ? this.commentTypes.REPICK : null;
+
                 this.$emit('add-comment', {
                     uuid: uuid.v4(),
                     text: this.commentText,
-                    reviewedPickUuid: this.isReview ? this.selectedPickUuid : '',
-                    reviewedGame: (this.isReview && this.selectedGame) ? this.selectedGame.id: ''
+                    referencedPick: referenceType ? this.selectedPickUuid : '',
+                    referencedGame: (referenceType && this.selectedGame) ? this.selectedGame.id: '',
+                    gameReferenceType: referenceType
                 });
             }
         }

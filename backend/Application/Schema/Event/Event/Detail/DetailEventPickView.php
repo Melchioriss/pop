@@ -14,7 +14,7 @@ class DetailEventPickView
     /** @var EventPickType */
     public $type;
 
-    /** @var DetailGameView */
+    /** @var string */
     public $game;
 
     /** @var EventPickPlayedStatusType */

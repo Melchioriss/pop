@@ -29,10 +29,19 @@
                 >edit</span>
             </div>
             <div
-                v-if="comment.reviewedGame"
+                v-if="isReview"
                 :class="['comment__game-line', 'comment__game-line--'+playedStatusLowerCase]"
             >
                 <div class="comment__game-title">{{game.name}}</div>
+            </div>
+            <div
+                v-if="isRepick"
+                class="comment__repick-request"
+            >
+                {{user.profileName}} is asking to repick
+                <a
+                    :href="'https://store.steampowered.com/app/'+game.localId+'/'"
+                >{{game.name}}</a>
             </div>
             <div v-if="isEditing">
                 <textarea
@@ -57,7 +66,7 @@
             ></div>
         </div>
         <a
-            v-if="comment.reviewedGame"
+            v-if="isReview"
             :href="'https://store.steampowered.com/app/'+game.localId+'/'"
             target="_blank"
             class="comment__game"
@@ -71,7 +80,7 @@
 </template>
 
 <script>
-    import {mapGetters} from 'vuex';
+    import {mapGetters, mapState} from 'vuex';
     export default {
         name: "CommentItem",
         props: {
@@ -82,8 +91,9 @@
                     user: '',
                     createdAt: '',
                     text: '',
-                    reviewedGame: null,
-                    reviewedPickUuid: null
+                    gameReferenceType: null,
+                    referencedGame: null,
+                    referencedPick: null
                 })
             },
             isRelevantToMe: {
@@ -99,6 +109,10 @@
             };
         },
         computed: {
+            ...mapState({
+                commentTypes: 'GAME_REFERENCE_TYPE'
+            }),
+
             ...mapGetters([
                 'getUser',
                 'getPick',
@@ -112,11 +126,11 @@
             },
 
             pick: function () {
-                return this.getPick(this.comment.reviewedPickUuid);
+                return this.getPick(this.comment.referencedPick);
             },
 
             game: function () {
-                return this.comment.reviewedGame ? this.getGame(this.comment.reviewedGame) : null;
+                return this.comment.referencedGame ? this.getGame(this.comment.referencedGame) : null;
             },
 
             playedStatusLowerCase: function () {
@@ -125,6 +139,14 @@
 
             isAuthor: function () {
                 return this.comment.user === this.loggedUserSteamId;
+            },
+
+            isReview: function () {
+                return this.comment.gameReferenceType === this.commentTypes.REVIEW;
+            },
+
+            isRepick: function () {
+                return this.comment.gameReferenceType === this.commentTypes.REPICK;
             },
 
             isNew: function () {
@@ -258,7 +280,8 @@
             display: inline-block;
             position: relative;
             z-index: 2;
-            background: @color-gray;
+            background: @color-gray-dark;
+            color: @color-bg;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -281,6 +304,14 @@
 
         &__body{
             padding-right: 10px;
+        }
+
+        &__repick-request{
+            font-size: 14px;
+            font-style: italic;
+            background: fade(@color-gray-dark, 60%);
+            padding: 4px 8px;
+            margin: 6px 0;
         }
     }
 

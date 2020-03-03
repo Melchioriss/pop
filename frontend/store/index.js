@@ -49,6 +49,11 @@ export default new Vuex.Store({
             REVIEW_ADDED: 'ReviewAdded',
             MEMBER_ADDED: 'MemberAdded',
             MEMBER_REMOVED: 'MemberRemoved'
+        },
+
+        GAME_REFERENCE_TYPE: {
+            REVIEW: 10,
+            REPICK: 20
         }
     },
     getters: {
@@ -297,7 +302,6 @@ export default new Vuex.Store({
 
                         let pickers = {};
                         let picks = {};
-                        let games = {};
                         let comments = {};
                         Object.keys(participants).forEach(participantUuid => {
                             let participant = participants[participantUuid];
@@ -310,9 +314,6 @@ export default new Vuex.Store({
                                 participant.picks[picker.type] = {};
 
                                 picker.picks.forEach(pick => {
-                                    games[pick.game.id] = pick.game;
-                                    pick.game = pick.game.id;
-
                                     picks[pick.uuid] = pick;
                                     participant.picks[picker.type][pick.type] = pick.uuid;
                                 });
@@ -345,8 +346,14 @@ export default new Vuex.Store({
                         });
                         delete event.rewards;
 
+                        let gamesMap = {};
+                        event.games.forEach(game => {
+                            gamesMap[game.id] = game;
+                        });
+                        delete event.games;
+
                         commit('setComments', comments);
-                        commit('setGames', games);
+                        commit('setGames', gamesMap);
                         commit('setPicks', picks);
                         commit('setPickers', pickers);
                         commit('setUsers', users);
@@ -524,13 +531,17 @@ export default new Vuex.Store({
         },
 
         addPickerComment: function ({commit}, {picker, comment}) {
-            return api.pickers.addComment(picker, comment)
-                .then(() => {
-                    commit('setComment', comment);
+            return new Promise((resolve, reject) => {
+                return api.pickers.addComment(picker, comment)
+                    .then(() => {
+                        commit('setComment', comment);
 
-                    picker.comments.push(comment.uuid);
-                    commit('setPicker', picker);
-                });
+                        picker.comments.push(comment.uuid);
+                        commit('setPicker', picker);
+                        resolve();
+                    })
+                    .catch(e => reject(e));
+            })
         },
 
         updateComment: function({commit, state}, comment) {

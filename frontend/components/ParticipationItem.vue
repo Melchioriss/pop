@@ -296,6 +296,7 @@
                     :unique-key="'comments_'+participant.uuid"
                     @add-comment="addComment($event, pickerType)"
                 />
+                <error-box v-if="commentError">{{commentError}}</error-box>
             </div>
         </template>
 
@@ -309,10 +310,11 @@
     import ParticipationPicker from "./ParticipationPicker";
     import PickItem from "./PickItem";
     import CommentsArea from "./CommentsArea";
+    import ErrorBox from "./ErrorBox";
 
     export default {
         name: "ParticipationItem",
-        components: {CommentsArea, PickItem, ParticipationPicker, CommentItem},
+        components: {ErrorBox, CommentsArea, PickItem, ParticipationPicker, CommentItem},
         props: {
             participant: {
                 type: Object,
@@ -343,7 +345,8 @@
                 newExtraRules: '',
                 newGroupWins: '',
                 newBlaeoGames: '',
-                newBlaeoPoints: ''
+                newBlaeoPoints: '',
+                commentError: ''
             };
         },
         computed: {
@@ -441,8 +444,8 @@
 
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.reviewedGame)
-                            games[comment.reviewedGame].commentExists = true;
+                        if (comment.referencedGame)
+                            games[comment.referencedGame].commentExists = true;
                     });
 
                     gamesByPicker[pickerType] = games;
@@ -455,8 +458,8 @@
                 Object.keys(this.participant.picks).forEach(pickerType => {
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.reviewedGame)
-                            commentsForPicks[comment.reviewedPickUuid] = comment.uuid;
+                        if (comment.referencedGame)
+                            commentsForPicks[comment.referencedPick] = comment.uuid;
                     });
                 });
 
@@ -634,11 +637,13 @@
             },
 
             addComment(comment, pickerType) {
+                this.commentError = '';
 
                 this.$store.dispatch('addPickerComment', {
                     picker: this.$store.getters.getPicker(this.participant.pickers[pickerType]),
                     comment: Object.assign(comment, {user: this.loggedUserSteamId, createdAt: this.$getDateNow()})
-                });
+                })
+                    .catch(e => this.commentError = e.response.data.errors.detail);
             },
 
             scrollToReview(commentUuid, pickerType) {

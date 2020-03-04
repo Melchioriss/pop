@@ -492,4 +492,68 @@ class EventParticipant
     {
         return !!$this->findPickOfGame($gameId);
     }
+
+    private function assertNotHavingPickedGame(Game $game): void
+    {
+        if ($this->hasPickOfGame($game->getId())) {
+            throw new DomainException(sprintf("Participant already has a pick for game '%s'", $game->getName()));
+        }
+    }
+
+    /**
+     * @param UuidInterface $pickUuid
+     * @param Game $game
+     *
+     * @return EventParticipant
+     *
+     * @throws NotFoundException
+     */
+    public function changePickGame(UuidInterface $pickUuid, Game $game): self
+    {
+        $this->assertNotHavingPickedGame($game);
+
+        $pick = $this->getPick($pickUuid);
+        $pick->changeGame($game);
+        return $this;
+    }
+
+    /**
+     * @param UuidInterface $pickerUuid
+     * @param UuidInterface $pickUuid
+     * @param EventPickType $type
+     * @param Game $game
+     *
+     * @return EventPick
+     *
+     * @throws NotFoundException
+     */
+    public function makePick(
+        UuidInterface $pickerUuid,
+        UuidInterface $pickUuid,
+        EventPickType $type,
+        Game $game
+    ): EventPick {
+        $this->assertNotHavingPickedGame($game);
+
+        $picker = $this->getPicker($pickerUuid);
+        return $picker->makePick($pickUuid, $type, $game);
+    }
+
+    /**
+     * @param UuidInterface $pickerUuid
+     *
+     * @return EventPicker
+     *
+     * @throws NotFoundException
+     */
+    private function getPicker(UuidInterface $pickerUuid): EventPicker
+    {
+        foreach ($this->pickers as $picker) {
+            if ($picker->getUuid()->equals($pickerUuid)) {
+                return $picker;
+            }
+        }
+
+        throw NotFoundException::forObject(EventPicker::class, (string) $pickerUuid);
+    }
 }

@@ -20,6 +20,9 @@ class EventPick
     /** @var EventPickType */
     private $type;
 
+    /** @var EventPickStatus */
+    private $status;
+
     /** @var EventPickPlayedStatus */
     private $playedStatus;
 
@@ -34,6 +37,7 @@ class EventPick
         $this->type = $type;
         $this->playedStatus = $playedStatus;
         $this->playingState = $playingState;
+        $this->status = new EventPickStatus(EventPickStatus::ACTIVE);
     }
 
     public function getUuid(): UuidInterface
@@ -69,6 +73,10 @@ class EventPick
         $this
             ->resetPlayedStatus()
             ->clearPlayingState();
+
+        if (!$this->isActive()) {
+            $this->activate();
+        }
 
         return $this;
     }
@@ -150,5 +158,42 @@ class EventPick
                 EventPickPlayedStatus::BEATEN,
                 EventPickPlayedStatus::COMPLETED,
             ]);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status->equalTo(new EventPickStatus(EventPickStatus::ACTIVE));
+    }
+
+    public function isRejected()
+    {
+        return $this->status->equalTo(new EventPickStatus(EventPickStatus::REJECTED));
+    }
+
+    private function activate(): self
+    {
+        if ($this->isActive()) {
+            throw new DomainException('Pick is already active');
+        }
+
+        $this->status = new EventPickStatus(EventPickStatus::ACTIVE);
+
+        return $this;
+    }
+
+    public function reject(): self
+    {
+        if ($this->isRejected()) {
+            throw new DomainException('Pick is already rejected');
+        }
+
+        $this->status = new EventPickStatus(EventPickStatus::REJECTED);
+
+        return $this;
+    }
+
+    public function getStatus(): EventPickStatus
+    {
+        return $this->status;
     }
 }

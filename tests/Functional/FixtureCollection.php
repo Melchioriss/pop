@@ -49,7 +49,7 @@ class FixtureCollection implements IteratorAggregate
         throw new Exception(sprintf("There is no fixture with name '%s'", $name));
     }
 
-    public function findAllOf(string $class, int $limit = null, array $excluded = [])
+    public function findAllOf(string $class, int $limit = null, array $excluded = []): array
     {
         $counter = 0;
         $found = [];

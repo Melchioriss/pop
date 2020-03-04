@@ -131,10 +131,27 @@ abstract class FunctionalTest extends WebTestCase
         $this->assertResponseCode(Response::HTTP_OK);
     }
 
+    public function assertNonSuccessfulResponse(): void
+    {
+        $this->assertNotHavingResponseCode(Response::HTTP_OK);
+    }
+
     public function assertResponseCode(int $code): void
     {
         $response = $this->client->getResponse();
         $this->assertSame($code, $response->getStatusCode(), $response->getContent());
+    }
+
+    public function assertResponseHavingString(string $text): void
+    {
+        $response = $this->client->getResponse();
+        $this->assertStringContainsString($text, $response->getContent());
+    }
+
+    public function assertNotHavingResponseCode(int $code): void
+    {
+        $response = $this->client->getResponse();
+        $this->assertNotSame($code, $response->getStatusCode(), $response->getContent());
     }
 
     public function applyFixtures(string $file): FixtureCollection

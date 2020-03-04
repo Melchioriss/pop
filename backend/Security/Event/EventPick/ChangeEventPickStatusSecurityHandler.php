@@ -28,7 +28,7 @@ class ChangeEventPickStatusSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(ChangeEventPickStatusCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

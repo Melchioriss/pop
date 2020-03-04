@@ -28,7 +28,7 @@ class SetUserBlaeoNameSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(SetUserBlaeoNameCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

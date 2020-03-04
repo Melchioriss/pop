@@ -28,7 +28,7 @@ class UpdateEventParticipantBlaeoGamesHandler extends CommonSecurityHandler
      */
     public function __invoke(UpdateEventParticipantBlaeoGamesCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

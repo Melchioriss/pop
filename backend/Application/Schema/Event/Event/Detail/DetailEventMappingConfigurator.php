@@ -85,11 +85,14 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->forMember('type', function (EventPick $pick) {
                 return (int) (string) $pick->getType();
             })
-            ->forMember('game', function (EventPick $pick, AutoMapperInterface $mapper) {
+            ->forMember('game', function (EventPick $pick) {
                 return (string) $pick->getGame()->getId();
             })
             ->forMember('playedStatus', function (EventPick $pick) {
                 return (int) (string) $pick->getPlayedStatus();
+            })
+            ->forMember('rejected', function (EventPick $pick) {
+                return $pick->isRejected();
             });
 
         $config

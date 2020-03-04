@@ -28,7 +28,7 @@ class DeactivateUserSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(DeactivateUserCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

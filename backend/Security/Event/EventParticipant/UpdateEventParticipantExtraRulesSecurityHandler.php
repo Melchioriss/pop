@@ -28,7 +28,7 @@ class UpdateEventParticipantExtraRulesSecurityHandler extends CommonSecurityHand
      */
     public function __invoke(UpdateEventParticipantExtraRulesCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

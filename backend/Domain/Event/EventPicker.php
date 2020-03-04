@@ -201,7 +201,7 @@ class EventPicker
         ?UuidInterface $referencedPickUuid,
         ?EventCommentGameReferenceType $gameReferenceType
     ): EventPickerComment {
-        if ($referencedPickUuid && $gameReferenceType === EventCommentGameReferenceType::REVIEW) {
+        if ($referencedPickUuid && $gameReferenceType->equalTo(EventCommentGameReferenceType::REVIEW)) {
             $pick = $this->getPick($referencedPickUuid);
             if ($this->hasRewiew($pick->getGame())) {
                 throw new DomainException('This game already has a review');

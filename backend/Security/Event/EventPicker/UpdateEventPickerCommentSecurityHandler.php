@@ -27,7 +27,7 @@ class UpdateEventPickerCommentSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(UpdateEventPickerCommentCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

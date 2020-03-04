@@ -15,6 +15,11 @@ use ReflectionException;
 
 class EventPickerComment implements OnUpdateEventListenerInterface
 {
+    const ALLOWED_REPICK_PLAY_STATUSES = [
+        EventPickPlayedStatus::NOT_PLAYED,
+        EventPickPlayedStatus::UNFINISHED,
+    ];
+
     /** @var UuidInterface */
     private $uuid;
 
@@ -63,17 +68,32 @@ class EventPickerComment implements OnUpdateEventListenerInterface
         ?EventCommentGameReferenceType $gameReferenceType
     ) {
         if ($referencedPickUuid) {
+            Assert::that($gameReferenceType)->notNull('Game reference type is required to make a comment');
+
             $referencedPick = $picker->getPick($referencedPickUuid);
-            if ($referencedPick->getPlayedStatus()->equalToOneOf([
-                EventPickPlayedStatus::UNFINISHED,
-                EventPickPlayedStatus::NOT_PLAYED,
-            ])) {
+            $playedStatus = $referencedPick->getPlayedStatus();
+
+            if ($gameReferenceType->equalTo(EventCommentGameReferenceType::REVIEW)
+                && $playedStatus->equalTo(EventPickPlayedStatus::NOT_PLAYED)
+            ) {
                 throw new DomainException(
                     sprintf("You can't review '%s' game", $referencedPick->getPlayedStatus()->getCodename())
                 );
             }
 
-            Assert::that($gameReferenceType)->notNull('Game reference type is required to make a comment');
+            if ($gameReferenceType->equalTo(EventCommentGameReferenceType::REPICK)
+                && !$playedStatus->equalToOneOf(self::ALLOWED_REPICK_PLAY_STATUSES)
+            ) {
+                throw new DomainException(
+                    sprintf(
+                        "You can't request a repick for '%s' played status. Played status must be one of these: %s",
+                        $playedStatus->getCodename(),
+                        implode(', ', array_map(function (int $rawPlayedStatus) {
+                            return (new EventPickPlayedStatus($rawPlayedStatus))->getCodename();
+                        }, self::ALLOWED_REPICK_PLAY_STATUSES))
+                    )
+                );
+            }
 
             $this->referencedGame = $referencedPick->getGame();
             $this->gameReferenceType = $gameReferenceType;
@@ -133,6 +153,21 @@ class EventPickerComment implements OnUpdateEventListenerInterface
     public function getPicker(): EventPicker
     {
         return $this->picker;
+    }
+
+    /**
+     * @return EventPick
+     *
+     * @throws NotFoundException
+     */
+    public function getPick(): EventPick
+    {
+        $pick = $this->findPick();
+        if (!$pick) {
+            throw NotFoundException::forQuery(EventPick::class, ['comment' => (string) $this->uuid]);
+        }
+
+        return $pick;
     }
 
     public function findPick(): ?EventPick

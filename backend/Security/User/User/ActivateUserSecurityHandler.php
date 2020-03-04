@@ -28,7 +28,7 @@ class ActivateUserSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(ActivateUserCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

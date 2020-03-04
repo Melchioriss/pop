@@ -469,8 +469,17 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
             ->getPicker($pickerUuid)
             ->addComment($commentUuid, $user, $text, $referencedPickUuid, $gameReferenceType);
 
-        if ($comment->isReview()) {
-            $this->addDomainEvent(new ReviewAdded($comment));
+        if ($comment->hasReferencedGame()) {
+            switch ((int)(string) $comment->getGameReferenceType()) {
+                case EventCommentGameReferenceType::REVIEW:
+                    $this->addDomainEvent(new ReviewAdded($comment));
+                    break;
+
+                case EventCommentGameReferenceType::REPICK:
+                    $this->rejectPick($comment->getPick()->getUuid());
+                    break;
+            }
+
         }
 
         return $this;
@@ -570,7 +579,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      */
     public function changePickGame(UuidInterface $pickUuid, Game $game): self
     {
-        $this->getPick($pickUuid)->changeGame($game);
+        $this->getPick($pickUuid)->getParticipant()->changePickGame($pickUuid, $game);
 
         return $this;
     }
@@ -583,20 +592,18 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      *
      * @throws NotFoundException
      *
-     * @return $this
+     * @return EventPick
      */
-    public function makePick(UuidInterface $pickerUuid, UuidInterface $pickUuid, EventPickType $type, Game $game)
-    {
-        $picker = $this->getPicker($pickerUuid);
-
-        $participant = $picker->getParticipant();
-        if ($participant->hasPickOfGame($game->getId())) {
-            throw new DomainException(sprintf("Participant already has a pick for game '%s'", $game->getName()));
-        }
-
-        $picker->makePick($pickUuid, $type, $game);
-
-        return $this;
+    public function makePick(
+        UuidInterface $pickerUuid,
+        UuidInterface $pickUuid,
+        EventPickType $type,
+        Game $game
+    ): EventPick {
+        return $this
+            ->getPicker($pickerUuid)
+            ->getParticipant()
+            ->makePick($pickerUuid, $pickUuid, $type, $game);
     }
 
     /**
@@ -612,6 +619,10 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
             foreach ($participant->getPickers() as $picker) {
                 $pickTypes = EventPickType::getEnums();
                 $pickedGames = array_splice($games, -$picker->getPickQuota());
+                if (!$pickedGames) {
+                    return;
+                }
+
                 foreach ($pickedGames as $pickIdx => $pickedGame) {
                     $picker->makePick(Uuid::uuid4(), $pickTypes[$pickIdx], $pickedGame);
                 }
@@ -715,7 +726,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     /**
      * @return EventPick[]
      */
-    private function getPicks(): array
+    public function getPicks(): array
     {
         $picks = [];
         foreach ($this->getPickers() as $picker) {
@@ -785,5 +796,18 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         }
 
         return $comments;
+    }
+
+    /**
+     * @param UuidInterface $pickUuid
+     *
+     * @return Event
+     *
+     * @throws NotFoundException
+     */
+    private function rejectPick(UuidInterface $pickUuid): self
+    {
+        $this->getPick($pickUuid)->reject();
+        return $this;
     }
 }

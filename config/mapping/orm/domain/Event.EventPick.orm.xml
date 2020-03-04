@@ -11,6 +11,7 @@
             <join-column referenced-column-name="complex_id" />
         </many-to-one>
         <field name="type" type="event_pick_type" />
+        <field name="status" type="event_pick_status" />
         <field name="playedStatus" type="event_pick_played_status" />
         <embedded name="playingState" class="PlayOrPay\Domain\Event\PlayingState" />
     </entity>

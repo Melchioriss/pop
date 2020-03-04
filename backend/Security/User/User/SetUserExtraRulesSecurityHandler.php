@@ -28,7 +28,7 @@ class SetUserExtraRulesSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(SetUserExtraRulesCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

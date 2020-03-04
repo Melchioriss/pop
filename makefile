@@ -139,3 +139,7 @@ migrate:
 .PHONY: import-pop
 import-pop:
 	docker-compose exec php console steam:group:import PoPSG
+
+.PHONY: query
+query:
+	docker-compose exec php console doctrine:query:sql $(this)

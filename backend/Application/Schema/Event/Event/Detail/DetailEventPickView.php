@@ -17,6 +17,9 @@ class DetailEventPickView
     /** @var string */
     public $game;
 
+    /** @var bool */
+    public $rejected;
+
     /** @var EventPickPlayedStatusType */
     public $playedStatus;
 

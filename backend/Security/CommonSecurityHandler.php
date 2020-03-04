@@ -32,7 +32,7 @@ abstract class CommonSecurityHandler implements SecurityHandlerInterface
         return $actor;
     }
 
-    public function theActorIsAdmin()
+    public function isAdmin()
     {
         $actor = $this->actorFinder->findActor();
         if (!$actor) {
@@ -47,7 +47,7 @@ abstract class CommonSecurityHandler implements SecurityHandlerInterface
      */
     public function assertAdmin()
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

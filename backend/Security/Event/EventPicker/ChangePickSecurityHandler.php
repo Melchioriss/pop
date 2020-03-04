@@ -33,7 +33,7 @@ class ChangePickSecurityHandler extends CommonSecurityHandler
      */
     public function __invoke(ChangePickGameCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

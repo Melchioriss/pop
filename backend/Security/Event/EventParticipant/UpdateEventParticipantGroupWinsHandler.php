@@ -28,7 +28,7 @@ class UpdateEventParticipantGroupWinsHandler extends CommonSecurityHandler
      */
     public function __invoke(UpdateEventParticipantGroupWinsCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

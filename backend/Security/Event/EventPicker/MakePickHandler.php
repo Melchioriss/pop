@@ -28,7 +28,7 @@ class MakePickHandler extends CommonSecurityHandler
      */
     public function __invoke(MakePickCommand $command)
     {
-        if ($this->theActorIsAdmin()) {
+        if ($this->isAdmin()) {
             return;
         }
 

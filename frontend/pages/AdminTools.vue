@@ -108,8 +108,7 @@
                         this.updateGroupResult = 'Group updated';
                     })
                     .catch(e => {
-                        console.log(e);
-                        this.updateGamesResult = 'There was an error, try again later.';
+                        this.updateGroupResult = 'There was an error, try again later. \n\rError text:\n\r' + e;
                     })
                     .finally(() => this.isUpdatingGroup = false);
             },
@@ -122,8 +121,7 @@
                         this.updateGamesResult = 'Games updated.';
                     })
                     .catch(e => {
-                        console.log(e);
-                        this.updateGamesResult = 'There was an error updating games, try again later.'
+                        this.updateGamesResult = 'There was an error updating games, try again later. \n\rError text:\n\r' + e;
                     })
                     .finally(() => this.isUpdatingGames = false);
             }
@@ -163,6 +161,7 @@
             border-left: 3px solid @color-cobalt;
             padding: 4px 10px;
             margin: 10px 0;
+            white-space: pre-wrap;
         }
     }
 

@@ -173,7 +173,6 @@ export default new Vuex.Store({
     },
     actions: {
         loadGroups: function({commit}) {
-
             return api.groups.getList()
                 .then(({data: groupsData}) => {
                     commit('setGroups', groupsData.data);
@@ -206,7 +205,7 @@ export default new Vuex.Store({
                 .then(() => {
                     user.blaeoName = blaeoLink.replace(state.BLAEO_USER_BASE_LINK, '');
                     commit('setUser', user);
-                })
+                });
         },
 
         updateUserExtraRules: function ({commit}, {user, extraRules}) {
@@ -238,7 +237,7 @@ export default new Vuex.Store({
                 .then(() => {
                     user.admin = true;
                     commit('setUser', user);
-                })
+                });
         },
 
         revokeUserAdminRole: function ({commit}, user) {
@@ -246,7 +245,7 @@ export default new Vuex.Store({
                 .then(() => {
                     user.admin = false;
                     commit('setUser', user);
-                })
+                });
         },
 
         createEvent: function ({commit}, event) {
@@ -254,7 +253,7 @@ export default new Vuex.Store({
                 return api.events.create(event)
                     .then(() => resolve())
                     .catch(e => reject(e.response.data.errors.detail));
-            })
+            });
         },
 
         updateEvent: function ({commit}, event) {
@@ -262,11 +261,10 @@ export default new Vuex.Store({
                 return api.events.update(event)
                     .then(() => resolve())
                     .catch(e => reject(e.response.data.errors.detail));
-            })
+            });
         },
 
         loadEvents: function ({commit}) {
-
             return api.events.getList()
                 .then(({data: eventsResult}) => {
                     let events = {};
@@ -280,7 +278,6 @@ export default new Vuex.Store({
         },
 
         loadEvent: function ({commit}, eventUuid) {
-
             return new Promise((resolve, reject) => {
                 return api.events.get(eventUuid)
                     .then(({data: eventResult}) => {
@@ -361,7 +358,7 @@ export default new Vuex.Store({
 
                         resolve();
                     })
-                    .catch(e => reject(e));
+                    .catch(e => reject(e.response.data.errors.detail));
             });
         },
 
@@ -370,7 +367,7 @@ export default new Vuex.Store({
                 .then(() => {
                     participant.groupWins = groupWins;
                     commit('setParticipant', participant);
-                })
+                });
         },
 
         updateParticipantBlaeoGames: function ({commit}, {participant, blaeoGames}) {
@@ -378,7 +375,7 @@ export default new Vuex.Store({
                 .then(() => {
                     participant.blaeoGames = blaeoGames;
                     commit('setParticipant', participant)
-                })
+                });
         },
 
         updateParticipantBlaeoPoints: function ({commit, state, getters}, {participant, blaeoPoints}) {
@@ -398,7 +395,7 @@ export default new Vuex.Store({
                     };
 
                     commit('setParticipant', updatedParticipant)
-                })
+                });
         },
 
         updateParticipantExtraRules: function ({commit}, {participant, extraRules}) {
@@ -406,7 +403,7 @@ export default new Vuex.Store({
                 .then(() => {
                     participant.extraRules = extraRules;
                     commit('setParticipant', participant)
-                })
+                });
         },
 
         generateEventPickers: function ({commit}, event) {
@@ -422,7 +419,6 @@ export default new Vuex.Store({
         },
 
         addPicker: function ({commit}, {picker, participant}) {
-
             return api.participants.addPicker(participant, picker)
                 .then(() => {
                     participant.pickers[picker.type] = picker.uuid;
@@ -430,14 +426,14 @@ export default new Vuex.Store({
 
                     commit('setPicker', picker);
                     commit('setParticipant', participant);
-                })
+                });
         },
 
         importGroup: function ({commit}, code) {
             return new Promise((resolve, reject) => {
                 return api.groups.import(code)
                     .then(() => resolve())
-                    .catch(e => reject(e));
+                    .catch(e => reject(e.response.data.errors.detail));
             });
         },
 
@@ -445,7 +441,7 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 return api.games.import()
                     .then(() => resolve())
-                    .catch(e => reject());
+                    .catch(e => reject(e.response.data.errors.detail));
             })
         },
 
@@ -457,7 +453,7 @@ export default new Vuex.Store({
                         let pagin = gamesResult.meta;
                         resolve({games, pagin});
                     })
-                    .catch(e => reject(e));
+                    .catch(e => reject(e.response.data.errors.status));
             })
         },
 
@@ -510,7 +506,6 @@ export default new Vuex.Store({
         },
 
         changePickStatus: function ({commit}, {pick, status}) {
-
             return api.picks.changeStatus(pick, status)
                 .then(() => {
                     pick.playedStatus = status;
@@ -519,7 +514,7 @@ export default new Vuex.Store({
         },
 
         loadEventPotentialParticipants: function ({commit}, event) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 return api.events.getPotentialParticipants(event)
                     .then(({data: participantsResult}) => {
                         resolve(participantsResult.data);
@@ -554,7 +549,7 @@ export default new Vuex.Store({
                 .then(() => {
                     comment.updatedAt = Vue.prototype.$getDateNow();
                     commit('setComment', comment);
-                })
+                });
         },
 
         loadMainPageContent: function({commit, state}) {
@@ -569,11 +564,11 @@ export default new Vuex.Store({
             return api.content.setBlock(state.MAIN_PAGE_CONTENT_CODE, content)
                 .then(() => {
                     commit('setBlock', {code: state.MAIN_PAGE_CONTENT_CODE, content})
-                })
+                });
         },
 
         loadActivity: function ({commit, state}, page) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 return api.activity.getList(page)
                     .then(({data: activityResult}) => {
 
@@ -622,8 +617,7 @@ export default new Vuex.Store({
 
                         commit('setActivity', activityResult.data);
                         resolve(pagin)
-                    })
-                    .catch(e => reject(e));
+                    });
             });
         },
 

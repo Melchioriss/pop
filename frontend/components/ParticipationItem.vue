@@ -826,7 +826,7 @@
         }
 
         &__comments{
-            padding: 10px 10px 10px 260px;
+            padding: 0 10px 10px 260px;
         }
 
         &__reward-info{

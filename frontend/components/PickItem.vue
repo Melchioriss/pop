@@ -1,6 +1,10 @@
 <template>
     <div class="pick">
         <template v-if="pick.uuid">
+            <div
+                v-if="pick.rejected"
+                class="pick__request"
+            >Repick requested!</div>
             <div class="pick__game">
                 <div
                     :style="'background-image: url(https://steamcdn-a.akamaihd.net/steam/apps/'+game.localId+'/capsule_184x69.jpg);'"
@@ -91,7 +95,8 @@
                     playingState: {
                         playtime: null,
                         achievements: null
-                    }
+                    },
+                    rejected: false
                 })
             },
             userId: {
@@ -186,6 +191,10 @@
             changeStatus: function ($event) {
                 this.$emit('change-status', $event);
             }
+        },
+        created() {
+            if (this.pick.rejected && this.isPicker)
+                this.$store.dispatch('setRepickNotification', this.pick.uuid);
         }
     }
 </script>
@@ -259,6 +268,16 @@
 
         &__status{
             margin-top: auto;
+        }
+
+        &__request{
+            text-align: center;
+            padding: 4px 10px;
+            color: @color-red;
+            background: @color-gray;
+            border-top: 1px solid @color-red;
+            border-bottom: 1px solid @color-red;
+            margin-bottom: 10px;
         }
     }
 

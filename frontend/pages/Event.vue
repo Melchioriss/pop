@@ -71,11 +71,13 @@
                     type="button"
                     class="button button--cobalt button--space-right"
                 >Update playing stats</button>
-                <div
-                    v-if="newCommentsCount"
-                    class="event__new-indicator"
-                >
-                    <i class="fa-icon far fa-comments"></i>{{newCommentsCount}} new comments since last visit
+                <div class="event__new-indicator">
+                    <div v-if="newCommentsCount">
+                        <i class="fa-icon far fa-comments"></i>{{newCommentsCount}} new comment(s) since last visit
+                    </div>
+                    <div v-if="repickCount">
+                        <i class="fa-icon fas fa-recycle"></i>{{repickCount}} active repick request(s)
+                    </div>
                 </div>
             </div>
 
@@ -182,7 +184,8 @@
             ...mapGetters([
                 'loggedUserSteamId',
                 'getPicker',
-                'getCommentNotification'
+                'getCommentNotification',
+                'getRepickNotification'
             ]),
 
             uuid: function () {
@@ -253,6 +256,9 @@
             },
             newCommentsCount: function () {
                 return this.getCommentNotification.length;
+            },
+            repickCount: function () {
+                return this.getRepickNotification.length;
             }
         },
         methods: {
@@ -289,9 +295,7 @@
                         steamId: userId
                     })
                     .then(() => {
-                        // todo: temp
                         location.reload();
-                        //this.potentialParticipants = this.potentialParticipants.filter(participant => participant.steamId !== userId);
                     })
             },
             importPlaystats () {

@@ -85,7 +85,7 @@
                         <option
                             v-for="game in pickedGames"
                             :value="game.pickUuid"
-                            :disabled="isReview && !!game.commentExists"
+                            :disabled="isReview && !!game.reviewExists"
                         >{{game.name}}</option>
                     </select>
 
@@ -193,7 +193,7 @@
 
                 let selectedGame = Object.values(this.pickedGames).filter(game => game.pickUuid === this.selectedPickUuid).shift();
 
-                if (selectedGame && selectedGame.commentExists)
+                if (selectedGame && selectedGame.reviewExists)
                     this.selectedPickUuid = '';
             }
         },

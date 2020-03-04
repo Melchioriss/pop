@@ -153,7 +153,7 @@
                 let isNew = false;
                 let lastVisit = new Date(this.$store.state.lastVisit).getTime();
 
-                if (!lastVisit)
+                if (this.isAuthor || !lastVisit)
                     isNew = false;
                 else
                 {
@@ -163,7 +163,7 @@
                     isNew = ((lastVisit <= commentDate) || (lastVisit <= updatedDate));
                 }
 
-                if (isNew && !this.isNotificationSet && this.isRelevantToMe)
+                if (isNew && !this.isAuthor && !this.isNotificationSet && this.isRelevantToMe)
                 {
                     this.$store.dispatch('setCommentNotification', this.comment.uuid);
                 }

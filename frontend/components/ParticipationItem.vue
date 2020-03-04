@@ -356,6 +356,7 @@
                 'BLAEO_USER_BASE_LINK',
                 'MAJOR', 'MINOR',
                 'SHORT', 'MEDIUM', 'LONG', 'VERY_LONG',
+                'GAME_REFERENCE_TYPE',
                 'rewardsMap'
             ]),
 
@@ -446,8 +447,8 @@
 
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.referencedGame)
-                            games[comment.referencedGame].commentExists = true;
+                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.review)
+                            games[comment.referencedGame].reviewExists = true;
                     });
 
                     gamesByPicker[pickerType] = games;
@@ -460,7 +461,7 @@
                 Object.keys(this.participant.picks).forEach(pickerType => {
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.referencedGame)
+                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.review)
                             commentsForPicks[comment.referencedPick] = comment.uuid;
                     });
                 });

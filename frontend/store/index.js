@@ -20,7 +20,8 @@ export default new Vuex.Store({
         activity: {},
         lastVisit: '',
         notifications: {
-            comments: []
+            comments: [],
+            repicks: []
         },
 
         rewardsMap: {},
@@ -169,7 +170,9 @@ export default new Vuex.Store({
             return activityByDate;
         },
 
-        getCommentNotification: (state) => state.notifications.comments
+        getCommentNotification: (state) => state.notifications.comments,
+
+        getRepickNotification: (state) => state.notifications.repicks
     },
     actions: {
         loadGroups: function({commit}) {
@@ -481,19 +484,10 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 return api.picks.changeGame(pick)
                     .then(() => {
-
-                        if (pick.game.id.toString() !== state.picks[pick.uuid].game.toString())
-                        {
-                            pick.playedStatus = state.NOT_PLAYED;
-                            pick.playingState = {
-                                achievements: null,
-                                playtime: null
-                            };
-                        }
-
                         let participant = {...state.participants[participantUuid]};
                         let game = pick.game;
                         pick.game = game.id;
+                        pick.rejected = false;
 
                         participant.picks[picker.type][pick.type] = pick.uuid;
 
@@ -530,7 +524,7 @@ export default new Vuex.Store({
             return api.events.importPlaystats(event);
         },
 
-        addPickerComment: function ({commit}, {picker, comment}) {
+        addPickerComment: function ({commit, state, getters}, {picker, comment}) {
             return new Promise((resolve, reject) => {
                 return api.pickers.addComment(picker, comment)
                     .then(() => {
@@ -538,6 +532,14 @@ export default new Vuex.Store({
 
                         picker.comments.push(comment.uuid);
                         commit('setPicker', {...picker});
+
+                        if (comment.referencedPick && comment.gameReferenceType === state.GAME_REFERENCE_TYPE.REPICK)
+                        {
+                            let pick = {...getters.getPick(comment.referencedPick), rejected: true};
+                            commit('setPick', pick);
+                        }
+
+
                         resolve();
                     })
                     .catch(e => reject(e.response.data.errors.detail));
@@ -627,6 +629,10 @@ export default new Vuex.Store({
 
         setCommentNotification: function ({commit}, commentUuid) {
             commit('addCommentNotification', commentUuid);
+        },
+
+        setRepickNotification: function ({commit}, pickUuid) {
+            commit('addRepickNotification', pickUuid);
         }
     },
     mutations: {
@@ -670,7 +676,12 @@ export default new Vuex.Store({
 
         addCommentNotification: (state, commentUuid) => {
             if (!state.notifications.comments.includes(commentUuid))
-                state.notifications.comments.push(commentUuid)
+                state.notifications.comments.push(commentUuid);
+        },
+
+        addRepickNotification: (state, pickUuid) => {
+            if (!state.notifications.repicks.includes(pickUuid))
+                state.notifications.repicks.push(pickUuid);
         }
     }
 });

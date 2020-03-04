@@ -1,7 +1,10 @@
 <template>
     <div class="comments">
 
-        <div class="comments__items">
+        <div
+            v-if="comments.length"
+            class="comments__items"
+        >
             <comment-item
                 v-for="commentUuid in comments"
                 :key="'c_'+commentUuid"
@@ -9,6 +12,11 @@
                 :is-relevant-to-me="canComment"
             />
         </div>
+
+        <div
+            v-else
+            class="comments__empty"
+        >No comments yet.</div>
 
         <div
             v-if="canComment && isShowingReplyForm"
@@ -214,10 +222,16 @@
     @import "../assets/_colors";
 
     .comments{
-        margin-bottom: 10px;
 
         &__items{
             margin-bottom: 10px;
+        }
+
+        &__empty{
+            color: @color-gray-dark;
+            font-style: italic;
+            font-size: 13px;
+            padding: 0 0 6px 30px;
         }
 
         &__form-area{

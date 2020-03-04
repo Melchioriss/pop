@@ -12,7 +12,11 @@
                 />
             </div>
             <div class="user-tile__info">
-                <div class="user-tile__name">{{pickerUser.profileName}}</div>
+                <a
+                    :href="pickerUser.profileUrl"
+                    target="_blank"
+                    class="user-tile__name"
+                >{{pickerUser.profileName}}</a>
             </div>
         </div>
         <div class="picker__edit">

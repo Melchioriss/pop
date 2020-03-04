@@ -93,8 +93,8 @@
                         this.currentPage = pagin.page;
                         this.pages = pagin.pages;
                     })
-                    .catch(e => {
-                        if (e.response.data.errors.status === 404)
+                    .catch(errorStatus => {
+                        if (errorStatus === 404)
                         {
                             this.isGamesNotFound = true;
                             this.foundGames = [];

@@ -99,7 +99,6 @@
         props: {},
         data() {
             return {
-                isNotFoundError: false,
                 isLoading: false,
                 errors: '',
                 event: {}
@@ -151,7 +150,7 @@
                             endingOn: this.$getHtmlFormat(storeEvent.activePeriod.endDate)
                         }, storeEvent );
                     })
-                    .catch(e => this.isNotFoundError = true)
+                    .catch(e => this.errors = e)
                     .finally(() => this.isLoading = false);
 
             }

@@ -3,7 +3,7 @@
 
         <loading-indicator v-if="isLoading"></loading-indicator>
 
-        <not-found v-else-if="isNotFoundError"></not-found>
+        <error-box v-else-if="globalError">{{globalError}}</error-box>
 
         <template v-else>
 
@@ -71,7 +71,10 @@
                     type="button"
                     class="button button--cobalt button--space-right"
                 >Update playing stats</button>
-                <div class="event__new-indicator">
+                <div
+                    v-if="newCommentsCount"
+                    class="event__new-indicator"
+                >
                     <i class="fa-icon far fa-comments"></i>{{newCommentsCount}} new comments since last visit
                 </div>
             </div>
@@ -147,17 +150,16 @@
     import {mapState, mapGetters} from 'vuex';
     import ParticipationItem from "../components/ParticipationItem";
     import LoadingIndicator from "../components/LoadingIndicator";
-    import NotFound from "./NotFound";
     import ErrorBox from "../components/ErrorBox";
     export default {
         name: "Event",
-        components: {ErrorBox, NotFound, LoadingIndicator, ParticipationItem},
+        components: {ErrorBox, LoadingIndicator, ParticipationItem},
         props: {},
         data() {
             return {
                 isLoading: false,
                 error: '',
-                isNotFoundError: false,
+                globalError: false,
                 isHidingAllComments: false,
                 isShowingOnlyMine: false,
                 isShowingPPTable: false,
@@ -326,8 +328,7 @@
                         });
                 })
                 .catch(e => {
-                    console.log(e);
-                    this.isNotFoundError = true;
+                    this.globalError = e;
                 })
                 .finally(() => this.isLoading = false);
         }

@@ -71,12 +71,15 @@
                     type="button"
                     class="button button--cobalt button--space-right"
                 >Update playing stats</button>
-                <div class="event__new-indicator">
+                <div
+                    v-if="newCommentsCount || repickCount"
+                    class="event__new-indicator"
+                >
                     <div v-if="newCommentsCount">
-                        <i class="fa-icon far fa-comments"></i>{{newCommentsCount}} new comment(s) since last visit
+                        <i class="fa-icon fa-fw far fa-comments"></i>{{newCommentsCount}} new comment(s) since last visit
                     </div>
                     <div v-if="repickCount">
-                        <i class="fa-icon fas fa-recycle"></i>{{repickCount}} active repick request(s)
+                        <i class="fa-icon fa-fw fas fa-recycle"></i>{{repickCount}} active repick request(s)
                     </div>
                 </div>
             </div>
@@ -389,10 +392,12 @@
         }
 
         &__new-indicator{
-            color: @color-cobalt;
-            margin-left: auto;
-            padding: 9px 6px;
+            color: @color-red;
+            font-weight: bold;
+            padding: 6px 10px;
             line-height: 1.2;
+            border-left: 3px solid @color-red;
+            margin: 10px 0 10px auto;
         }
     }
 

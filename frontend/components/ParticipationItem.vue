@@ -297,7 +297,7 @@
                     :unique-key="'comments_'+participant.uuid"
                     @add-comment="addComment($event, pickerType)"
                 />
-                <error-box v-if="commentError">{{commentError}}</error-box>
+                <error-box v-if="commentErrors[pickerType]">{{commentErrors[pickerType]}}</error-box>
             </div>
         </template>
 
@@ -347,7 +347,7 @@
                 newGroupWins: '',
                 newBlaeoGames: '',
                 newBlaeoPoints: '',
-                commentError: '',
+                commentErrors: {},
                 pickErrors: {}
             };
         },
@@ -647,13 +647,13 @@
             },
 
             addComment(comment, pickerType) {
-                this.commentError = '';
+                this.$set(this.commentErrors, pickerType, '');
 
                 this.$store.dispatch('addPickerComment', {
                     picker: this.$store.getters.getPicker(this.participant.pickers[pickerType]),
                     comment: Object.assign(comment, {user: this.loggedUserSteamId, createdAt: this.$getDateNow()})
                 })
-                    .catch(e => this.commentError = e);
+                    .catch(e => this.$set(this.commentErrors, pickerType, e));
             },
 
             scrollToReview(commentUuid, pickerType) {
@@ -689,6 +689,11 @@
             this.pickErrors = {
                 [this.MAJOR]: {},
                 [this.MINOR]: {}
+            };
+
+            this.commentErrors = {
+                [this.MAJOR]: '',
+                [this.MINOR]: ''
             }
         }
     }

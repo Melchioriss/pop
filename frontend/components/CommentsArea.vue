@@ -85,7 +85,7 @@
                         <option
                             v-for="game in pickedGames"
                             :value="game.pickUuid"
-                            :disabled="isReview && !!game.reviewExists"
+                            :disabled="gameOptionIsDisabled(game)"
                         >{{game.name}}</option>
                     </select>
 
@@ -156,6 +156,8 @@
             };
         },
         computed: {
+            ...mapState(['NOT_PLAYED', 'UNFINISHED']),
+
             ...mapState({
                 commentTypes: 'GAME_REFERENCE_TYPE'
             }),
@@ -200,6 +202,13 @@
         methods: {
             showReplyForm () {
                 this.isShowingReplyForm = true;
+            },
+
+            gameOptionIsDisabled (game) {
+                if (this.isReview && !!game.reviewExists)
+                    return true;
+
+                return this.isRepick && game.playedStatus !== this.NOT_PLAYED && game.playedStatus !== this.UNFINISHED;
             },
 
             addComment () {

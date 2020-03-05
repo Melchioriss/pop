@@ -253,8 +253,8 @@
                                 @change-status="changeStatus($event, pickType, pickerType)"
                             />
                             <div
-                                v-if="commentsForPicks[ participant.picks[pickerType][pickType] ]"
-                                @click="scrollToReview(commentsForPicks[ participant.picks[pickerType][pickType] ], pickerType)"
+                                v-if="reviewsForPicks[ participant.picks[pickerType][pickType] ]"
+                                @click="scrollToReview(reviewsForPicks[ participant.picks[pickerType][pickType] ], pickerType)"
                                 class="participation__pick-review"
                             >
                                 <i class="fa-icon fa-fw far fa-file-alt"></i>Review
@@ -443,11 +443,12 @@
                         let gameId = game.id;
                         games[gameId] = game;
                         games[gameId].pickUuid = pickUuid;
+                        games[gameId].playedStatus = pick.playedStatus;
                     });
 
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.review)
+                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.REVIEW)
                             games[comment.referencedGame].reviewExists = true;
                     });
 
@@ -456,24 +457,23 @@
 
                 return gamesByPicker;
             },
-            commentsForPicks: function () {
-                let commentsForPicks = {};
+            reviewsForPicks: function () {
+                let reviewsForPicks = {};
                 Object.keys(this.participant.picks).forEach(pickerType => {
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.review)
-                            commentsForPicks[comment.referencedPick] = comment.uuid;
+                        if (comment.referencedPick && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.REVIEW)
+                            reviewsForPicks[comment.referencedPick] = comment.uuid;
                     });
                 });
-
-                return commentsForPicks;
+                return reviewsForPicks;
             }
         },
         watch: {
             isHidingAllComments: function () {
                 Object.keys(this.isCommentsShown).forEach(type => {
                     this.hideComments(type);
-                })
+                });
             }
         },
         methods: {

@@ -1,5 +1,5 @@
 .PHONY: from-scratch # clean start
-start: erase build up db
+from-scratch: erase build up db
 
 .PHONY: reup
 reup: stop up
@@ -10,6 +10,7 @@ stop:
 
 .PHONY: erase ## erase everything except sources
 erase:
+	sudo chown -R $(shell id -un):$(shell id -gn) ./
 	docker-compose stop
 	docker-compose rm -v -f
 	docker-compose down --volumes --remove-orphans
@@ -24,7 +25,11 @@ build:
 
 .PHONY: composer-update
 composer-update:
-	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer update'
+	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer update -vvv'
+
+.PHONY: composer-install
+composer-install:
+	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer install -vvv'
 
 .PHONY: composer-require
 composer-require:
@@ -58,7 +63,6 @@ deptrac: ## Check issues with layers
 db: ## recreate database
 	docker-compose exec php sh -lc './bin/console d:d:d --force'
 	docker-compose exec php sh -lc './bin/console d:d:c'
-	docker-compose exec php sh -lc './bin/console d:s:u --force'
 	docker-compose exec php sh -lc './bin/console d:m:m -n'
 
 .PHONY: schema-validate

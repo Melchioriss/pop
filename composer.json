@@ -103,9 +103,8 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "vendor_fork/*/*",
-            "symlink": true
+            "type": "vcs",
+            "url": "https://github.com/insideone/SteamAuthenticationBundle.git"
         }
     ],
     "prefer-stable": true,

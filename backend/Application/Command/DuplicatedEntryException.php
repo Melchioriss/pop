@@ -6,8 +6,8 @@ use Exception;
 
 class DuplicatedEntryException extends Exception
 {
-    public static function collectionAlreadyHas(string $collectionName, string $memberName): self
+    public static function collectionAlreadyHas(string $collectionName, string $entryName): self
     {
-        return new self(sprintf("Collection '%s' already has member '%s'", $collectionName, $memberName));
+        return new self(sprintf("Collection '%s' already has member '%s'", $collectionName, $entryName));
     }
 }

@@ -4,8 +4,6 @@ services:
 
   nginx:
     image: nginx:1.15-alpine
-    ports:
-      - "80:80"
     volumes:
       - ./etc/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - .:/app

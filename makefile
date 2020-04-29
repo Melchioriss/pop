@@ -37,6 +37,10 @@ composer-require:
 
 .PHONY: up
 up:
+	docker-compose -f ./docker-compose.yml -f ./docker-compose.dev.yml up -d
+
+.PHONY: up-pure
+up-pure:
 	docker-compose up -d
 
 .PHONY: test

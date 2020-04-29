@@ -2,6 +2,7 @@ api_controllers:
     resource: '../backend/UI/Http/Rest/Controller/'
     type: annotation
     prefix: /api
+    schemes:    ['%router.request_context.scheme%']
 
 home:
     path: /{path}/{id?}/{subPath?}

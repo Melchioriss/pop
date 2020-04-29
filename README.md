@@ -1,8 +1,12 @@
 # Play or Pay
 
-## Fist start
+## Fist start (development environment)
 
 ```bash
+cp ./.env.dist ./.env
+
+# then edit .env to set up STEAM_API_KEY variable
+
 make from-scratch
 make import-pop
 make games

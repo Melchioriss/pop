@@ -723,6 +723,7 @@
             padding: 0 10px;
             width: 250px;
             box-sizing: border-box;
+            flex-shrink: 0;
         }
 
         &__user{

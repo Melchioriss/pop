@@ -140,6 +140,10 @@ schema-update:
 migration:
 	docker-compose exec php console doctrine:migrations:generate
 
+.PHONY: migration-diff
+migration-diff:
+	docker-compose exec php console doctrine:migrations:diff
+
 .PHONY: migrate
 migrate:
 	docker-compose exec php console doctrine:migrations:migrate --no-interaction
@@ -151,3 +155,14 @@ import-pop:
 .PHONY: query
 query:
 	docker-compose exec php console doctrine:query:sql $(this)
+
+.PHONY: restart-frontend
+restart-frontend:
+	docker-compose restart frontend
+
+.PHONY: update-sources
+update-sources:
+	git pull --ff-only origin "$(shell git rev-parse --abbrev-ref HEAD)"
+
+.PHONY: update
+update: update-sources restart-frontend composer-install migrate

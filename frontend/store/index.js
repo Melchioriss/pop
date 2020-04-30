@@ -100,8 +100,7 @@ export default new Vuex.Store({
             let sortedUsers = Object.values(state.users);
 
             sortedUsers.sort((a, b) => {
-                if (a.profileName.toLowerCase() === b.profileName.toLowerCase()) return 0;
-                return a.profileName.toLowerCase() > b.profileName.toLowerCase();
+                return a.profileName.toLowerCase().localeCompare(b.profileName.toLowerCase());
             });
 
             return sortedUsers;

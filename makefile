@@ -1,3 +1,6 @@
+include .env
+export
+
 .PHONY: from-scratch # clean start
 from-scratch: erase build up db
 
@@ -166,3 +169,12 @@ update-sources:
 
 .PHONY: update
 update: update-sources restart-frontend composer-install migrate
+
+.PHONY: dump-database
+dump-database:
+	docker-compose exec mysql mysqldump -q -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE) 2>/dev/null >> $(to)
+	sed -i '1d' $(to)
+
+.PHONY: import-database-dump
+import-database-dump:
+	docker exec -i $(shell docker-compose ps -q mysql) mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE) < $(from)

@@ -13,6 +13,15 @@
                 <div class="event__params-item event__dates">
                     <i class="fa-icon fa-fw fas fa-calendar-alt color-dark-orange"></i>{{$getExactDate(event.activePeriod.startDate)}} &mdash; {{$getExactDate(event.activePeriod.endDate)}}
                 </div>
+                <div
+                    v-if="isAdmin"
+                    class="event__params-item"
+                >
+                    <span
+                        @click="deleteEvent"
+                        class="edit-link edit-link--delete"
+                    >Delete this event</span>
+                </div>
             </div>
 
             <div
@@ -230,11 +239,11 @@
                         return;
 
                     let majorPicker = this.getPicker(participant.pickers[this.MAJOR]);
-                    if (this.$store.getters.getUser(majorPicker.user).steamId === this.loggedUserSteamId)
+                    if (majorPicker && this.$store.getters.getUser(majorPicker.user).steamId === this.loggedUserSteamId)
                         return;
 
                     let minorPicker = this.getPicker(participant.pickers[this.MINOR]);
-                    if (this.$store.getters.getUser(minorPicker.user).steamId === this.loggedUserSteamId)
+                    if (minorPicker && this.$store.getters.getUser(minorPicker.user).steamId === this.loggedUserSteamId)
                         return;
 
                     hiddenParticipants[participantUuid] = true;
@@ -312,6 +321,17 @@
                         this.error = 'There was an error updating playstats, try again later.';
                         this.isUpdatingPlaystats = false;
                     })
+            },
+            deleteEvent () {
+                let confirmed = confirm('Are you sure you want to delete this event?\n\n' + this.event.name);
+
+                if (!confirmed)
+                    return false;
+
+                this.$store.dispatch('deleteEvent', this.event)
+                    .then(() => {
+                        this.$router.push({name: 'events'});
+                    })
             }
         },
         created() {
@@ -350,6 +370,7 @@
         &__params{
             display: flex;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 20px;
         }
 

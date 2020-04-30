@@ -11,10 +11,10 @@ class DeleteEventCommand
     /** @var UuidInterface */
     public $eventUuid;
 
-    public function __construct(string $eventUuid)
+    public function __construct(string $uuid)
     {
-        Assert::that($eventUuid)->uuid();
+        Assert::that($uuid)->uuid();
 
-        $this->eventUuid = Uuid::fromString($eventUuid);
+        $this->eventUuid = Uuid::fromString($uuid);
     }
 }

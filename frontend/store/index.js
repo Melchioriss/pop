@@ -266,6 +266,14 @@ export default new Vuex.Store({
             });
         },
 
+        deleteEvent: function ({commit}, event) {
+            return new Promise((resolve, reject) => {
+                return api.events.delete(event)
+                    .then(() => resolve())
+                    .catch(e => reject(e.response.data.errors.detail));
+            });
+        },
+
         loadEvents: function ({commit}) {
             return api.events.getList()
                 .then(({data: eventsResult}) => {

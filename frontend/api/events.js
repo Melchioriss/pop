@@ -22,6 +22,10 @@ export default new class extends BaseApi {
         return this.axios.put(this.path(event.uuid), event);
     }
 
+    delete (event) {
+        return this.axios.delete(this.path(event.uuid));
+    }
+
     generatePickers (event) {
         return this.axios.post('/api/execute/generate_pickers', {
             eventUuid: event.uuid,

@@ -1,6 +1,6 @@
 # Play or Pay
 
-## Fist start (development environment)
+## First start (development environment)
 
 ```bash
 cp ./.env.dist ./.env

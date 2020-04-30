@@ -269,7 +269,7 @@
                                 {{participantUser.profileName}}'s Totals:
                             </div>
                             <div class="participation__total-line">
-                                <i class="fa-icon fa-fw fas fa-trophy"></i>{{totalPlayStats.achievements}} acheivements taken
+                                <i class="fa-icon fa-fw fas fa-trophy"></i>{{totalPlayStats.achievements}} achievements taken
                             </div>
                             <div class="participation__total-line">
                                 <i class="fa-icon fa-fw far fa-clock"></i>{{totalPlayStats.playtimeHours}} hours played

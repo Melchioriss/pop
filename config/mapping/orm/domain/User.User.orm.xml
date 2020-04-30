@@ -27,7 +27,7 @@
         <field name="countryCode" nullable="true" />
         <field name="blaeoName" nullable="true" />
         <field name="active" type="boolean" />
-        <field name="extraRules" nullable="true" />
+        <field name="extraRules" nullable="true" type="text" />
 
         <many-to-many field="roles" target-entity="PlayOrPay\Domain\Role\Role">
             <join-table name="user_roles">

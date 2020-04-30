@@ -13,7 +13,7 @@
         <field name="active" type="boolean" />
         <field name="groupWins" />
         <field name="blaeoGames" />
-        <field name="extraRules" />
+        <field name="extraRules" type="text" />
         <one-to-many field="pickers" target-entity="PlayOrPay\Domain\Event\EventPicker" mapped-by="participant">
             <cascade><cascade-persist/></cascade>
         </one-to-many>

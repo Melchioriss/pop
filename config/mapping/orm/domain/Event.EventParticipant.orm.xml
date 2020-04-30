@@ -15,10 +15,16 @@
         <field name="blaeoGames" />
         <field name="extraRules" type="text" />
         <one-to-many field="pickers" target-entity="PlayOrPay\Domain\Event\EventPicker" mapped-by="participant">
-            <cascade><cascade-persist/></cascade>
+            <cascade>
+                <cascade-persist />
+                <cascade-remove />
+            </cascade>
         </one-to-many>
         <one-to-many field="rewards" target-entity="PlayOrPay\Domain\Event\EventEarnedReward" mapped-by="participant" orphan-removal="true">
-            <cascade><cascade-persist /></cascade>
+            <cascade>
+                <cascade-persist />
+                <cascade-remove />
+            </cascade>
         </one-to-many>
     </entity>
 </doctrine-mapping>

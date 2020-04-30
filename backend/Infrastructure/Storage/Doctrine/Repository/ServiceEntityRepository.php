@@ -103,6 +103,18 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
     }
 
     /**
+     * @param object $entity
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(object $entity)
+    {
+        $this->_em->remove($entity);
+        $this->_em->flush();
+    }
+
+    /**
      * @throws MappingException
      */
     public function clear()

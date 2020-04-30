@@ -15,10 +15,16 @@
         </many-to-one>
         <field name="type" type="event_picker_type" />
         <one-to-many field="picks" target-entity="PlayOrPay\Domain\Event\EventPick" mapped-by="picker">
-            <cascade><cascade-persist /></cascade>
+            <cascade>
+                <cascade-persist />
+                <cascade-remove />
+            </cascade>
         </one-to-many>
         <one-to-many field="comments" target-entity="PlayOrPay\Domain\Event\EventPickerComment" mapped-by="picker">
-            <cascade><cascade-persist /></cascade>
+            <cascade>
+                <cascade-persist />
+                <cascade-remove />
+            </cascade>
             <order-by>
                 <order-by-field name="createdAt" />
             </order-by>

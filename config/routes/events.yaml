@@ -26,6 +26,13 @@ update_event:
     defaults:
         command: PlayOrPay\Application\Command\Event\Event\Update\UpdateEventCommand
 
+delete_event:
+    methods: DELETE
+    path: /api/events/{uuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\Event\Delete\DeleteEventCommand
+
 get_potential_participants:
     methods: GET
     path: /api/events/{eventUuid}/potential_participants

@@ -3,6 +3,7 @@
 parameters:
     date_format: !php/const DateTimeInterface::RFC3339
     steam_api_key: '%env(resolve:STEAM_API_KEY)%'
+    knojector.steam_authentication.request_validator_class: PlayOrPay\Infrastructure\SteamAuthenticationBundle\OpenIdRequestValidator
 
 services:
     _defaults:

@@ -30,7 +30,7 @@ services:
     depends_on: [ mysql ]
 
   frontend:
-    image: node:latest
+    image: node:12
     user: node
     working_dir: /home/node/app
     environment:

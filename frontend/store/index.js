@@ -122,8 +122,7 @@ export default new Vuex.Store({
                 let userA = state.users[ a.user ];
                 let userB = state.users[ b.user ];
 
-                if (userA.profileName.toLowerCase() === userB.profileName.toLowerCase()) return 0;
-                return userA.profileName.toLowerCase() > userB.profileName.toLowerCase();
+                return userA.profileName.toLowerCase().localeCompare(userB.profileName.toLowerCase());
             });
             return sortedParticipants;
         },
@@ -138,8 +137,7 @@ export default new Vuex.Store({
                     let userA = state.users[ a.user ];
                     let userB = state.users[ b.user ];
 
-                    if (userA.profileName.toLowerCase() === userB.profileName.toLowerCase()) return 0;
-                    return userA.profileName.toLowerCase() > userB.profileName.toLowerCase();
+                    return userA.profileName.toLowerCase().localeCompare(userB.profileName.toLowerCase());
                 }
                 return a.totalRewardValue < b.totalRewardValue;
             });

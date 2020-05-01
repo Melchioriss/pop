@@ -178,3 +178,7 @@ dump-database:
 .PHONY: import-database-dump
 import-database-dump:
 	docker exec -i $(shell docker-compose ps -q mysql) mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE) < $(from)
+
+.PHONY: enter-database
+enter-database:
+	docker-compose exec mysql mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE)

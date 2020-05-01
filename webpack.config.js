@@ -16,7 +16,7 @@ Encore
     .addPlugin(new HtmlWebpackPlugin({
         title: 'Welcome!',
         filename: '../index.html',
-        //favicon: '/favicon.png',
+        favicon: './public/favicon.png',
         meta: {
             viewport: 'width=940',
         },

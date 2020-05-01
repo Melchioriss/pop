@@ -55,6 +55,11 @@
                     @click="changePick"
                     class="edit-link"
                 >change pick</span>
+                <span
+                    v-if="canChangePick && isChangingPick"
+                    @click="cancelChangingPick"
+                    class="edit-link"
+                >Cancel changing pick</span>
             </div>
             <status-item
                 :status="pick.playedStatus"
@@ -182,6 +187,10 @@
         methods: {
             changePick: function () {
                 this.isChangingPick = true;
+            },
+
+            cancelChangingPick: function () {
+                this.isChangingPick = false;
             },
 
             selectGame: function ($event) {

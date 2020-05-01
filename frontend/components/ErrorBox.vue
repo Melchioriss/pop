@@ -4,7 +4,6 @@
         <div class="error-box__text">
             <slot name="default"></slot>
         </div>
-
     </div>
 </template>
 
@@ -29,6 +28,10 @@
         margin: 10px 0;
         display: flex;
         align-items: start;
+        
+        .dark-mode &{
+            color: @color-red-light;
+        }
 
         &__icon{
             font-size: 24px;

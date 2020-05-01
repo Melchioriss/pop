@@ -46,6 +46,10 @@
         padding: 14px;
         margin-bottom: 20px;
 
+        .dark-mode &{
+            color: @color-cobalt-light;
+        }
+
         &__name{
             font-size: 18px;
             font-weight: bold;
@@ -59,11 +63,19 @@
             font-size: 13px;
             color: @color-cobalt;
             margin-bottom: 10px;
+
+            .dark-mode &{
+                color: @color-light-text;
+            }
         }
 
         &__dates{
             font-size: 14px;
             margin-bottom: 6px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
     }
 

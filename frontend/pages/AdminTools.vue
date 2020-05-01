@@ -137,19 +137,26 @@
     @import "../assets/_colors";
 
     .tools{
-
-
+        
         &__section{
             width: 100%;
             margin-bottom: 20px;
             padding-bottom: 20px;
             border-bottom: 1px solid @color-cobalt;
+
+            .dark-mode &{
+                border-bottom-color: @color-cobalt-light;
+            }
         }
 
         &__section-name{
             color: @color-cobalt;
             font-size: 18px;
             margin-bottom: 12px;
+            
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__process{
@@ -162,6 +169,10 @@
             padding: 4px 10px;
             margin: 10px 0;
             white-space: pre-wrap;
+
+            .dark-mode &{
+                border-left-color: @color-cobalt-light;
+            }
         }
     }
 

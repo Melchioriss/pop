@@ -1,5 +1,7 @@
 <template>
-    <div class="app">
+    <div
+        :class="['app', {'dark-mode': isDarkMode}]"
+    >
         <header class="app__header">
             <div class="app__wrapper app__wrapper--flex-row">
                 <router-link :to="{name: 'index'}" class="app__logo">
@@ -20,6 +22,18 @@
                         class="nav__link"
                     >Admin Tools</router-link>
                 </nav>
+                <div class="app__theme">
+                    <span
+                        @click="setDarkMode(false)"
+                        :class="['app__theme-choice', {'app__theme-choice--current': !isDarkMode}]"
+                        title="Light Mode"
+                    ><i class="fas fa-fw fa-sun"></i></span>
+                    <span
+                        @click="setDarkMode(true)"
+                        :class="['app__theme-choice', {'app__theme-choice--current': isDarkMode}]"
+                        title="Dark Mode"
+                    ><i class="fas fa-fw fa-moon"></i></span>
+                </div>
                 <steam-login />
             </div>
         </header>
@@ -45,7 +59,9 @@
                         target="_blank"
                         class="nav__link"
                     >Steam Group</a>
-                    <a href="https://github.com/Ardiffaz/pop" target="_blank" class="nav__link">Source Code</a>
+                    <a href="https://github.com/Ardiffaz/pop" target="_blank" class="nav__link">
+                        <i class="fa-fw fab fa-github"></i>&nbsp;&nbsp;Source Code
+                    </a>
                     <a href="https://github.com/Ardiffaz/pop/issues" target="_blank" class="nav__link">Bugs & Suggestions</a>
                 </nav>
             </div>
@@ -70,7 +86,8 @@
                     code: '',
                     name: '',
                     logoUrl: '',
-                }
+                },
+                isDarkMode: false
             };
         },
         computed: {
@@ -85,6 +102,15 @@
             mainGroup: function () {
                 this.group = {...this.mainGroup};
             }
+        },
+        methods: {
+            setDarkMode(isDarkMode) {
+                this.$cookie.set('dark_mode', isDarkMode ? 'y' : 'n', { expires: '3M' });
+                this.isDarkMode = isDarkMode;
+            }
+        },
+        created() {
+            this.isDarkMode = (this.$cookie.get('dark_mode') === 'y');
         }
     }
 </script>
@@ -121,6 +147,14 @@
         &:hover{
             color: @color-dark-orange-hover;
         }
+
+        .dark-mode &{
+            color: @color-light-orange;
+
+            &:hover{
+                color: @color-light-orange-hover;
+            }
+        }
     }
 
     input, textarea{
@@ -138,6 +172,11 @@
         font-size: 15px;
         font-family: sans-serif;
         line-height: 1.3;
+
+        &.dark-mode{
+            background: @color-dark-bg;
+            color: @color-light-text;
+        }
 
         &__header, &__footer{
             flex-shrink: 0;
@@ -164,6 +203,10 @@
         &__header{
             background: @color-cobalt;
             border-top: 2px solid @color-light-orange;
+
+            .dark-mode &{
+                background: @color-cobalt-dark;
+            }
         }
 
         &__logo{
@@ -177,6 +220,10 @@
 
             &.router-link-exact-active{
                 background: @color-cobalt-hover;
+
+                .dark-mode &{
+                    background: @color-cobalt-dark-hover;
+                }
             }
         }
 
@@ -205,6 +252,10 @@
             background: @color-cobalt;
             border-bottom: 2px solid @color-light-orange;
             font-size: 12px;
+
+            .dark-mode &{
+                background: @color-cobalt-dark;
+            }
         }
 
         &__authors{
@@ -215,7 +266,7 @@
             color: @color-bg;
         }
         
-        &__authors-link{
+        &__authors-link, .dark-mode &__authors-link{
             color: @color-bg;
             &:hover{
                 color: @color-gray;
@@ -225,6 +276,26 @@
         &__main-area{
             padding-top: 20px;
             padding-bottom: 20px;
+        }
+
+        &__theme{
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            margin: 0 20px;
+        }
+
+        &__theme-choice{
+            color: @color-bg;
+            margin: 0 6px;
+            padding: 3px 2px 2px;
+            border: 2px solid rgba(0, 0, 0, 0);
+            cursor: pointer;
+
+            &--current{
+                border-color: @color-light-orange;
+                color: @color-light-orange;
+            }
         }
     }
 </style>

@@ -197,6 +197,10 @@
         padding: 10px 0;
         border-bottom: 1px solid @color-dark-orange;
 
+        .dark-mode &{
+            border-bottom-color: @color-dark-orange-hover;
+        }
+
         &--new{
             background: @color-gray;
             position: relative;
@@ -211,6 +215,14 @@
                 top: -1px;
                 right: 0;
             }
+
+            .dark-mode &{
+                background: fade(@color-gray-darkest, 80%);
+                
+                &:after{
+                    color: @color-light-orange;
+                }
+            }
         }
 
         &__user-img-block{
@@ -223,6 +235,10 @@
             width: 100%;
             display: block;
             border: 1px solid @color-cobalt;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__body{
@@ -245,6 +261,10 @@
         &__date{
             color: @color-cobalt;
             font-size: 13px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__edit-link{
@@ -286,6 +306,12 @@
             text-overflow: ellipsis;
             overflow: hidden;
             max-width: 90%;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+                background: @color-gray-darkest;
+                color: @color-light-text;
+            }
         }
 
         &__game{
@@ -295,6 +321,10 @@
             flex-shrink: 0;
             border: 1px solid @color-cobalt;
             margin-top: 23px;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__game-img{
@@ -312,6 +342,10 @@
             background: fade(@color-gray-dark, 60%);
             padding: 4px 8px;
             margin: 6px 0;
+
+            .dark-mode &{
+                background: fade(@color-gray-darkest, 80%);
+            }
         }
     }
 

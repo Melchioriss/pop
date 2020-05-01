@@ -708,6 +708,10 @@
         border-top: 3px solid @color-dark-orange;
         padding-bottom: 10px;
 
+        .dark-mode &{
+            border-top-color: @color-dark-orange-hover;
+        }
+
         &__line{
             display: flex;
             align-items: stretch;
@@ -740,6 +744,10 @@
             font-size: 14px;
             margin-right: 10px;
             flex-shrink: 0;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__additional{
@@ -762,6 +770,10 @@
             padding: 10px 0 10px 10px;
             display: flex;
             flex-direction: column;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__picker-bottom{
@@ -773,6 +785,10 @@
             font-weight: bold;
             color: @color-cobalt;
             margin-bottom: 4px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__picks{
@@ -791,6 +807,10 @@
             box-sizing: border-box;
             position: relative;
 
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
+
             &:not(:first-child){
                 border-left: none;
             }
@@ -801,6 +821,10 @@
                 padding: 6px 10px;
                 background: none;
                 box-shadow: inset 0 0 0 3px @color-cobalt;
+
+                .dark-mode &{
+                    box-shadow: inset 0 0 0 3px @color-cobalt-light;
+                }
             }
         }
 
@@ -819,6 +843,11 @@
             background: @color-cobalt;
             padding: 2px 6px;
             cursor: pointer;
+
+            .dark-mode &{
+                background: @color-cobalt-light;
+                color: @color-dark-bg;
+            }
         }
 
         &__total-title{
@@ -826,6 +855,10 @@
             color: @color-cobalt;
             font-size: 14px;
             font-weight: bold;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__total-line{

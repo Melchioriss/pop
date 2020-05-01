@@ -37,6 +37,11 @@
         &--nomargin{
             margin-bottom: 0;
         }
+
+        .dark-mode &{
+            background: @color-gray-darker;
+            border-left-color: @color-cobalt-light;
+        }
     }
 
 </style>

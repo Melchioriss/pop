@@ -8,6 +8,10 @@
     line-height: 1.2;
     margin-bottom: 4px;
     display: inline-block;
+    
+    .dark-mode &{
+      color: @color-cobalt-light;
+    }
   }
 
   &__stats{
@@ -18,6 +22,10 @@
   &__stat{
     margin-right: 16px;
     color: @color-text;
+
+    .dark-mode &{
+      color: @color-light-text;
+    }
   }
 
   &__points{
@@ -41,5 +49,9 @@
 
   &__no-pick{
     color: @color-cobalt;
+
+    .dark-mode &{
+      color: @color-cobalt-light;
+    }
   }
 }

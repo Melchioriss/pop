@@ -66,7 +66,7 @@
             },
 
             className: function () {
-                return 'status--' +  this.statusTexts[this.status].toLowerCase();
+                return 'status--' +  this.statusTexts[this.status].toLowerCase().replace(' ', '-');
             }
         },
         watch: {
@@ -101,6 +101,14 @@
         &--editable{
             cursor: pointer;
         }
+        
+        .dark-mode &{
+            color: @color-text;
+            
+            &--not-played{
+                color: @color-light-text;
+            }
+        }
 
         &--beaten{background: @color-beaten;}
         &--completed{background: @color-completed;}
@@ -121,6 +129,10 @@
                 color: @color-text;
                 margin-left: 5px;
             }
+        }
+
+        .dark-mode &--not-played &__text--editable:after{
+            color: @color-light-text;
         }
 
     }

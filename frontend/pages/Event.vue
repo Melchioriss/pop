@@ -11,7 +11,7 @@
 
             <div class="event__params">
                 <div class="event__params-item event__dates">
-                    <i class="fa-icon fa-fw fas fa-calendar-alt color-dark-orange"></i>{{$getExactDate(event.activePeriod.startDate)}} &mdash; {{$getExactDate(event.activePeriod.endDate)}}
+                    <i class="fa-icon fa-fw fas fa-calendar-alt event__icon"></i>{{$getExactDate(event.activePeriod.startDate)}} &mdash; {{$getExactDate(event.activePeriod.endDate)}}
                 </div>
                 <div
                     v-if="isAdmin"
@@ -378,6 +378,14 @@
             margin-right: 20px;
         }
 
+        &__icon{
+            color: @color-dark-orange;
+
+            .dark-mode &{
+                color: @color-light-orange;
+            }
+        }
+
         &__description{
             padding: 4px 0 4px 10px;
             border-left: 2px solid @color-cobalt;
@@ -385,6 +393,10 @@
 
             & > p:last-child{
                 margin-bottom: 0;
+            }
+
+            .dark-mode &{
+                border-left-color: @color-cobalt-light;
             }
         }
 
@@ -399,6 +411,10 @@
             margin-bottom: 20px;
             padding: 20px 20px 10px;
             background: @color-gray;
+
+            .dark-mode &{
+                background: fade(@color-gray-darkest, 45%);
+            }
         }
 
         &__potential-heading{
@@ -406,6 +422,10 @@
             font-weight: bold;
             color: @color-cobalt;
             margin-bottom: 16px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__potential-item{
@@ -419,6 +439,11 @@
             line-height: 1.2;
             border-left: 3px solid @color-red;
             margin: 10px 0 10px auto;
+
+            .dark-mode &{
+                color: @color-red-light;
+                border-left-color: @color-red-light;
+            }
         }
     }
 

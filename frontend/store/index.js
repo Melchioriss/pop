@@ -544,7 +544,6 @@ export default new Vuex.Store({
                             commit('setPick', pick);
                         }
 
-
                         resolve();
                     })
                     .catch(e => reject(e.response.data.errors.detail));

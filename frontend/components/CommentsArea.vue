@@ -241,6 +241,10 @@
             font-style: italic;
             font-size: 13px;
             padding: 0 0 6px 30px;
+            
+            .dark-mode &{
+                color: @color-gray;
+            }
         }
 
         &__form-area{
@@ -273,6 +277,10 @@
             border: 1px solid @color-cobalt;
             flex-shrink: 0;
             margin-right: 10px;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__game-img{

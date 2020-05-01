@@ -227,6 +227,10 @@
             height: 69px;
             border: 1px solid @color-cobalt;
             margin: 0 auto 6px;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__name{
@@ -250,6 +254,10 @@
             margin: 0 5px;
             color: @color-text;
             white-space: nowrap;
+
+            .dark-mode &{
+                color: @color-light-text;
+            }
         }
 
         &__rewards{
@@ -273,6 +281,10 @@
             text-align: center;
             padding: 10px;
             color: @color-cobalt;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__status{
@@ -287,6 +299,12 @@
             border-top: 1px solid @color-red;
             border-bottom: 1px solid @color-red;
             margin-bottom: 10px;
+
+            .dark-mode &{
+                color: @color-red-light;
+                background-color: @color-gray-darker;
+                font-weight: bold;
+            }
         }
     }
 

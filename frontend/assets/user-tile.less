@@ -9,11 +9,19 @@
 
   &--mine{
     background: @color-gray;
+
+    .dark-mode &{
+      background: @color-gray-darkest;
+    }
   }
 
   &--mine &__name{
     color: @color-cobalt;
     font-weight: bold;
+
+    .dark-mode &{
+      color: @color-cobalt-light;
+    }
   }
 
   &__pic-block{
@@ -26,6 +34,10 @@
     width: 100%;
     display: block;
     border: 1px solid @color-cobalt;
+
+    .dark-mode &{
+      border-color: @color-cobalt-light;
+    }
   }
 
   &__info{

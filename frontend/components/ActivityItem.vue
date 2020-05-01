@@ -178,6 +178,10 @@
             font-size: 12px;
             margin-right: 10px;
             min-width: 60px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__pic-block{
@@ -185,6 +189,10 @@
             height: 34px;
             margin-right: 6px;
             border: 1px solid @color-cobalt;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__img{
@@ -205,10 +213,10 @@
             padding-left: 10px;
             margin: 10px 0 10px 110px;
             border-left: 2px solid @color-cobalt;
-        }
 
-        &__stats{
-
+            .dark-mode &{
+                border-left-color: @color-cobalt-light;
+            }
         }
 
         &__stat-item{
@@ -218,6 +226,10 @@
         &__fix{
             margin-left: 20px;
             color: @color-cobalt;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
     }
 

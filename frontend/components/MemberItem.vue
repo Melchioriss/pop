@@ -268,6 +268,10 @@
         padding: 15px;
         margin-bottom: 20px;
 
+        .dark-mode &{
+            border-color: @color-cobalt-light;
+        }
+
         &__img-block{
             width: 80px;
             margin-right: 20px;
@@ -279,6 +283,10 @@
             display: block;
             margin-top: 5px;
             border: 1px solid @color-cobalt;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__info-block{
@@ -296,6 +304,11 @@
             font-size: 20px;
             color: @color-cobalt;
             margin-bottom: 10px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+                font-weight: bold;
+            }
         }
 
         &__line{
@@ -326,6 +339,10 @@
             color: @color-cobalt;
             font-size: 14px;
             margin-bottom: 4px;
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+            }
         }
 
         &__rules{
@@ -339,6 +356,10 @@
 
             & img{
                 max-height: 100px;
+            }
+
+            .dark-mode &{
+                border-left-color: @color-cobalt-light;
             }
         }
 

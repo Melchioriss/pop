@@ -58,6 +58,14 @@
             &:hover{
                 background: @color-gray;
             }
+
+            .dark-mode &{
+                border-bottom-color: @color-dark-orange-hover;
+
+                &:hover{
+                    background: fade(@color-gray-darkest, 70%);
+                }
+            }
         }
 
         &__item-img{
@@ -69,6 +77,10 @@
             margin-right: 6px;
             flex-shrink: 0;
             border: 1px solid @color-cobalt;
+
+            .dark-mode &{
+                border-color: @color-cobalt-light;
+            }
         }
 
         &__item-base{

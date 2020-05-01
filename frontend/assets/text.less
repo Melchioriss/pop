@@ -11,6 +11,10 @@
     color: @color-cobalt;
     font-weight: bold;
     margin: 0 0 14px;
+
+    .dark-mode &{
+      color: @color-cobalt-hover;
+    }
   }
 
   h1{
@@ -37,11 +41,19 @@
       border: 1px solid @color-cobalt;
       padding: 8px 10px;
       vertical-align: top;
+
+      .dark-mode &{
+        border-color: @color-cobalt-light;
+      }
     }
 
     th{
       background: @color-gray;
       font-weight: bold;
+
+      .dark-mode &{
+        background: @color-cobalt-dark;
+      }
     }
   }
 
@@ -51,11 +63,20 @@
     border-left: 3px solid @color-cobalt;
     padding: 8px 10px;
     margin: 0 0 10px;
+
+    .dark-mode &{
+      background: @color-gray-darker;
+      border-left-color: @color-cobalt-light;
+    }
   }
 
   code{
     background: @color-gray;
     padding: 2px 4px;
+
+    .dark-mode &{
+      background: @color-gray-darker;
+    }
   }
 
   blockquote{
@@ -66,6 +87,12 @@
     border: 1px solid fade(@color-cobalt, 50%);
     border-left-width: 3px;
     background-color: fade(@color-gray, 50%);
+
+    .dark-mode &{
+      border-color: fade(@color-cobalt-light, 50%);
+      background-color: fade(@color-gray-darker, 50%);
+      color: fade(@color-light-text, 60%);
+    }
 
     &:before{
       content: open-quote;
@@ -99,6 +126,11 @@
     color: @color-cobalt-hover;
     border: 1px solid @color-cobalt-hover;
     margin: 10px 0;
+
+    .dark-mode &{
+      color: @color-cobalt-light;
+      border-color: @color-cobalt-light;
+    }
   }
 
 }

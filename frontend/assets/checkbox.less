@@ -35,4 +35,13 @@
       cursor: default;
     }
   }
+
+  .dark-mode & + label:before{
+    background: @color-gray-darkest;
+    border-color: @color-dark-orange-hover;
+  }
+
+  .dark-mode &:checked + label:before{
+    color: @color-light-orange;
+  }
 }

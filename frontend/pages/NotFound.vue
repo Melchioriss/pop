@@ -30,12 +30,20 @@
             font-style: italic;
             display: flex;
             align-items: center;
+            
+            .dark-mode &{
+                border-left-color: @color-red-light;
+            }
         }
         
         &__icon{
             font-size: 24px;
             color: @color-dark-orange;
             flex-shrink: 0;
+            
+            .dark-mode &{
+                color: @color-red;
+            }
         }
     }
 

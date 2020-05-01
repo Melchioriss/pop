@@ -84,6 +84,14 @@
                 flex-grow: 1;
                 margin-left: 12px;
             }
+
+            .dark-mode &{
+                color: @color-cobalt-light;
+
+                &:after{
+                    background: @color-cobalt-light;
+                }
+            }
         }
 
     }

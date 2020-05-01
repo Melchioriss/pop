@@ -32,9 +32,17 @@
     &:hover{
       background-color: @color-cobalt-hover;
     }
+
+    .dark-mode &{
+      background-color: @color-cobalt-dark;
+
+      &:hover{
+        background-color: @color-cobalt-dark-hover;
+      }
+    }
   }
 
-  &--light{
+  &--light, .dark-mode &--light{
     background: @color-light-orange;
     color: @color-cobalt;
 

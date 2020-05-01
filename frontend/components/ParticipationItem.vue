@@ -441,7 +441,7 @@
                         let pick = this.getPick(pickUuid);
                         let game = this.getGame(pick.game);
                         let gameId = game.id;
-                        games[gameId] = game;
+                        games[gameId] = {...game};
                         games[gameId].pickUuid = pickUuid;
                         games[gameId].playedStatus = pick.playedStatus;
                     });

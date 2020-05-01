@@ -1,4 +1,6 @@
 *.phar
+*.sql
+*.tgz
 
 ###> symfony/framework-bundle ###
 .env

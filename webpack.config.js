@@ -8,7 +8,6 @@ Encore
     .enableVersioning(Encore.isProduction())
     .setPublicPath('/build')
     .enableSingleRuntimeChunk()
-    .cleanupOutputBeforeBuild()
     .enableSourceMaps(false)
     .addEntry('main', './frontend/main.js')
     .enableVueLoader()
@@ -22,6 +21,10 @@ Encore
         },
     }))
 ;
+
+if (!Encore.isProduction()) {
+    Encore.cleanupOutputBeforeBuild();
+}
 
 const config = Encore.getWebpackConfig();
 config.resolve.symlinks = false;

@@ -6,7 +6,7 @@ use PlayOrPay\Application\Command\Event\Event\ImportSteamPlaystats\ImportSteamPl
 use PlayOrPay\Security\CommonSecurityHandler;
 use PlayOrPay\Security\SecuriryException;
 
-class ImportPlaystatsSecurityHandler extends CommonSecurityHandler
+class ImportSteamPlayingStatesSecurityHandler extends CommonSecurityHandler
 {
     /**
      * @param ImportSteamPlayingStatesCommand $command

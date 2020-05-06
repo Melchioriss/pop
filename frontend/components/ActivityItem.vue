@@ -2,6 +2,14 @@
     <div class="activity-item">
         <div class="activity-item__row">
             <div class="activity-item__time">{{$getExactTime(activity.createdAt)}}</div>
+            <div class="activity-item__link-block">
+                <router-link
+                    v-if="isChangedStatusType || isReviewAddedType"
+                    :to="{name: 'event', params: {eventUuid: activity.payload.event}, hash: '#'+activity.payload.pick}"
+                    class="activity-item__link"
+                ><i class="fas fa-link"></i></router-link>
+            </div>
+
             <div class="activity-item__pic-block">
                 <img
                     :src="user.avatar"
@@ -155,10 +163,7 @@
                 return this.getComment(this.activity.payload.comment);
             }
         },
-        methods: {
-
-
-        }
+        methods: {}
     }
 </script>
 
@@ -182,6 +187,17 @@
             .dark-mode &{
                 color: @color-cobalt-light;
             }
+        }
+
+        &__link-block{
+            display: block;
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        &__link{
+            display: block;
+            text-align: center;
         }
 
         &__pic-block{

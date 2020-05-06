@@ -235,6 +235,7 @@
                     >
                         <div
                             v-for="pickType in pickTypes[pickerType]"
+                            :id="participant.picks[pickerType][pickType]"
                             class="participation__pick"
                         >
                             <div v-if="pickType === SHORT" class="participation__pick-help">Short game (2-8h)</div>

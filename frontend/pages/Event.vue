@@ -357,7 +357,19 @@
                 .catch(e => {
                     this.globalError = e;
                 })
-                .finally(() => this.isLoading = false);
+                .finally(() => {
+                    this.isLoading = false;
+                    if (this.$route.hash)
+                    {
+                        setTimeout(() => {
+                            let element = document.getElementById(this.$route.hash.replace('#', ''));
+
+                            if (element)
+                                element.scrollIntoView({behavior: 'auto'});
+
+                        }, 25);
+                    }
+                });
         }
     }
 </script>

@@ -1,6 +1,7 @@
 *.phar
 *.sql
 *.tgz
+/docker-compose.override.yml
 
 ###> symfony/framework-bundle ###
 .env

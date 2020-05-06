@@ -10,5 +10,8 @@ services:
       - "3306:3306"
 
   php:
+    volumes:
+      - ./etc/php/php.ini:/etc/php7/conf.d/90-php.ini
+      - ./etc/php/php-fpm.conf:/etc/php7/php-fpm.conf
     ports:
       - "2323:22"

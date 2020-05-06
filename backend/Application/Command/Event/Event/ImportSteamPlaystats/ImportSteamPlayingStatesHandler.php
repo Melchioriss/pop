@@ -60,9 +60,14 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnexpectedResponseException
      * @throws UnallowedOperationException
+     * @throws Exception
      */
     public function __invoke(ImportSteamPlayingStatesCommand $command): void
     {
+        if (!set_time_limit(0)) {
+            throw new Exception("Can't prolog time limit");
+        }
+
         $event = $this->eventRepo->get($command->getEventUuid());
         foreach ($event->getParticipants() as $participant) {
             try {

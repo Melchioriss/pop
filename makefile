@@ -21,10 +21,12 @@ erase:
 	rm -rf ./vendor
 	rm -rf ./node_modules
 
+.PHONY: build-docker
+build-docker:
+	 docker-compose build
+
 .PHONY: build
-build:
-	docker-compose build
-	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer install'
+build: build-docker composer-install
 
 .PHONY: composer-update
 composer-update:
@@ -168,7 +170,7 @@ update-sources:
 	git pull --ff-only origin "$(shell git rev-parse --abbrev-ref HEAD)"
 
 .PHONY: update
-update: update-sources restart-frontend composer-install migrate
+update: update-sources restart-frontend build migrate
 
 .PHONY: dump-database
 dump-database:
@@ -178,6 +180,10 @@ dump-database:
 .PHONY: import-database-dump
 import-database-dump:
 	docker exec -i $(shell docker-compose ps -q mysql) mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE) < $(from)
+
+.PHONY: enter
+enter:
+	docker-compose exec $(to) sh
 
 .PHONY: enter-database
 enter-database:

@@ -36,7 +36,7 @@ class UpdateEventParticipantBlaeoGamesHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(UpdateEventParticipantBlaeoGamesCommand $command)
+    public function __invoke(UpdateEventParticipantBlaeoGamesCommand $command): void
     {
         $participant = $this->participantRepo->get($command->getParticipantUuid());
         $event = $participant->getEvent();

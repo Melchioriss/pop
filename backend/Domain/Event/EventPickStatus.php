@@ -2,7 +2,7 @@
 
 namespace PlayOrPay\Domain\Event;
 
-use PlayOrPay\Package\EnumFramework\Enum;
+use Insideone\Package\EnumFramework\Enum;
 
 class EventPickStatus extends Enum
 {

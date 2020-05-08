@@ -56,7 +56,7 @@ class AddEventPickerCommentHandler implements CommandHandlerInterface
      * @throws UnallowedOperationException
      * @throws Exception
      */
-    public function __invoke(AddEventPickerCommentCommand $command)
+    public function __invoke(AddEventPickerCommentCommand $command): void
     {
         $actor = $this->actorFinder->getActor();
         $picker = $this->pickerRepo->get($command->pickerUuid);

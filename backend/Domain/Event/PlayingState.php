@@ -12,7 +12,7 @@ class PlayingState
     /** @var int|null */
     private $achievements;
 
-    public function __construct(?float $playtime = null, ?int $achievements = null)
+    public function __construct(?int $playtime = null, ?int $achievements = null)
     {
         Assert::thatAll([$playtime, $achievements])->nullOr()->greaterOrEqualThan(0);
 
@@ -46,7 +46,7 @@ class PlayingState
         return $this;
     }
 
-    public function clear()
+    public function clear(): void
     {
         $this->updatePlaytime(0);
         $this->updateAchievements(0);

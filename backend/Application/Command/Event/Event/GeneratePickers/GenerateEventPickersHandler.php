@@ -21,7 +21,7 @@ class GenerateEventPickersHandler implements CommandHandlerInterface
      *
      * @throws Exception
      */
-    public function __invoke(GenerateEventPickersCommand $command)
+    public function __invoke(GenerateEventPickersCommand $command): void
     {
         $event = $this->eventRepo->get($command->getEventUuid());
 

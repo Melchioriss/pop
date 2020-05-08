@@ -26,7 +26,7 @@ class UpdateEventParticipantExtraRulesSecurityHandler extends CommonSecurityHand
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(UpdateEventParticipantExtraRulesCommand $command)
+    public function __invoke(UpdateEventParticipantExtraRulesCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

@@ -20,10 +20,11 @@ class GameId
         $this->localId = $localId;
     }
 
-    public static function fromComplexId(string $complexId)
+    public static function fromComplexId(string $complexId): self
     {
         Assert::that($complexId)->minLength(3)->contains(':');
         [$storeId, $localId] = explode(':', $complexId);
+
         return new self(new StoreId((int) $storeId), $localId);
     }
 

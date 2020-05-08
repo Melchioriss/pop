@@ -22,13 +22,15 @@ class UpdateEventHandler implements CommandHandlerInterface
     }
 
     /**
+     * @param UpdateEventCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws Exception
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(UpdateEventCommand $command)
+    public function __invoke(UpdateEventCommand $command): void
     {
         $event = $this->eventRepo->get($command->getUuid());
         $event

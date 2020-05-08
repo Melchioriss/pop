@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
-use PlayOrPay\Application\Command\DuplicatedEntryException;
+use PlayOrPay\Domain\User\Exception\UserAlreadyInGroupException;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Steam\GroupRepository;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
@@ -32,9 +32,9 @@ class AddUserGroupsHandler implements CommandHandlerInterface
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
-     * @throws DuplicatedEntryException
+     * @throws UserAlreadyInGroupException
      */
-    public function __invoke(AddUserGroupsCommand $command)
+    public function __invoke(AddUserGroupsCommand $command): void
     {
         $user = $this->userRepo->get($command->steamId);
 

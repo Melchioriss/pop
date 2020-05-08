@@ -6,7 +6,14 @@ use Exception;
 
 class IncompatibleHandlerException extends Exception
 {
-    public static function becauseItShouldReturnCollectionOrArray(string $controller, string $command, $retuned)
+    /**
+     * @param string $controller
+     * @param string $command
+     * @param string|object $retuned
+     *
+     * @return IncompatibleHandlerException
+     */
+    public static function becauseItShouldReturnCollectionOrArray(string $controller, string $command, $retuned): self
     {
         $retunedType = gettype($retuned);
         if ($retunedType === 'object') {

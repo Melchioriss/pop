@@ -25,7 +25,7 @@ class SetUserBlaeoNameHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(SetUserBlaeoNameCommand $command)
+    public function __invoke(SetUserBlaeoNameCommand $command): void
     {
         $user = $this->userRepo->get($command->getSteamId());
         $user->setBlaeoName($command->getBlaeoName());

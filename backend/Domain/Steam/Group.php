@@ -25,7 +25,7 @@ class Group implements AggregateInterface
     /** @var string */
     private $logoUrl;
 
-    /** @var User[] */
+    /** @var User[]|ArrayCollection<int, User> */
     private $members;
 
     public function __construct(int $id, string $code, string $name, string $logoUrl)
@@ -114,18 +114,9 @@ class Group implements AggregateInterface
         return $this->members->toArray();
     }
 
-    public function hasUser(User $user)
+    public function hasUser(User $user): bool
     {
         return $this->members->contains($user);
-    }
-
-    public function hasMemberOfId(SteamId $steamId): bool
-    {
-        $steamIdValue = (string) $steamId;
-
-        return $this->members->exists(function (User $member) use ($steamIdValue) {
-            return (string) $member->getSteamId() === $steamIdValue;
-        });
     }
 
     /**
@@ -147,7 +138,7 @@ class Group implements AggregateInterface
     {
         $omitEvents = $this->members->count() === 0;
 
-        /** @var User[]|ArrayCollection $actualMembersCollection */
+        /** @var User[]|ArrayCollection<int, User> $actualMembersCollection */
         $actualMembersCollection = new ArrayCollection($actualMembers);
         foreach ($this->members as $member) {
             if ($actualMembersCollection->contains($member)) {

@@ -37,7 +37,7 @@ class UpdateEventParticipantGroupWinsHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(UpdateEventParticipantGroupWinsCommand $command)
+    public function __invoke(UpdateEventParticipantGroupWinsCommand $command): void
     {
         $participantUuid = $command->getParticipantUuid();
         $participant = $this->participantRepo->get($participantUuid);

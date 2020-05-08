@@ -36,12 +36,13 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->forMember('rewards', function (EventParticipant $participant, AutoMapperInterface $mapper) {
                 return $mapper->mapMultiple($participant->getRewards(), DetailEventEarnedReward::class);
             })
-            ->forMember('totalRewardValue', function(EventParticipant $participant) {
+            ->forMember('totalRewardValue', function (EventParticipant $participant) {
                 $rewards = $participant->getRewards();
                 $totalRewardValue = 0;
                 foreach ($rewards as $reward) {
                     $totalRewardValue += $reward->getValue();
                 }
+
                 return $totalRewardValue;
             });
 
@@ -63,15 +64,18 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             })
             ->forMember('gameReferenceType', function (EventPickerComment $comment) {
                 $referenceType = $comment->getGameReferenceType();
-                return $referenceType ? (int)(string) $referenceType : null;
+
+                return $referenceType ? (int) (string) $referenceType : null;
             })
             ->forMember('referencedGame', function (EventPickerComment $comment) {
                 $referencedGame = $comment->getReferencedGame();
+
                 return $referencedGame ? (string) $referencedGame->getId() : null;
             })
             ->forMember('referencedPick', function (EventPickerComment $comment) {
                 $pick = $comment->findPick();
-                return $pick ? (string) $pick->getUuid() : null;
+
+                return $pick ? $pick->getUuid()->toString() : null;
             });
 
         $config
@@ -101,7 +105,7 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
                 return (string) $game->getId();
             })
             ->forMember('storeId', function (Game $game) {
-                return (int)(string) $game->getId()->getStoreId();
+                return (int) (string) $game->getId()->getStoreId();
             })
             ->forMember('localId', function (Game $game) {
                 return (string) $game->getId()->getLocalId();
@@ -111,15 +115,16 @@ class DetailEventMappingConfigurator implements AutoMapperConfiguratorInterface
             ->registerMapping(EventEarnedReward::class, DetailEventEarnedReward::class)
             ->forMember('pick', function (EventEarnedReward $reward) {
                 $pick = $reward->getPick();
-                return $pick ? (string) $pick->getUuid() : null;
+
+                return $pick ? $pick->getUuid()->toString() : null;
             })
             ->forMember('reason', function (EventEarnedReward $reward) {
-                return (int)(string) $reward->getReason();
+                return (int) (string) $reward->getReason();
             });
 
         $config->registerMapping(EventReward::class, DetailEventReward::class)
             ->forMember('reason', function (EventReward $reward) {
-                return (int)(string) $reward->getReason();
+                return (int) (string) $reward->getReason();
             });
     }
 }

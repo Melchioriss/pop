@@ -26,7 +26,7 @@ class ChangeEventPickStatusSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(ChangeEventPickStatusCommand $command)
+    public function __invoke(ChangeEventPickStatusCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

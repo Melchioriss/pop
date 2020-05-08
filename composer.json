@@ -20,6 +20,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "beberlei/assert": "^3.0",
+        "beberlei/doctrineextensions": "^1.2",
         "doctrine/doctrine-cache-bundle": "^1.4",
         "ducks-project/spl-types": "^1.1",
         "elasticsearch/elasticsearch": "^6.0",
@@ -28,6 +29,7 @@
         "knojector/steam-authentication-bundle": "dev-master",
         "league/period": "^4.9",
         "league/tactician-bundle": "^1.1",
+        "malarzm/collections": "^1.0",
         "mark-gerarts/automapper-plus-bundle": "^1.2",
         "nelmio/api-doc-bundle": "^3.4",
         "ramsey/uuid": "^3.8",
@@ -68,6 +70,8 @@
     },
     "autoload": {
         "psr-4": {
+            "Insideone\\Package\\Collection\\": "packages/collection/",
+            "Insideone\\Package\\EnumFramework\\": "packages/enum-framework/",
             "PlayOrPay\\": "backend/"
         }
     },

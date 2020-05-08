@@ -36,11 +36,10 @@ class PassthroughQueryController extends QueryController
      * @throws RequiredParameterNotFound
      * @throws NotFoundException
      * @throws SecuriryException
-     * @throws IncompatibleHandlerException
      *
      * @return JsonResponse
      */
-    public function __invoke(Request $request, string $query)
+    public function __invoke(Request $request, string $query): JsonResponse
     {
         $queryInstance = $this->requestConverter->convert($request, $query);
         $this->confirm($queryInstance);

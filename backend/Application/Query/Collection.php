@@ -8,19 +8,13 @@ use PlayOrPay\Domain\Exception\NotFoundException;
 
 class Collection
 {
-    /**
-     * @var int
-     */
+    /** @var int */
     public $page;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $limit;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $total;
 
     /** @var int */
@@ -31,7 +25,7 @@ class Collection
      */
     public $data;
 
-    /** @var object[][] */
+    /** @var array<string, object[]> */
     public $refs;
 
     /**
@@ -39,8 +33,8 @@ class Collection
      * @param int $limit
      * @param int $total
      * @param object[] $data
+     * @param array<string, object[]> $refs
      *
-     * @param array $refs
      * @throws NotFoundException
      */
     public function __construct(int $page, int $limit, int $total, array $data, array $refs = [])
@@ -54,13 +48,20 @@ class Collection
         $this->calcPages();
     }
 
+    /**
+     * @param string $name
+     * @param object[] $refs
+     *
+     * @return self
+     */
     public function addRefs(string $name, array $refs): self
     {
         $this->refs[$name] = $refs;
+
         return $this;
     }
 
-    private function calcPages()
+    private function calcPages(): void
     {
         $this->pages = $this->limit === 0 ? 1 : ceil($this->total / $this->limit);
     }

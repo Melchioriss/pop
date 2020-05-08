@@ -31,7 +31,7 @@ class ChangePickSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(ChangePickGameCommand $command)
+    public function __invoke(ChangePickGameCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

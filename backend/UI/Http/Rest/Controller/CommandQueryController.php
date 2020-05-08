@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 abstract class CommandQueryController extends QueryController
 {
-    protected function exec($command): void
+    protected function exec(object $command): void
     {
         $this->commandBus->handle($command);
     }

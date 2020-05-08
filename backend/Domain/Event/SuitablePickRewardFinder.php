@@ -13,11 +13,11 @@ class SuitablePickRewardFinder
     const REWARD_MAP = [
         EventPickPlayedStatus::UNFINISHED => null,
         EventPickPlayedStatus::NOT_PLAYED => null,
-        EventPickPlayedStatus::ABANDONED => null,
-        EventPickPlayedStatus::BEATEN => [
-            EventPickType::SHORT => RewardReason::SHORT_GAME_BEATEN,
-            EventPickType::MEDIUM => RewardReason::MEDIUM_GAME_BEATEN,
-            EventPickType::LONG => RewardReason::LONG_GAME_BEATEN,
+        EventPickPlayedStatus::ABANDONED  => null,
+        EventPickPlayedStatus::BEATEN     => [
+            EventPickType::SHORT     => RewardReason::SHORT_GAME_BEATEN,
+            EventPickType::MEDIUM    => RewardReason::MEDIUM_GAME_BEATEN,
+            EventPickType::LONG      => RewardReason::LONG_GAME_BEATEN,
             EventPickType::VERY_LONG => RewardReason::VERY_LONG_GAME_BEATEN,
         ],
         EventPickPlayedStatus::COMPLETED => RewardReason::GAME_COMPLETED,
@@ -26,7 +26,7 @@ class SuitablePickRewardFinder
     public function __construct(EventRewardRepository $rewardRepo)
     {
         foreach ($rewardRepo->findAll() as $reward) {
-            $this->rewards[ (int)(string) $reward->getReason() ] = $reward;
+            $this->rewards[(int) (string) $reward->getReason()] = $reward;
         }
     }
 
@@ -40,7 +40,7 @@ class SuitablePickRewardFinder
     {
         Assert::that(self::REWARD_MAP)->keyExists($status->__default);
 
-        $possibleReasons = self::REWARD_MAP[ $status->__default ];
+        $possibleReasons = self::REWARD_MAP[$status->__default];
         if ($possibleReasons === null) {
             return [];
         }
@@ -48,12 +48,12 @@ class SuitablePickRewardFinder
         $reason = $possibleReasons;
         if (is_array($possibleReasons)) {
             Assert::that($possibleReasons)->keyExists($pickType->__default);
-            $reason = $possibleReasons[ $pickType->__default ];
+            $reason = $possibleReasons[$pickType->__default];
         }
 
         Assert::that($this->rewards)->keyExists($reason);
 
-        $rewards = [ $this->rewards[ $reason ] ];
+        $rewards = [$this->rewards[$reason]];
 
         if ($status->equalTo(EventPickPlayedStatus::COMPLETED)) {
             array_push(

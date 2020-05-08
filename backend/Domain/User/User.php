@@ -10,7 +10,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Knojector\SteamAuthenticationBundle\User\SteamUserInterface;
-use PlayOrPay\Application\Command\DuplicatedEntryException;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
@@ -18,6 +17,7 @@ use PlayOrPay\Domain\Role\Role;
 use PlayOrPay\Domain\Role\RoleName;
 use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\Steam\SteamId;
+use PlayOrPay\Domain\User\Exception\UserAlreadyInGroupException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerInterface, AggregateInterface
@@ -60,7 +60,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     /** @var string|null */
     private $countryCode;
 
-    /** @var Role[] */
+    /** @var Role[]|ArrayCollection<int, Role> */
     private $roles;
 
     /** @var bool */
@@ -78,7 +78,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     /** @var DateTimeImmutable|null */
     private $updatedAt;
 
-    /** @var Group[] */
+    /** @var Group[]|ArrayCollection<int, Group> */
     private $groups;
 
     public function __construct()
@@ -91,14 +91,14 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     /**
      * @param Group $group
      *
-     * @return User
+     * @throws UserAlreadyInGroupException
      *
-     * @throws DuplicatedEntryException
+     * @return User
      */
     public function addGroup(Group $group): self
     {
         if ($this->groups->contains($group)) {
-            throw DuplicatedEntryException::collectionAlreadyHas('groups', $group->getName());
+            throw UserAlreadyInGroupException::create($this, $group);
         }
 
         $this->groups->add($group);
@@ -110,9 +110,9 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     /**
      * @param Group[] $groups
      *
-     * @return self
+     * @throws UserAlreadyInGroupException
      *
-     * @throws DuplicatedEntryException
+     * @return self
      */
     public function addGroups(array $groups): self
     {
@@ -147,7 +147,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         return (int) $this->communityVisibilityState;
     }
 
-    public function setCommunityVisibilityState(?int $state)
+    public function setCommunityVisibilityState(?int $state): self
     {
         $this->communityVisibilityState = $state;
 
@@ -198,7 +198,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
      *
      * @throws Exception
      */
-    public function setLastLogOff(?int $lastLogOff)
+    public function setLastLogOff(?int $lastLogOff): void
     {
         $this->lastLogOff = $lastLogOff
             ? DateTime::createFromFormat('U', (string) $lastLogOff)
@@ -325,17 +325,28 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function removeRole(RoleName $roleName): self
     {
-        $this->roles->filter(function (Role $role, int $idx) use ($roleName) {
-            if ((string) $role->getName() === (string) $roleName) {
-                $this->roles->remove($idx);
+        // ignoring doesn't work, so I use func_get_args below
+        // @phpstan-ignore-next-line
+        $this->roles->filter(
+            function (Role $role) use ($roleName) {
+                [, $idx] = func_get_args();
+                if ((string) $role->getName() === (string) $roleName) {
+                    $this->roles->remove($idx);
+                }
             }
-        });
+        );
 
         return $this;
     }
 
+    /**
+     * @noinspection PhpDocSignatureInspection
+     *
+     * @return (Role|string)[]
+     */
     public function getRoles(): array
     {
+        /* @phpstan-ignore-next-line */
         return $this->roles->toArray();
     }
 
@@ -349,7 +360,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         }, $this->getRoles());
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->hasRole(new RoleName(RoleName::ADMIN));
     }
@@ -359,7 +370,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
      *
      * @throws Exception
      */
-    public function update(array $userData)
+    public function update(array $userData): void
     {
         $this->setCommunityVisibilityState($userData['communityvisibilitystate']);
         $this->setProfileState($userData['profilestate']);
@@ -460,7 +471,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
         $this->updatedAt = new DateTimeImmutable();
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // impossible
     }

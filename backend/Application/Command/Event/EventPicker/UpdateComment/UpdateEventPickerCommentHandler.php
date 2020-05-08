@@ -26,12 +26,13 @@ class UpdateEventPickerCommentHandler implements CommandHandlerInterface
 
     /**
      * @param UpdateEventPickerCommentCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(UpdateEventPickerCommentCommand $command)
+    public function __invoke(UpdateEventPickerCommentCommand $command): void
     {
         $comment = $this->commentRepo->get($command->commentUuid);
         $event = $comment->getEvent();

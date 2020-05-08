@@ -11,12 +11,12 @@ trait ObjectValueTypeTrait
     abstract public function getClass(): string;
 
     /**
-     * @param $value
+     * @param string $value
      * @param AbstractPlatform $platform
      *
      * @throws ConversionException
      *
-     * @return int|mixed|null
+     * @return object|null
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {

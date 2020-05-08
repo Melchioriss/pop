@@ -26,7 +26,7 @@ class DeactivateUserSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(DeactivateUserCommand $command)
+    public function __invoke(DeactivateUserCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

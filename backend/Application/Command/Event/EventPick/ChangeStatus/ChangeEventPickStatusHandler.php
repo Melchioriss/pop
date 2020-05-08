@@ -34,7 +34,7 @@ class ChangeEventPickStatusHandler implements CommandHandlerInterface
      * @throws UnallowedOperationException
      * @throws NotFoundException
      */
-    public function __invoke(ChangeEventPickStatusCommand $command)
+    public function __invoke(ChangeEventPickStatusCommand $command): void
     {
         $pickUuid = $command->getPickUuid();
         $pick = $this->pickRepo->get($pickUuid);

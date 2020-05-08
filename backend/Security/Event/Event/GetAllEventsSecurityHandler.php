@@ -7,7 +7,7 @@ use PlayOrPay\Security\CommonSecurityHandler;
 
 class GetAllEventsSecurityHandler extends CommonSecurityHandler
 {
-    public function __invoke(GetAllEventsQuery $query)
+    public function __invoke(GetAllEventsQuery $query): void
     {
         // access for everyone
     }

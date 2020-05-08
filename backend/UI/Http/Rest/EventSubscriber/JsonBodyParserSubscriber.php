@@ -54,7 +54,10 @@ class JsonBodyParserSubscriber implements EventSubscriberInterface
         return true;
     }
 
-    public static function getSubscribedEvents()
+    /**
+     * @return array<string, string>
+     */
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::REQUEST => 'onKernelRequest',

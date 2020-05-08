@@ -20,7 +20,7 @@ class PlayerAchievementsResponse implements Countable
         $this->achievements = $achievements;
     }
 
-    public function countAchieved()
+    public function countAchieved(): int
     {
         $achieved = 0;
         foreach ($this->achievements as $achievement) {
@@ -30,7 +30,7 @@ class PlayerAchievementsResponse implements Countable
         return $achieved;
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->achievements);
     }

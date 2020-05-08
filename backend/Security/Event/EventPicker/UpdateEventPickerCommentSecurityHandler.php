@@ -22,10 +22,11 @@ class UpdateEventPickerCommentSecurityHandler extends CommonSecurityHandler
 
     /**
      * @param UpdateEventPickerCommentCommand $command
+     *
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(UpdateEventPickerCommentCommand $command)
+    public function __invoke(UpdateEventPickerCommentCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

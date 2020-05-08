@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Application\Command\User\User\SetExtraRules;
 
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
@@ -19,11 +20,14 @@ class SetUserExtraRulesHandler implements CommandHandlerInterface
     }
 
     /**
+     * @param SetUserExtraRulesCommand $command
+     *
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws EntityNotFoundException
      */
-    public function __invoke(SetUserExtraRulesCommand $command)
+    public function __invoke(SetUserExtraRulesCommand $command): void
     {
         $user = $this->userRepo->get($command->getSteamId());
         $user->setExtraRules($command->getExtraRules());

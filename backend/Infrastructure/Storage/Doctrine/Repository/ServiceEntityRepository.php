@@ -46,9 +46,9 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
     }
 
     /**
-     * @param $id
-     * @param null $lockMode
-     * @param null $lockVersion
+     * @param UuidInterface|int|string $id
+     * @param int|null $lockMode
+     * @param int|null $lockVersion
      *
      * @throws EntityNotFoundException
      *
@@ -77,7 +77,7 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      * @throws UnallowedOperationException
      * @throws Exception
      */
-    public function save(object ...$entities)
+    public function save(object ...$entities): void
     {
         if (!$this->isItForAnAggregate()) {
             throw UnallowedOperationException::becauseSavingIsAvailableOnlyOnAggregate($this->getClassName());
@@ -95,7 +95,8 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
 
                     try {
                         $this->domainBus->handle($event);
-                    } catch (Exception $e) {}
+                    } catch (Exception $e) {
+                    }
                 }
             }
         }
@@ -108,7 +109,7 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(object $entity)
+    public function remove(object $entity): void
     {
         $this->_em->remove($entity);
         $this->_em->flush();
@@ -117,7 +118,7 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
     /**
      * @throws MappingException
      */
-    public function clear()
+    public function clear(): void
     {
         $this->_em->clear();
     }
@@ -127,11 +128,16 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
      *
      * @return UuidInterface
      */
-    public function nextUuid()
+    public function nextUuid(): UuidInterface
     {
         return Uuid::uuid4();
     }
 
+    /**
+     * @param PaginatedQuery $appQuery
+     *
+     * @return Paginator<object>
+     */
     public function paginateAll(PaginatedQuery $appQuery): Paginator
     {
         return $this->makePaginatedResult(
@@ -143,6 +149,12 @@ abstract class ServiceEntityRepository extends \Doctrine\Bundle\DoctrineBundle\R
         );
     }
 
+    /**
+     * @param Query $dbQuery
+     * @param PaginatedQuery $appQuery
+     *
+     * @return Paginator<mixed>
+     */
     public function makePaginatedResult(Query $dbQuery, PaginatedQuery $appQuery): Paginator
     {
         $paginator = new Paginator($dbQuery);

@@ -26,7 +26,7 @@ class SetUserBlaeoNameSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(SetUserBlaeoNameCommand $command)
+    public function __invoke(SetUserBlaeoNameCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

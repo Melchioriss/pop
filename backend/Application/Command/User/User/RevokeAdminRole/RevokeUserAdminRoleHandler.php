@@ -26,7 +26,7 @@ class RevokeUserAdminRoleHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(RevokeUserAdminRoleCommand $command)
+    public function __invoke(RevokeUserAdminRoleCommand $command): void
     {
         $steamId = $command->getSteamId();
         $user = $this->userRepo->get($steamId);

@@ -26,7 +26,7 @@ class AddEventPickerCommentSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(AddEventPickerCommentCommand $command)
+    public function __invoke(AddEventPickerCommentCommand $command): void
     {
         $picker = $this->pickerRepo->get($command->pickerUuid);
         $this->assertBeingOneOf([$picker->getUser(), $picker->getParticipant()->getUser()], true);

@@ -33,7 +33,7 @@ class PlayerAchievementsRemoteRepository
      * @throws GuzzleException
      * @throws UnexpectedResponseException
      *
-     * @return int|null
+     * @return PlayerAchievementsResponse
      */
     public function find(UserStatsQuery $query): PlayerAchievementsResponse
     {

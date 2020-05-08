@@ -7,7 +7,7 @@ use PlayOrPay\Security\CommonSecurityHandler;
 
 class SearchGamesSecurityHandlers extends CommonSecurityHandler
 {
-    public function __invoke(SearchGamesQuery $query)
+    public function __invoke(SearchGamesQuery $query): void
     {
         // access for everyone
     }

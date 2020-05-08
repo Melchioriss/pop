@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Package\EnumFramework;
+namespace Insideone\Package\EnumFramework;
 
 use Assert\Assert;
 use Ducks\Component\SplTypes\SplEnum;

@@ -32,7 +32,7 @@ class AddEventParticipantHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws Exception
      */
-    public function __invoke(AddEventParticipantCommand $command)
+    public function __invoke(AddEventParticipantCommand $command): void
     {
         $event = $this->eventRepo->get($command->eventUuid);
         $user = $this->userRepo->get($command->steamId);

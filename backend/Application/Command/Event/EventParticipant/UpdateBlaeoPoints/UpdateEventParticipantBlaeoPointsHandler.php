@@ -9,9 +9,9 @@ use Exception;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Event\RewardReason;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
-use PlayOrPay\Infrastructure\Storage\Event\EventRewardRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
+use PlayOrPay\Infrastructure\Storage\Event\EventRewardRepository;
 
 class UpdateEventParticipantBlaeoPointsHandler implements CommandHandlerInterface
 {

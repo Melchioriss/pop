@@ -13,7 +13,7 @@ class ImportGamesSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(ImportSteamGamesCommand $command)
+    public function __invoke(ImportSteamGamesCommand $command): void
     {
         $this->assertAdmin();
     }

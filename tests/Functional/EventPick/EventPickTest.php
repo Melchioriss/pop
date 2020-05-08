@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
 
 class EventPickTest extends FunctionalTest
 {
-    /** @var EventPickRepository */
+    /** @var EventPickRepository|null */
     private $pickRepo;
 
     protected function setUp(): void
@@ -38,7 +38,7 @@ class EventPickTest extends FunctionalTest
      */
     public function reject_rejecting_beaten_game(): void
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/filled_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/filled_event.yaml');
 
         /** @var Event $event */
         $event = $fixtures->get('filled_event');
@@ -50,16 +50,16 @@ class EventPickTest extends FunctionalTest
         $this->authorizeAsAdmin();
 
         $this->request('change_pick_status', [
-            'pickUuid' => (string) $pick->getUuid(),
-            'status' => EventPickPlayedStatus::BEATEN,
+            'pickUuid' => $pick->getUuid()->toString(),
+            'status'   => EventPickPlayedStatus::BEATEN,
         ]);
 
         $this->request('add_comment', [
-            'commentUuid' => (string) Uuid::uuid4(),
-            'pickerUuid' => (string) $pick->getPicker()->getUuid(),
-            'text' => "I don't want this game",
-            'referencedPickUuid' => (string) $pick->getUuid(),
-            'gameReferenceType' => EventCommentGameReferenceType::REPICK,
+            'commentUuid'        => Uuid::uuid4()->toString(),
+            'pickerUuid'         => $pick->getPicker()->getUuid()->toString(),
+            'text'               => "I don't want this game",
+            'referencedPickUuid' => $pick->getUuid()->toString(),
+            'gameReferenceType'  => EventCommentGameReferenceType::REPICK,
         ], false);
 
         $this->assertResponseHavingString('Played status must be one of these');
@@ -73,7 +73,7 @@ class EventPickTest extends FunctionalTest
      */
     public function pick_should_be_successfully_rejected_and_activated_after_changing_game(): void
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/filled_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/filled_event.yaml');
 
         /** @var Event $event */
         $event = $fixtures->get('filled_event');
@@ -85,11 +85,11 @@ class EventPickTest extends FunctionalTest
         $this->authorizeAsAdmin();
 
         $this->request('add_comment', [
-            'commentUuid' => (string) Uuid::uuid4(),
-            'pickerUuid' => (string) $pick->getPicker()->getUuid(),
-            'text' => "I don't want this game",
-            'referencedPickUuid' => (string) $pick->getUuid(),
-            'gameReferenceType' => EventCommentGameReferenceType::REPICK,
+            'commentUuid'        => Uuid::uuid4()->toString(),
+            'pickerUuid'         => $pick->getPicker()->getUuid()->toString(),
+            'text'               => "I don't want this game",
+            'referencedPickUuid' => $pick->getUuid()->toString(),
+            'gameReferenceType'  => EventCommentGameReferenceType::REPICK,
         ]);
 
         $this->refreshPick($pick);
@@ -99,8 +99,8 @@ class EventPickTest extends FunctionalTest
         /** @var Game $newGame */
         $newGame = $fixtures->findAllOf(Game::class, null, [$pick->getGame()])[0];
         $this->request('change_pick_game', [
-            'pickUuid' => (string) $pick->getUuid(),
-            'gameId' => (string) $newGame->getId(),
+            'pickUuid' => $pick->getUuid()->toString(),
+            'gameId'   => (string) $newGame->getId(),
         ]);
 
         $this->refreshPick($pick);
@@ -115,7 +115,7 @@ class EventPickTest extends FunctionalTest
      */
     public function changing_pick_game_to_duplicated_game_should_be_rejected(): void
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/filled_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/filled_event.yaml');
 
         /** @var Event $event */
         $event = $fixtures->get('filled_event');
@@ -130,8 +130,8 @@ class EventPickTest extends FunctionalTest
 
         $this->authorizeAsAdmin();
         $this->request('change_pick_game', [
-            'pickUuid' => (string) $firstPick->getUuid(),
-            'gameId' => (string) $secondPick->getGame()->getId(),
+            'pickUuid' => $firstPick->getUuid()->toString(),
+            'gameId'   => (string) $secondPick->getGame()->getId(),
         ], false);
 
         $this->assertNonSuccessfulResponse();
@@ -146,13 +146,13 @@ class EventPickTest extends FunctionalTest
      */
     public function making_two_picks_for_the_same_game_for_a_participant_should_be_rejected(): void
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/empty_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/empty_event.yaml');
 
         /** @var Event $event */
         $event = $fixtures->get('empty_event');
 
         $event->generatePickers();
-        $event->generatePicks([ $fixtures->findAllOf(Game::class)[0] ]);
+        $event->generatePicks([$fixtures->findAllOf(Game::class)[0]]);
 
         $this->save();
 
@@ -162,10 +162,10 @@ class EventPickTest extends FunctionalTest
 
         $this->authorizeAsAdmin();
         $this->request('make_pick', [
-            'pickUuid' => (string) $pick->getUuid(),
-            'pickerUuid' => (string) $picker->getUuid(),
-            'type' => EventPickType::VERY_LONG,
-            'gameId' => (string) $pick->getGame()->getId(),
+            'pickUuid'   => $pick->getUuid()->toString(),
+            'pickerUuid' => $picker->getUuid()->toString(),
+            'type'       => EventPickType::VERY_LONG,
+            'gameId'     => (string) $pick->getGame()->getId(),
         ], false);
 
         $this->assertResponseHavingString('Participant already has a pick for game');

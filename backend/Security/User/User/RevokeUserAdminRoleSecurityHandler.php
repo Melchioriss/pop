@@ -13,7 +13,7 @@ class RevokeUserAdminRoleSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(RevokeUserAdminRoleCommand $command)
+    public function __invoke(RevokeUserAdminRoleCommand $command): void
     {
         $this->assertAdmin();
     }

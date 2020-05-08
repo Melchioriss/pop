@@ -26,10 +26,11 @@ class UpdateRewardsOnPickPlayedStatusChanged implements DomainEventHandlerInterf
 
     /**
      * @param PickPlayedStatusChanged $fact
+     *
      * @throws NotFoundException
      * @throws Exception
      */
-    public function __invoke(PickPlayedStatusChanged $fact)
+    public function __invoke(PickPlayedStatusChanged $fact): void
     {
         $pickUuid = $fact->pick->getUuid();
         $event = $fact->pick->getEvent();

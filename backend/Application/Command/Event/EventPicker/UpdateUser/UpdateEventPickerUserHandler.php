@@ -39,7 +39,7 @@ class UpdateEventPickerUserHandler implements CommandHandlerInterface
      * @throws UnallowedOperationException
      * @throws NotFoundException
      */
-    public function __invoke(UpdateEventPickerUserCommand $command)
+    public function __invoke(UpdateEventPickerUserCommand $command): void
     {
         $newPickerUser = $this->userRepo->get($command->userId);
         $picker = $this->eventPickerRepo->get($command->pickerUuid);

@@ -13,7 +13,7 @@ class GrantUserAdminRoleSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(GrantUserAdminRoleCommand $command)
+    public function __invoke(GrantUserAdminRoleCommand $command): void
     {
         $this->assertAdmin();
     }

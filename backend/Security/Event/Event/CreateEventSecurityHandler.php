@@ -9,9 +9,11 @@ use PlayOrPay\Security\SecuriryException;
 class CreateEventSecurityHandler extends CommonSecurityHandler
 {
     /**
+     * @param CreateEventCommand $command
+     *
      * @throws SecuriryException
      */
-    public function __invoke(CreateEventCommand $command)
+    public function __invoke(CreateEventCommand $command): void
     {
         $this->assertAdmin();
     }

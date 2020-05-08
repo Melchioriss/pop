@@ -13,9 +13,8 @@ class DeleteEventSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(DeleteEventCommand $command)
+    public function __invoke(DeleteEventCommand $command): void
     {
         $this->assertAdmin();
     }
 }
-

@@ -38,7 +38,7 @@ class PassthroughCommandController extends CommandQueryController
      *
      * @return JsonResponse
      */
-    public function __invoke(Request $request, string $command)
+    public function __invoke(Request $request, string $command): JsonResponse
     {
         $commandInstance = $this->requestConverter->convert($request, $command);
         $this->confirm($commandInstance);

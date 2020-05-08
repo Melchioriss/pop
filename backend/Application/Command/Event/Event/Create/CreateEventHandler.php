@@ -2,12 +2,14 @@
 
 namespace PlayOrPay\Application\Command\Event\Event\Create;
 
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
 use League\Period\Period;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Event\Event;
+use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\Steam\GroupRepository;
 
@@ -26,11 +28,16 @@ class CreateEventHandler implements CommandHandlerInterface
     }
 
     /**
+     * @param CreateEventCommand $command
+     *
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws EntityNotFoundException
+     * @throws \League\Period\Exception
      * @throws Exception
+     * @throws UnallowedOperationException
      */
-    public function __invoke(CreateEventCommand $command)
+    public function __invoke(CreateEventCommand $command): void
     {
         $event = new Event(
             $command->getUuid(),

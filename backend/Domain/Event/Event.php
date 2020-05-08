@@ -7,6 +7,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
 use Exception;
+use Insideone\Package\Collection\Identifiable;
+use Insideone\Package\EnumFramework\AmbiguousValueException;
 use League\Period\Period;
 use PlayOrPay\Domain\Contracts\Entity\AggregateInterface;
 use PlayOrPay\Domain\Contracts\Entity\AggregateTrait;
@@ -18,12 +20,11 @@ use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\User\User;
-use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionException;
 
-class Event implements OnUpdateEventListenerInterface, AggregateInterface
+class Event implements OnUpdateEventListenerInterface, AggregateInterface, Identifiable
 {
     use AggregateTrait;
 
@@ -48,7 +49,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     /** @var DateTimeImmutable|null */
     private $updatedAt;
 
-    /** @var EventParticipant[] */
+    /** @var EventParticipant[]|ArrayCollection<int, EventParticipant> */
     private $participants;
 
     /**
@@ -81,7 +82,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      *
      * @return EventParticipant
      */
-    private function makeParticipant(User $user, UuidInterface $participantUuid = null)
+    private function makeParticipant(User $user, UuidInterface $participantUuid = null): EventParticipant
     {
         if (!$this->group->hasUser($user)) {
             throw new DomainException(sprintf("User should be in the group '%s' to be a participant", $this->group->getName()));
@@ -101,7 +102,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      *
      * @throws Exception
      */
-    private function fillParticipants(Group $group)
+    private function fillParticipants(Group $group): void
     {
         $this->group = $group;
         $this->participants->clear();
@@ -114,7 +115,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     /**
      * @throws Exception
      */
-    public function generatePickers()
+    public function generatePickers(): void
     {
         /** @var User[] $minorPickers */
         $minorPickers = [];
@@ -223,7 +224,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
             }
         }
 
-        throw NotFoundException::forObject(EventPicker::class, (string) $needlePicker);
+        throw NotFoundException::forObject(EventPicker::class, $needlePicker->toString());
     }
 
     /**
@@ -279,9 +280,9 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      * @param User $user
      * @param UuidInterface|null $participantUuid
      *
-     * @return Event
-     *
      * @throws Exception
+     *
+     * @return Event
      */
     public function addParticipant(User $user, UuidInterface $participantUuid = null): self
     {
@@ -452,10 +453,11 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      * @param UuidInterface $referencedPickUuid
      * @param EventCommentGameReferenceType|null $gameReferenceType
      *
-     * @return Event
      * @throws AmbiguousValueException
      * @throws NotFoundException
      * @throws ReflectionException
+     *
+     * @return Event
      */
     public function addPickerComment(
         UuidInterface $commentUuid,
@@ -470,16 +472,16 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
             ->addComment($commentUuid, $user, $text, $referencedPickUuid, $gameReferenceType);
 
         if ($comment->hasReferencedGame()) {
-            switch ((int)(string) $comment->getGameReferenceType()) {
+            switch ((int) (string) $comment->getGameReferenceType()) {
                 case EventCommentGameReferenceType::REVIEW:
                     $this->addDomainEvent(new ReviewAdded($comment));
-                    break;
 
+                    break;
                 case EventCommentGameReferenceType::REPICK:
                     $this->rejectPick($comment->getPick()->getUuid());
+
                     break;
             }
-
         }
 
         return $this;
@@ -509,7 +511,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         return $this;
     }
 
-    private function makePicker(UuidInterface $pickerUuid, UuidInterface $participantUuid, User $user, EventPickerType $pickerType)
+    private function makePicker(UuidInterface $pickerUuid, UuidInterface $participantUuid, User $user, EventPickerType $pickerType): EventPicker
     {
         $participant = $this->getParticipant($participantUuid);
 
@@ -563,7 +565,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     {
         $pick = $this->findPick($pickUuid);
         if (!$pick) {
-            throw NotFoundException::forObject(EventPick::class, (string) $pickUuid);
+            throw NotFoundException::forObject(EventPick::class, $pickUuid->toString());
         }
 
         return $pick;
@@ -608,12 +610,13 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
 
     /**
      * Generate picks for input games
-     * For testing purpose
+     * For testing purpose.
+     *
      * @param Game[] $games
      *
      * @throws Exception
      */
-    public function generatePicks(array $games)
+    public function generatePicks(array $games): void
     {
         foreach ($this->participants as $participant) {
             foreach ($participant->getPickers() as $picker) {
@@ -634,8 +637,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
         UuidInterface $participantUuid,
         RewardReason $reason,
         ?UuidInterface $pickUuid
-    ): ?EventEarnedReward
-    {
+    ): ?EventEarnedReward {
         $participant = $this->findParticipant($participantUuid);
         if (!$participant) {
             return null;
@@ -654,7 +656,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     {
         $participant = $this->findParticipant($participantUuid);
         if (!$participant) {
-            return null;
+            return [];
         }
 
         return $this->getParticipant($participantUuid)->findRewardsOfPick($pickUuid);
@@ -666,7 +668,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      *
      * @throws NotFoundException
      */
-    public function removePickRewards(UuidInterface $pickUuid, array $untouchableRewards = [])
+    public function removePickRewards(UuidInterface $pickUuid, array $untouchableRewards = []): void
     {
         $pick = $this->getPick($pickUuid);
         $participant = $pick->getParticipant();
@@ -688,7 +690,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     }
 
     /**
-     * Adds those rewards from $rewards which weren't added earlier
+     * Adds those rewards from $rewards which weren't added earlier.
      *
      * @param UuidInterface $participantUuid
      * @param EventReward[] $rewards
@@ -696,7 +698,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      *
      * @throws Exception
      */
-    public function setupRewards(UuidInterface $participantUuid, array $rewards, ?UuidInterface $pickUuid)
+    public function setupRewards(UuidInterface $participantUuid, array $rewards, ?UuidInterface $pickUuid): void
     {
         Assert::thatAll($rewards)->isInstanceOf(EventReward::class);
 
@@ -707,7 +709,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     }
 
     /**
-     * Completely rewriting rewards for a pick
+     * Completely rewriting rewards for a pick.
      *
      * @param UuidInterface $participantUuid
      * @param EventReward[] $rewards
@@ -716,7 +718,7 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
      * @throws NotFoundException
      * @throws Exception
      */
-    public function setupPickRewards(UuidInterface $participantUuid, array $rewards, UuidInterface $pickUuid)
+    public function setupPickRewards(UuidInterface $participantUuid, array $rewards, UuidInterface $pickUuid): void
     {
         Assert::thatAll($rewards)->isInstanceOf(EventReward::class);
         $this->removePickRewards($pickUuid, $rewards);
@@ -801,13 +803,19 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface
     /**
      * @param UuidInterface $pickUuid
      *
-     * @return Event
-     *
      * @throws NotFoundException
+     *
+     * @return Event
      */
     private function rejectPick(UuidInterface $pickUuid): self
     {
         $this->getPick($pickUuid)->reject();
+
         return $this;
+    }
+
+    public function getIdentity(): string
+    {
+        return $this->getUuid()->toString();
     }
 }

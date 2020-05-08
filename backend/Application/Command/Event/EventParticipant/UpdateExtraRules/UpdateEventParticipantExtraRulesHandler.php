@@ -37,7 +37,7 @@ class UpdateEventParticipantExtraRulesHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(UpdateEventParticipantExtraRulesCommand $command)
+    public function __invoke(UpdateEventParticipantExtraRulesCommand $command): void
     {
         $participantUuid = $command->getParticipantUuid();
         $participant = $this->participantRepo->get($participantUuid);

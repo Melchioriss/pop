@@ -21,7 +21,7 @@ abstract class QueryController
      *
      * @throws SecuriryException
      */
-    protected function confirm(object $action)
+    protected function confirm(object $action): void
     {
         try {
             $this->securityBus->handle($action);
@@ -30,7 +30,12 @@ abstract class QueryController
         }
     }
 
-    protected function ask($query)
+    /**
+     * @param object $query
+     *
+     * @return mixed
+     */
+    protected function ask(object $query)
     {
         return $this->queryBus->handle($query);
     }
@@ -49,7 +54,14 @@ abstract class QueryController
         return $this->createResponse($resource);
     }
 
-    private function createResponse($data, int $status = JsonResponse::HTTP_OK, $headers = [])
+    /**
+     * @param object|Collection|null $data
+     * @param int $status
+     * @param array<string, string> $headers
+     *
+     * @return JsonResponse
+     */
+    private function createResponse($data, int $status = JsonResponse::HTTP_OK, $headers = []): JsonResponse
     {
         return new JsonResponse(
             $data instanceof Collection

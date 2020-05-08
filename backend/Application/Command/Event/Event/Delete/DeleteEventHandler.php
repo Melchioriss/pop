@@ -15,7 +15,7 @@ class DeleteEventHandler implements CommandHandlerInterface
 
     public function __construct(EventRepository $eventRepo)
     {
-        $this->eventRepo =$eventRepo;
+        $this->eventRepo = $eventRepo;
     }
 
     /**
@@ -25,7 +25,7 @@ class DeleteEventHandler implements CommandHandlerInterface
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function __invoke(DeleteEventCommand $command)
+    public function __invoke(DeleteEventCommand $command): void
     {
         $this->eventRepo->remove($this->eventRepo->get($command->eventUuid));
     }

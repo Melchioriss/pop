@@ -26,7 +26,7 @@ class SetUserExtraRulesSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(SetUserExtraRulesCommand $command)
+    public function __invoke(SetUserExtraRulesCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

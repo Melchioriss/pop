@@ -34,10 +34,10 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
 
         $config->registerMapping(EventPick::class, ActivityPick::class)
             ->forMember('playedStatus', function (EventPick $pick) {
-                return (int)(string) $pick->getPlayedStatus();
+                return (int) (string) $pick->getPlayedStatus();
             })
             ->forMember('type', function (EventPick $pick) {
-                return (int)(string) $pick->getType();
+                return (int) (string) $pick->getType();
             });
 
         $config->registerMapping(User::class, ActivityUser::class)
@@ -51,6 +51,5 @@ class CollectionDomainEventRecordMappingConfigurator implements AutoMapperConfig
             });
 
         $config->registerMapping(EventPickerComment::class, ActivityComment::class);
-
     }
 }

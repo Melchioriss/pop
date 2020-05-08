@@ -26,7 +26,7 @@ class ActivateUserSecurityHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(ActivateUserCommand $command)
+    public function __invoke(ActivateUserCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

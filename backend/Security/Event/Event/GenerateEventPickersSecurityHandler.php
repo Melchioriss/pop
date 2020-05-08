@@ -13,7 +13,7 @@ class GenerateEventPickersSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(GenerateEventPickersCommand $command)
+    public function __invoke(GenerateEventPickersCommand $command): void
     {
         $this->assertAdmin();
     }

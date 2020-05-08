@@ -53,7 +53,7 @@ class ChangeActivityTest extends KernelTestCase
     private function makeUser(bool $active): User
     {
         $user = (new User())
-            ->setSteamId(12345)
+            ->setSteamId(mt_rand(1, 9001))
             ->setProfileName('abc')
             ->setProfileUrl('https://steam/ab/c/')
             ->setAvatar('https://steam/ab/c.jpg');

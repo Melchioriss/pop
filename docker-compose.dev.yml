@@ -11,7 +11,10 @@ services:
 
   php:
     volumes:
-      - ./etc/php/php.ini:/etc/php7/conf.d/90-php.ini
-      - ./etc/php/php-fpm.conf:/etc/php7/php-fpm.conf
+      - ./etc/php/php.ini:/etc/php7/conf.d/90-php.ini:ro
+      - ./etc/php/php-fpm.conf:/etc/php7/php-fpm.conf:ro
+      - ./etc/php/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf:ro
+      #- ./etc/php/crontab:/etc/crontabs/root:ro
+      # doesn't work because it's mounted as 1000:users and crond ignores it
     ports:
       - "2323:22"

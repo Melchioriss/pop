@@ -13,6 +13,7 @@ use Knojector\SteamAuthenticationBundle\Http\SteamApiClient;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Domain\Steam\Group;
 use PlayOrPay\Domain\Steam\SteamId;
+use PlayOrPay\Domain\User\User;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Steam\Exception\RemoteNotFoundException;
 use PlayOrPay\Infrastructure\Storage\Steam\GroupRemoteRepository;
@@ -62,7 +63,7 @@ class ImportGroupHandler implements CommandHandlerInterface
      * @throws RemoteNotFoundException
      * @throws Exception
      */
-    public function __invoke(ImportGroupCommand $command)
+    public function __invoke(ImportGroupCommand $command): void
     {
         $remoteGroup = $this->groupRemoteRepo->getByCode($command->code);
 
@@ -73,6 +74,7 @@ class ImportGroupHandler implements CommandHandlerInterface
                 if ($user) {
                     $user->update($member);
                 } else {
+                    /** @var User $user */
                     $user = $this->userFactory->getFromSteamApiResponse($member);
                 }
 

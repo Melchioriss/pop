@@ -9,7 +9,7 @@ abstract class IntegerEnumType extends IntegerType
 {
     use EnumTypeTrait;
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?int
     {
         if ($value === null) {
             return null;

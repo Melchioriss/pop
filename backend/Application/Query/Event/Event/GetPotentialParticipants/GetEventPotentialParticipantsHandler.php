@@ -33,7 +33,7 @@ class GetEventPotentialParticipantsHandler implements QueryHandlerInterface
      *
      * @return PotentialParticipantUserView[]
      */
-    public function __invoke(GetEventPotentialParticipantsQuery $query)
+    public function __invoke(GetEventPotentialParticipantsQuery $query): array
     {
         $event = $this->eventRepo->get($query->eventUuid);
 

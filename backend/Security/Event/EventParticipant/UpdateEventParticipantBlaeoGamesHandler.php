@@ -26,7 +26,7 @@ class UpdateEventParticipantBlaeoGamesHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(UpdateEventParticipantBlaeoGamesCommand $command)
+    public function __invoke(UpdateEventParticipantBlaeoGamesCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

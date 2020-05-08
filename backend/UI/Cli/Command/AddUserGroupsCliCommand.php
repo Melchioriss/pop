@@ -27,7 +27,7 @@ class AddUserGroupsCliCommand extends Command
         $this->commandBus = $commandBus;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this
@@ -39,7 +39,7 @@ class AddUserGroupsCliCommand extends Command
             ]);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $ss = new SymfonyStyle($input, $output);
 
@@ -50,6 +50,8 @@ class AddUserGroupsCliCommand extends Command
 
         if (!$user) {
             $ss->error(sprintf("There is no user with profile name '%s'", $userQuery->getProfileName()));
+
+            return -1;
         }
 
         $ss->note('User was found. Trying to add them to the groups');
@@ -57,5 +59,7 @@ class AddUserGroupsCliCommand extends Command
         $this->commandBus->handle(new AddUserGroupsCommand($user->steamId, $input->getArgument('groups')));
 
         $ss->success('Groups were successfully added');
+
+        return 0;
     }
 }

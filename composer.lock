@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "10ac57fd86dffaaf7cda68a1ad6a7fa2",
+    "content-hash": "f52fabbae336161c1221040066066e2d",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -67,6 +67,60 @@
                 "validation"
             ],
             "time": "2019-12-19T17:51:41+00:00"
+        },
+        {
+            "name": "beberlei/doctrineextensions",
+            "version": "v1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/DoctrineExtensions.git",
+                "reference": "af72c4a136b744f1268ca8bb4da47a2f8af78f86"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/af72c4a136b744f1268ca8bb4da47a2f8af78f86",
+                "reference": "af72c4a136b744f1268ca8bb4da47a2f8af78f86",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": "^2.6",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.14",
+                "nesbot/carbon": "*",
+                "phpunit/phpunit": "^7.0 || ^8.0",
+                "symfony/yaml": "^4.2",
+                "zf1/zend-date": "^1.12",
+                "zf1/zend-registry": "^1.12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DoctrineExtensions\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Steve Lacey",
+                    "email": "steve@stevelacey.net"
+                }
+            ],
+            "description": "A set of extensions to Doctrine 2 that add support for additional query functions available in MySQL and Oracle.",
+            "keywords": [
+                "database",
+                "doctrine",
+                "orm"
+            ],
+            "time": "2019-12-05T09:49:04+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -2442,6 +2496,57 @@
                 "tactician"
             ],
             "time": "2016-08-23T05:50:38+00:00"
+        },
+        {
+            "name": "malarzm/collections",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/malarzm/collections.git",
+                "reference": "6809da8a51ff3c8a85782f53b757b096454b11cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/malarzm/collections/zipball/6809da8a51ff3c8a85782f53b757b096454b11cc",
+                "reference": "6809da8a51ff3c8a85782f53b757b096454b11cc",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "~1.1",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Malarzm\\Collections\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maciej Malarz",
+                    "email": "malarzm@gmail.com"
+                }
+            ],
+            "description": "Various implementations of Doctrine's Collection interface",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "array",
+                "collections",
+                "iterator"
+            ],
+            "time": "2016-12-10T13:57:51+00:00"
         },
         {
             "name": "mark-gerarts/auto-mapper-plus",

@@ -26,7 +26,7 @@ class PutBlockHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(PutBlockCommand $command)
+    public function __invoke(PutBlockCommand $command): void
     {
         $block = $this->blockRepo->find($command->code) ?: new Block($command->code, $command->content);
         $block->updateContent($command->content);

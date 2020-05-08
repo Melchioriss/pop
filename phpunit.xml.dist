@@ -4,12 +4,21 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/8.3/phpunit.xsd"
          colors="true"
-         bootstrap="tests/bootstrap.php"
+         bootstrap="config/bootstrap.php"
          stopOnFailure="true"
          executionOrder="defects"
 >
     <php>
         <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+
+        <env name="APP_DEBUG" value="1" />
+        <env name="SYMFONY_PHPUNIT_VERSION" value="8.1" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
+        <env name="KERNEL_CLASS" value="PlayOrPay\Infrastructure\Kernel" />
+        <env name="APP_SECRET" value="2cd12225c7bb754272e705cd3917f661" />
+        <env name="STEAM_API_KEY" value="" />
     </php>
 
     <testsuites>

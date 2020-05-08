@@ -48,13 +48,12 @@
         "symfony/yaml": "^4.3"
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^5.0",
+        "dama/doctrine-test-bundle": "^6.3.2",
         "friendsofphp/php-cs-fixer": "^2.15",
         "nelmio/alice": "^3.5",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^0.12",
         "phpstan/phpstan-phpunit": "^0.12.6",
-        "phpunit/phpunit": "^8.1",
         "roave/security-advisories": "dev-master",
         "symfony/browser-kit": "^4.3",
         "symfony/css-selector": "^4.3",

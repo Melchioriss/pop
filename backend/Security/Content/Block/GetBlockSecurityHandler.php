@@ -7,7 +7,7 @@ use PlayOrPay\Security\SecurityHandlerInterface;
 
 class GetBlockSecurityHandler implements SecurityHandlerInterface
 {
-    public function __invoke(GetBlockQuery $query)
+    public function __invoke(GetBlockQuery $query): void
     {
         // for everyone
     }

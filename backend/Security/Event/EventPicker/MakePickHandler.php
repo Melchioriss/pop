@@ -26,7 +26,7 @@ class MakePickHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(MakePickCommand $command)
+    public function __invoke(MakePickCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

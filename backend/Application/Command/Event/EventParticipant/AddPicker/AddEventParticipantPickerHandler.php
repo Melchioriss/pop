@@ -5,12 +5,12 @@ namespace PlayOrPay\Application\Command\Event\EventParticipant\AddPicker;
 use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Insideone\Package\EnumFramework\AmbiguousValueException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
 use PlayOrPay\Infrastructure\Storage\Event\EventParticipantRepository;
 use PlayOrPay\Infrastructure\Storage\Event\EventRepository;
 use PlayOrPay\Infrastructure\Storage\User\UserRepository;
-use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use ReflectionException;
 
 class AddEventParticipantPickerHandler implements CommandHandlerInterface
@@ -41,7 +41,7 @@ class AddEventParticipantPickerHandler implements CommandHandlerInterface
      * @throws AmbiguousValueException
      * @throws ReflectionException
      */
-    public function __invoke(AddEventParticipantPickerCommand $command)
+    public function __invoke(AddEventParticipantPickerCommand $command): void
     {
         $participantUuid = $command->getParticipantUuid();
 

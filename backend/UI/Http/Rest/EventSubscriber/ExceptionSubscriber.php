@@ -35,6 +35,12 @@ class ExceptionSubscriber implements EventSubscriberInterface
         return $this->determineStatusCode($exception);
     }
 
+    /**
+     * @param Exception $exception
+     * @param Response $response
+     *
+     * @return array<string, array<string, mixed>>
+     */
     private function getErrorMessage(Exception $exception, Response $response): array
     {
         $error = [
@@ -100,6 +106,9 @@ class ExceptionSubscriber implements EventSubscriberInterface
         return $statusCode;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getSubscribedEvents(): array
     {
         return [

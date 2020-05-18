@@ -10,8 +10,8 @@ use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\Game\GameId;
 use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Infrastructure\Storage\Doctrine\Exception\UnallowedOperationException;
-use PlayOrPay\Infrastructure\Storage\Steam\GameRemoteRepository;
 use PlayOrPay\Infrastructure\Storage\Game\GameRepository;
+use PlayOrPay\Infrastructure\Storage\Steam\GameRemoteRepository;
 
 class ImportSteamGamesHandler implements CommandHandlerInterface
 {
@@ -37,7 +37,7 @@ class ImportSteamGamesHandler implements CommandHandlerInterface
      * @throws MappingException
      * @throws UnallowedOperationException
      */
-    public function __invoke(ImportSteamGamesCommand $command)
+    public function __invoke(ImportSteamGamesCommand $command): void
     {
         set_time_limit(120);
 
@@ -89,7 +89,7 @@ class ImportSteamGamesHandler implements CommandHandlerInterface
             $newGames = [];
             foreach ($newChunk as $newId) {
                 $app = $apps[$newId];
-                $newGames[] = new Game(new GameId($steamStoreId, $app->appid), $app->name);
+                $newGames[] = new Game(new GameId($steamStoreId, (string) $app->appid), $app->name);
                 ++$counters['created'];
             }
 

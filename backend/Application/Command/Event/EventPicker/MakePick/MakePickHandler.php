@@ -39,7 +39,7 @@ class MakePickHandler implements CommandHandlerInterface
      * @throws UnallowedOperationException
      * @throws NotFoundException
      */
-    public function __invoke(MakePickCommand $command)
+    public function __invoke(MakePickCommand $command): void
     {
         $game = $this->gameRepo->get((string) $command->gameId);
         $picker = $this->pickerRepo->get($command->pickerUuid);

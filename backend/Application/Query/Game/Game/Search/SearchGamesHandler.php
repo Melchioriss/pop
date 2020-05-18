@@ -29,10 +29,10 @@ class SearchGamesHandler implements QueryHandlerInterface
     /**
      * @param SearchGamesQuery $query
      *
-     * @return Collection
      *@throws NotFoundException
-     *
      * @throws InvalidArgumentException
+     *
+     * @return Collection
      */
     public function __invoke(SearchGamesQuery $query): Collection
     {
@@ -42,7 +42,7 @@ class SearchGamesHandler implements QueryHandlerInterface
 
         /** @var Common\GameView[] $games */
         $games = (new AutoMapper($config))->mapMultiple(
-            $gamesPaginator->getIterator()->getArrayCopy(),
+            iterator_to_array($gamesPaginator->getIterator()),
             Common\GameView::class
         );
 

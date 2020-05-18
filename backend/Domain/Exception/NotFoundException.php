@@ -14,6 +14,7 @@ class NotFoundException extends Exception
     /**
      * @param string $class
      * @param array<string, int|string|null> $query
+     *
      * @return NotFoundException
      */
     public static function forQuery(string $class, array $query): self

@@ -115,16 +115,16 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
     /**
      * @param EventParticipant $participant
      *
-     * @return ImportSteamPlayingStatesHandler
      *@throws UnexpectedResponseException
-     *
      * @throws GuzzleException
+     *
+     * @return ImportSteamPlayingStatesHandler
      */
     private function updateAchievements(EventParticipant $participant): self
     {
         foreach ($participant->getGames($this->steamStore) as $game) {
             $steamGameId = $game->getId()->getLocalId();
-            $userStatsQuery = new UserStatsQuery((int) (string) $participant->getUserSteamId(), $steamGameId);
+            $userStatsQuery = new UserStatsQuery((int) (string) $participant->getUserSteamId(), (int) $steamGameId);
             $achievementsState = $this->playerAchievementsRemoteRepo->find($userStatsQuery);
 
             $totalGameAchievementsCount = $achievementsState->count();
@@ -214,7 +214,7 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
 
     /**
      * @param int $steamId
-     * @param int[] $apps
+     * @param int[]|string[] $apps
      *
      * @return GetOwnedGamesQuery
      */

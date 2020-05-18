@@ -13,7 +13,7 @@ class ImportSteamPlayingStatesSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(ImportSteamPlayingStatesCommand $command)
+    public function __invoke(ImportSteamPlayingStatesCommand $command): void
     {
         $this->assertAdmin();
     }

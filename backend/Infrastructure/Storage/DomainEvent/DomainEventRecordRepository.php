@@ -15,6 +15,11 @@ class DomainEventRecordRepository extends ServiceEntityRepository
         return DomainEventRecord::class;
     }
 
+    /**
+     * @param PaginatedQuery $appQuery
+     *
+     * @return Paginator<DomainEventRecord>
+     */
     public function getSortedList(PaginatedQuery $appQuery): Paginator
     {
         return $this->makePaginatedResult(

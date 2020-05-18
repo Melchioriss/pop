@@ -6,7 +6,7 @@ use Exception;
 
 class UnexpectedRoleException extends Exception
 {
-    public static function alreadyExists(string $role)
+    public static function alreadyExists(string $role): self
     {
         return new self(sprintf('User already treated as %s', $role));
     }

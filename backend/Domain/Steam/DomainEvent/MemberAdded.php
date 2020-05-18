@@ -23,10 +23,13 @@ class MemberAdded implements DomainEventInterface
         $this->member = $member;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function jsonSerialize()
     {
         return [
-            'group' => $this->group,
+            'group'  => $this->group,
             'member' => $this->member,
         ];
     }
@@ -34,7 +37,7 @@ class MemberAdded implements DomainEventInterface
     public static function refsMap(): array
     {
         return [
-            'group' => Group::class,
+            'group'  => Group::class,
             'member' => User::class,
         ];
     }

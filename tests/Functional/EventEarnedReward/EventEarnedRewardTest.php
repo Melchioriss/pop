@@ -19,11 +19,12 @@ class EventEarnedRewardTest extends FunctionalTest
 {
     /**
      * @test
+     *
      * @throws Exception
      */
-    public function setting_up_blaeo_games_points_should_be_rewarded_and_unsetting_should_remove_reward()
+    public function setting_up_blaeo_games_points_should_be_rewarded_and_unsetting_should_remove_reward(): void
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/filled_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/filled_event.yaml');
 
         /** @var Event $event */
         $event = $fixtures->get('filled_event');
@@ -37,8 +38,8 @@ class EventEarnedRewardTest extends FunctionalTest
         $this->authorizeAsAdmin();
 
         $this->request('update_event_participant_blaeo_points', [
-            'participantUuid' => (string) $participant->getUuid(),
-            'blaeoPoints' => $rewardedPoints,
+            'participantUuid' => $participant->getUuid()->toString(),
+            'blaeoPoints'     => $rewardedPoints,
         ]);
 
         /** @var EventRepository $eventRepo */
@@ -49,8 +50,8 @@ class EventEarnedRewardTest extends FunctionalTest
         $this->assertSame($rewardedPoints, $reward->getValue(), "Reward wasn't created as expected");
 
         $this->request('update_event_participant_blaeo_points', [
-            'participantUuid' => (string) $participant->getUuid(),
-            'blaeoPoints' => 0,
+            'participantUuid' => $participant->getUuid()->toString(),
+            'blaeoPoints'     => 0,
         ]);
 
         $event = $eventRepo->get($event->getUuid());
@@ -64,7 +65,7 @@ class EventEarnedRewardTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function marking_game_as_completed_should_give_two_rewards_and_remarking_should_remove_them()
+    public function marking_game_as_completed_should_give_two_rewards_and_remarking_should_remove_them(): void
     {
         $pick = $this->prepareCompleted();
         $participant = $pick->getParticipant();
@@ -73,8 +74,8 @@ class EventEarnedRewardTest extends FunctionalTest
         $this->assertCount(2, $participant->getRewards(), 'There were expected some rewards');
 
         $this->request('change_pick_status', [
-            'pickUuid' => (string) $pick->getUuid(),
-            'status' => EventPickPlayedStatus::ABANDONED,
+            'pickUuid' => $pick->getUuid()->toString(),
+            'status'   => EventPickPlayedStatus::ABANDONED,
         ]);
 
         $participant = $this->refreshParticipant($participant);
@@ -86,7 +87,7 @@ class EventEarnedRewardTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function marking_completed_game_as_beaten_should_remove_completed_reward_but_keep_beaten_reward()
+    public function marking_completed_game_as_beaten_should_remove_completed_reward_but_keep_beaten_reward(): void
     {
         $pick = $this->prepareCompleted();
         $participant = $pick->getParticipant();
@@ -94,8 +95,8 @@ class EventEarnedRewardTest extends FunctionalTest
         $beatenStatus = new EventPickPlayedStatus(EventPickPlayedStatus::BEATEN);
 
         $this->request('change_pick_status', [
-            'pickUuid' => (string) $pick->getUuid(),
-            'status' => $beatenStatus->__default,
+            'pickUuid' => $pick->getUuid()->toString(),
+            'status'   => $beatenStatus->__default,
         ]);
 
         $participant = $this->refreshParticipant($participant);
@@ -115,13 +116,13 @@ class EventEarnedRewardTest extends FunctionalTest
     }
 
     /**
-     * @return EventPick
-     *
      * @throws Exception
+     *
+     * @return EventPick
      */
     private function prepareCompleted(): EventPick
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/filled_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/filled_event.yaml');
 
         /** @var Event $event */
         $event = $fixtures->get('filled_event');
@@ -133,8 +134,8 @@ class EventEarnedRewardTest extends FunctionalTest
 
         $this->authorizeAsAdmin();
         $this->request('change_pick_status', [
-            'pickUuid' => (string) $pick->getUuid(),
-            'status' => EventPickPlayedStatus::COMPLETED,
+            'pickUuid' => $pick->getUuid()->toString(),
+            'status'   => EventPickPlayedStatus::COMPLETED,
         ]);
 
         return $pick;
@@ -145,9 +146,9 @@ class EventEarnedRewardTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function marking_all_completed_should_be_properly_rewarded_and_unmarking_just_one_should_remove_that_reward()
+    public function marking_all_completed_should_be_properly_rewarded_and_unmarking_just_one_should_remove_that_reward(): void
     {
-        $fixtures = $this->applyFixtures(__DIR__.'/../../fixtures/filled_event.yaml');
+        $fixtures = $this->applyFixtures(__DIR__ . '/../../fixtures/filled_event.yaml');
         /** @var Event $event */
         $event = $fixtures->get('filled_event');
 
@@ -168,26 +169,25 @@ class EventEarnedRewardTest extends FunctionalTest
             }
 
             $this->request('change_pick_status', [
-                'pickUuid' => (string) $pick->getUuid(),
-                'status' => EventPickPlayedStatus::BEATEN,
+                'pickUuid' => $pick->getUuid()->toString(),
+                'status'   => EventPickPlayedStatus::BEATEN,
             ]);
-
         }
 
         $participant = $this->refreshParticipant($participant);
         $this->assertFalse($participant->hasReward($allBeatenReward, null), "There mustn't be all-beaten reward");
 
         $this->request('change_pick_status', [
-            'pickUuid' => (string) $picks[0]->getUuid(),
-            'status' => EventPickPlayedStatus::BEATEN,
+            'pickUuid' => $picks[0]->getUuid()->toString(),
+            'status'   => EventPickPlayedStatus::BEATEN,
         ]);
 
         $participant = $this->refreshParticipant($participant);
         $this->assertTrue($participant->hasReward($allBeatenReward, null), 'There must be all-beaten reward');
 
         $this->request('change_pick_status', [
-            'pickUuid' => (string) $picks[0]->getUuid(),
-            'status' => EventPickPlayedStatus::NOT_PLAYED,
+            'pickUuid' => $picks[0]->getUuid()->toString(),
+            'status'   => EventPickPlayedStatus::NOT_PLAYED,
         ]);
 
         $participant = $this->refreshParticipant($participant);
@@ -197,14 +197,15 @@ class EventEarnedRewardTest extends FunctionalTest
     /**
      * @param EventParticipant $participant
      *
-     * @return EventParticipant
-     *
      * @throws EntityNotFoundException
+     *
+     * @return EventParticipant
      */
-    private function refreshParticipant(EventParticipant $participant)
+    private function refreshParticipant(EventParticipant $participant): EventParticipant
     {
         /** @var EventParticipantRepository $participantRepo */
         $participantRepo = self::$container->get(EventParticipantRepository::class);
+
         return $participantRepo->get($participant->getUuid());
     }
 }

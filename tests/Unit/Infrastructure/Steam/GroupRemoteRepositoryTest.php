@@ -46,7 +46,7 @@ class GroupRemoteRepositoryTest extends TestCase
      *
      * @return ClientInterface
      */
-    private function getHttpClient(string $willReturn)
+    private function getHttpClient(string $willReturn): ClientInterface
     {
         $groupResponseStream = $this->createMock(StreamInterface::class);
         $groupResponseStream->method('getContents')->willReturn($willReturn);

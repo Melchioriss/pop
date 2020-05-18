@@ -39,13 +39,13 @@ class GetEventHandler implements QueryHandlerInterface
     /**
      * @param GetEventQuery $query
      *
-     * @return DetailEventView
-     *
      * @throws UnregisteredMappingException
      * @throws InvalidArgumentException
      * @throws EntityNotFoundException
+     *
+     * @return DetailEventView
      */
-    public function __invoke(GetEventQuery $query)
+    public function __invoke(GetEventQuery $query): DetailEventView
     {
         $event = $this->eventRepo->get($query->getUuid());
 

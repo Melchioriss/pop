@@ -13,7 +13,7 @@ class UpdateEventSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(UpdateEventCommand $command)
+    public function __invoke(UpdateEventCommand $command): void
     {
         $this->assertAdmin();
     }

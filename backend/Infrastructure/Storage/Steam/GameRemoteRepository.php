@@ -20,7 +20,10 @@ class GameRemoteRepository
         $this->key = $steamApiKey;
     }
 
-    public function getAll()
+    /**
+     * @return SteamAppSchema[]
+     */
+    public function getAll(): array
     {
         $games = [];
 

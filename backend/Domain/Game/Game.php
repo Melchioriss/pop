@@ -28,7 +28,7 @@ class Game implements AggregateInterface
         $this->name = $name;
     }
 
-    public static function fromExpandedGameId(StoreId $storeId, string $localId, string $name)
+    public static function fromExpandedGameId(StoreId $storeId, string $localId, string $name): self
     {
         return new self(new GameId($storeId, $localId), $name);
     }

@@ -40,3 +40,6 @@ doctrine:
                 type: xml
                 dir: '%kernel.project_dir%/config/mapping/orm/league'
                 prefix: 'League\Period'
+        dql:
+            string_functions:
+                DATE: DoctrineExtensions\Query\Mysql\Date

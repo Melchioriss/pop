@@ -2,7 +2,6 @@
 
 namespace PlayOrPay\Application\Schema\DomainEvent\Activity;
 
-
 class ActivityComment
 {
     /** @var string */

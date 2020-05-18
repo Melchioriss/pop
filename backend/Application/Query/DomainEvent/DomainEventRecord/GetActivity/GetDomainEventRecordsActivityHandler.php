@@ -10,12 +10,12 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use PlayOrPay\Application\Query\Collection;
 use PlayOrPay\Application\Query\QueryHandlerInterface;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityComment;
-use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityGroup;
-use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecord;
-use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecordMappingConfigurator;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityGame;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityGroup;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityPick;
 use PlayOrPay\Application\Schema\DomainEvent\Activity\ActivityUser;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecord;
+use PlayOrPay\Application\Schema\DomainEvent\Activity\CollectionDomainEventRecordMappingConfigurator;
 use PlayOrPay\Domain\Contracts\DomainEvent\DomainEventInterface;
 use PlayOrPay\Domain\DomainEvent\DomainEventRecord;
 use PlayOrPay\Domain\Event\EventPick;
@@ -38,19 +38,18 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
     private $em;
 
     const REFS_MAPPING = [
-        Game::class => ActivityGame::class,
-        EventPick::class => ActivityPick::class,
-        User::class => ActivityUser::class,
+        Game::class               => ActivityGame::class,
+        EventPick::class          => ActivityPick::class,
+        User::class               => ActivityUser::class,
         EventPickerComment::class => ActivityComment::class,
-        Group::class => ActivityGroup::class,
+        Group::class              => ActivityGroup::class,
     ];
 
     public function __construct(
         DomainEventRecordRepository $domainEventRecordRepo,
         CollectionDomainEventRecordMappingConfigurator $mapping,
         EntityManagerInterface $em
-    )
-    {
+    ) {
         $this->domainEventRecordRepo = $domainEventRecordRepo;
         $this->mapping = $mapping;
         $this->em = $em;
@@ -58,12 +57,13 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
 
     /**
      * @param GetDomainEventRecordsActivityQuery $query
-     * @return Collection
      *
      * @throws NotFoundException
      * @throws InvalidArgumentException
+     *
+     * @return Collection
      */
-    public function __invoke(GetDomainEventRecordsActivityQuery $query)
+    public function __invoke(GetDomainEventRecordsActivityQuery $query): Collection
     {
         $this->mapping->configure($config = new AutoMapperConfig());
 
@@ -102,7 +102,7 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
             $query->perPage,
             $eventRecords->count(),
             $mapper->mapMultiple(
-                $eventRecords->getIterator()->getArrayCopy(),
+                iterator_to_array($eventRecords->getIterator()),
                 CollectionDomainEventRecord::class
             )
         );
@@ -120,7 +120,7 @@ class GetDomainEventRecordsActivityHandler implements QueryHandlerInterface
             $collection->addRefs(
                 lcfirst($classMetadata->getReflectionClass()->getShortName()),
                 $mapper->mapMultiple(
-                    $repo->findBy([ $classMetadata->identifier[0] => $classRefs ]),
+                    $repo->findBy([$classMetadata->identifier[0] => $classRefs]),
                     self::REFS_MAPPING[$refClass]
                 )
             );

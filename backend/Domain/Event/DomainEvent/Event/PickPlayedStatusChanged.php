@@ -28,27 +28,30 @@ class PickPlayedStatusChanged implements DomainEventInterface
         $this->to = $to;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function jsonSerialize()
     {
         return [
-            'event' => (string) $this->pick->getEvent()->getUuid(),
-            'pick' => (string) $this->pick->getUuid(),
-            'participant' => (string) $this->pick->getParticipant()->getUuid(),
+            'event'           => $this->pick->getEvent()->getUuid()->toString(),
+            'pick'            => $this->pick->getUuid()->toString(),
+            'participant'     => $this->pick->getParticipant()->getUuid()->toString(),
             'participantUser' => (string) $this->pick->getParticipant()->getUser()->getSteamId(),
-            'game' => (string) $this->pick->getGame()->getId(),
-            'from' => (string) $this->from,
-            'to'   => (string) $this->to,
+            'game'            => (string) $this->pick->getGame()->getId(),
+            'from'            => (string) $this->from,
+            'to'              => (string) $this->to,
         ];
     }
 
     public static function refsMap(): array
     {
         return [
-            'event' => Event::class,
-            'pick' => EventPick::class,
-            'participant' => EventParticipant::class,
+            'event'           => Event::class,
+            'pick'            => EventPick::class,
+            'participant'     => EventParticipant::class,
             'participantUser' => User::class,
-            'game' => Game::class,
+            'game'            => Game::class,
         ];
     }
 }

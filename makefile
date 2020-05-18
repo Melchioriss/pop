@@ -38,7 +38,7 @@ composer-install:
 
 .PHONY: composer-require
 composer-require:
-	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer require $(this)'
+	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer require $(this) -vvv'
 
 .PHONY: up
 up:
@@ -50,37 +50,37 @@ up-pure:
 
 .PHONY: test
 test:
-	docker-compose exec php sh -lc "./vendor/bin/phpunit $(with)"
+	docker-compose exec php simple-phpunit $(with)
 
 .PHONY: style
 style:
-	docker-compose run --rm php sh -lc './vendor/bin/phpstan analyse -l 6 -c phpstan.neon backend tests'
+	docker-compose run --rm php phpstan analyse -l 6 -c phpstan.neon backend tests
 
 .PHONY: cs
 cs: ## executes php cs fixer
-	docker-compose run --rm php sh -lc './vendor/bin/php-cs-fixer --no-interaction --diff -v fix'
+	docker-compose run --rm php php-cs-fixer --no-interaction --diff -v fix
 
 .PHONY: cs-check
 cs-check: ## executes php cs fixer in dry run mode
-	docker-compose run --rm php sh -lc './vendor/bin/php-cs-fixer --no-interaction --dry-run --diff -v fix'
+	docker-compose run --rm php php-cs-fixer --no-interaction --dry-run --diff -v fix
 
 .PHONY: deptrac
 deptrac: ## Check issues with layers
-	docker-compose run --rm php sh -lc 'php bin/deptrac.phar analyze --formatter-graphviz=0'
+	docker-compose run --rm php php ./bin/deptrac.phar analyze --formatter-graphviz=0
 
 .PHONY: db
 db: ## recreate database
-	docker-compose exec php sh -lc './bin/console d:d:d --force'
-	docker-compose exec php sh -lc './bin/console d:d:c'
-	docker-compose exec php sh -lc './bin/console d:m:m -n'
+	docker-compose exec php console d:d:d --force
+	docker-compose exec php console d:d:c
+	docker-compose exec php console d:m:m -n
 
 .PHONY: schema-validate
 schema-validate: ## validate database schema
-	docker-compose exec php sh -lc './bin/console d:s:v'
+	docker-compose exec php console d:s:v
 
 .PHONY: enable_xdebug
 enable_xdebug:
-	docker-compose exec php sh -lc 'xon'
+	docker-compose exec php sh -lc 'xon
 
 .PHONY: disable_xdebug
 disable_xdebug:
@@ -108,10 +108,6 @@ xon: enable_xdebug restart_backend
 
 .PHONY: xoff
 xoff: disable_xdebug restart_backend_again
-
-.PHONY: sh
-sh: ## gets inside a container, use 's' variable to select a service. make s=php sh
-	docker-compose exec $(s) sh -l
 
 .PHONY: logs
 logs: ## look for 's' service logs, make s=php logs
@@ -183,7 +179,7 @@ import-database-dump:
 
 .PHONY: enter
 enter:
-	docker-compose exec $(to) sh
+	docker-compose exec $(in) sh -l
 
 .PHONY: enter-database
 enter-database:

@@ -27,7 +27,7 @@ class AddUserRolesCliCommand extends Command
         $this->commandBus = $commandBus;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
         $this
@@ -39,7 +39,7 @@ class AddUserRolesCliCommand extends Command
             ]);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $ss = new SymfonyStyle($input, $output);
 
@@ -50,12 +50,16 @@ class AddUserRolesCliCommand extends Command
 
         if (!$user) {
             $ss->error(sprintf("There is no user with profile name '%s'", $userQuery->getProfileName()));
+
+            return -1;
         }
 
         $ss->note('User was found. Trying to grant them');
 
-        $this->commandBus->handle(new AddUserRolesCommand($user->steamId, $input->getArgument('roles')));
+        $this->commandBus->handle(new AddUserRolesCommand((int) $user->steamId, $input->getArgument('roles')));
 
         $ss->success('Roles were successfully added');
+
+        return 0;
     }
 }

@@ -33,7 +33,7 @@ class GetBlockHandler implements QueryHandlerInterface
      *
      * @return BlockView
      */
-    public function __invoke(GetBlockQuery $query)
+    public function __invoke(GetBlockQuery $query): BlockView
     {
         $block = $this->blockRepo->get($query->code);
 

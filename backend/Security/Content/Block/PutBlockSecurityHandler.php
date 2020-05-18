@@ -13,7 +13,7 @@ class PutBlockSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(PutBlockCommand $command)
+    public function __invoke(PutBlockCommand $command): void
     {
         $this->assertAdmin();
     }

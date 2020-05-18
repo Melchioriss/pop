@@ -22,7 +22,7 @@ class ImportSteamGroupCliCommand extends Command
         $this->commandBus = $commandBus;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('steam:group:import')
@@ -37,7 +37,7 @@ class ImportSteamGroupCliCommand extends Command
             ]);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $ss = new SymfonyStyle($input, $output);
 

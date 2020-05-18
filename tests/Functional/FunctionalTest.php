@@ -20,13 +20,13 @@ abstract class FunctionalTest extends WebTestCase
     /** @var KernelBrowser */
     protected $client;
 
-    /** @var EntityManagerInterface */
+    /** @var EntityManagerInterface|null */
     protected $em;
 
     /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /** @var FixtureCollection */
+    /** @var FixtureCollection<object>|null */
     private $fixtures;
 
     /** @var Router */
@@ -51,6 +51,9 @@ abstract class FunctionalTest extends WebTestCase
         $this->em = null;
     }
 
+    /**
+     * @param FixtureCollection<object> $objects
+     */
     private function saveFixtures(FixtureCollection $objects): void
     {
         $metadataFactory = $this->em->getMetadataFactory();
@@ -105,8 +108,10 @@ abstract class FunctionalTest extends WebTestCase
             throw new Exception('You must call applyFixtures before trying to authorize as somebody');
         }
 
-        /** @var User $adminUser */
         $user = $this->fixtures->get($reference);
+        if (!$user instanceof User) {
+            throw new Exception(sprintf('User entity was expected, got %s', get_class($user)));
+        }
 
         $container = $this->client->getContainer();
         $session = $container->get('session');
@@ -154,6 +159,11 @@ abstract class FunctionalTest extends WebTestCase
         $this->assertNotSame($code, $response->getStatusCode(), $response->getContent());
     }
 
+    /**
+     * @param string $file
+     *
+     * @return FixtureCollection<object>
+     */
     public function applyFixtures(string $file): FixtureCollection
     {
         $this->fixtures = FixtureCollection::fromFile($file);
@@ -162,6 +172,13 @@ abstract class FunctionalTest extends WebTestCase
         return $this->fixtures;
     }
 
+    /**
+     * @param string $routeName
+     * @param array<string, string|int|bool> $params
+     * @param bool $shouldBeSuccessful
+     *
+     * @return Response
+     */
     public function request(string $routeName, array $params = [], bool $shouldBeSuccessful = true): Response
     {
         $route = $this->router->getRouteCollection()->get($routeName);

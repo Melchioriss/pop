@@ -7,3 +7,11 @@ ENV PATH="$APP_DIR/bin:$APP_DIR/vendor/bin:${PATH}"
 
 COPY php.ini /etc/php7/conf.d/90-php.ini
 COPY php-fpm.conf /etc/php7/php-fpm.conf
+
+RUN mkdir /etc/supervisor.d
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+COPY crontab /etc/crontabs/root
+RUN chown root:root /etc/crontabs/root
+
+CMD ["supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]

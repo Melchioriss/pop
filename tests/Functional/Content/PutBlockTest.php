@@ -13,11 +13,11 @@ class PutBlockTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function should_successfully_create_a_new_one()
+    public function should_successfully_create_a_new_one(): void
     {
         $this->applyFixtures(__DIR__ . '/../../fixtures/empty_event.yaml');
 
-        $code = (string) Uuid::uuid4();
+        $code = Uuid::uuid4()->toString();
         $content = 'hello world';
 
         $this->authorizeAsAdmin();

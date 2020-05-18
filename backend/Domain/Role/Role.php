@@ -13,9 +13,13 @@ class Role implements AggregateInterface
     /** @var RoleName */
     private $name;
 
-    /** @var string[] */
+    /** @var string[]|ArrayCollection<int, string> */
     private $abilities;
 
+    /**
+     * @param RoleName $name
+     * @param string[] $abilities
+     */
     public function __construct(RoleName $name, $abilities = [])
     {
         $this->name = $name;

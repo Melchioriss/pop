@@ -28,7 +28,7 @@ trait EnumTypeTrait
         return preg_replace('/Type$/', '', (new ReflectionClass(static::class))->getShortName());
     }
 
-    public function requiresSQLCommentHint(/* @noinspection PhpUnusedParameterInspection */ AbstractPlatform $platform)
+    public function requiresSQLCommentHint(/* @noinspection PhpUnusedParameterInspection */ AbstractPlatform $platform): bool
     {
         return true;
     }

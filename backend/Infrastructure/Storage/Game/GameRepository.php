@@ -19,6 +19,11 @@ class GameRepository extends ServiceEntityRepository
         return Game::class;
     }
 
+    /**
+     * @param StoreId $storeId
+     *
+     * @return string[]
+     */
     public function getStoreIds(StoreId $storeId): array
     {
         return array_map(
@@ -32,6 +37,11 @@ class GameRepository extends ServiceEntityRepository
         );
     }
 
+    /**
+     * @param SearchPaginatedQuery $querySpec
+     *
+     * @return Paginator<Game>
+     */
     public function findBySearch(SearchPaginatedQuery $querySpec): Paginator
     {
         $qb = $this->createQueryBuilder('game')

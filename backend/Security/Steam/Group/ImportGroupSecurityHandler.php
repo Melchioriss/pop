@@ -13,7 +13,7 @@ class ImportGroupSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(ImportGroupCommand $command)
+    public function __invoke(ImportGroupCommand $command): void
     {
         $this->assertAdmin();
     }

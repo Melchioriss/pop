@@ -7,6 +7,9 @@ use Exception;
 use IteratorAggregate;
 use Nelmio\Alice\Loader\NativeLoader;
 
+/**
+ * @implements IteratorAggregate<number, object>
+ */
 class FixtureCollection implements IteratorAggregate
 {
     /** @var object[] */
@@ -42,13 +45,20 @@ class FixtureCollection implements IteratorAggregate
      */
     public function get(string $name): object
     {
-        if ($this->objects[$name]) {
+        if (!empty($this->objects[$name])) {
             return $this->objects[$name];
         }
 
         throw new Exception(sprintf("There is no fixture with name '%s'", $name));
     }
 
+    /**
+     * @param string $class
+     * @param int|null $limit
+     * @param object[] $excluded
+     *
+     * @return object[]
+     */
     public function findAllOf(string $class, int $limit = null, array $excluded = []): array
     {
         $counter = 0;

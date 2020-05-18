@@ -6,6 +6,7 @@ use Assert\Assert;
 
 class GetBlockQuery
 {
+    /** @var string */
     public $code;
 
     public function __construct(string $code)

@@ -13,7 +13,7 @@ use PlayOrPay\Tests\Functional\FunctionalTest;
 
 class AddEventParticipantTest extends FunctionalTest
 {
-    /** @var FixtureCollection */
+    /** @var FixtureCollection|null */
     private $fixtures;
 
     /** @var Event */
@@ -39,7 +39,7 @@ class AddEventParticipantTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function should_add_new_participant()
+    public function should_add_new_participant(): void
     {
         /** @var User $admin */
         $admin = $this->fixtures->get('admin');
@@ -49,7 +49,7 @@ class AddEventParticipantTest extends FunctionalTest
 
         $this->authorizeAsAdmin();
         $this->request('add_participant', [
-            'participantUuid' => $this->participantRepo->nextUuid(),
+            'participantUuid' => $this->participantRepo->nextUuid()->toString(),
             'eventUuid'       => $this->event->getUuid()->toString(),
             'steamId'         => (int) (string) $admin->getSteamId(),
         ]);
@@ -60,7 +60,7 @@ class AddEventParticipantTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function should_not_add_new_participant_who_is_already_a_participant()
+    public function should_not_add_new_participant_who_is_already_a_participant(): void
     {
         $participant = $this->event->getParticipants()[0];
         $this->expectException(DomainException::class);
@@ -72,7 +72,7 @@ class AddEventParticipantTest extends FunctionalTest
      *
      * @throws Exception
      */
-    public function should_not_add_new_participant_who_doesnt_belong_to_the_group()
+    public function should_not_add_new_participant_who_doesnt_belong_to_the_group(): void
     {
         $this->expectException(DomainException::class);
         $admin = $this->fixtures->get('admin');

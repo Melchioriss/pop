@@ -26,7 +26,7 @@ class UpdateEventParticipantGroupWinsHandler extends CommonSecurityHandler
      * @throws EntityNotFoundException
      * @throws SecuriryException
      */
-    public function __invoke(UpdateEventParticipantGroupWinsCommand $command)
+    public function __invoke(UpdateEventParticipantGroupWinsCommand $command): void
     {
         if ($this->isAdmin()) {
             return;

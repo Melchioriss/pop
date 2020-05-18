@@ -15,9 +15,9 @@ class RequestConverter
      *
      * @throws RequiredParameterNotFound
      *
-     * @return mixed
+     * @return object
      */
-    public function convert(Request $request, string $targetClass)
+    public function convert(Request $request, string $targetClass): object
     {
         Assert::that($targetClass)->classExists();
 
@@ -34,7 +34,7 @@ class RequestConverter
      *
      * @throws RequiredParameterNotFound
      *
-     * @return array
+     * @return array<int, string|int|bool|null>
      */
     private function getConstructParameters(Request $request, string $targetClass): array
     {

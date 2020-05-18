@@ -2,7 +2,7 @@
 
 namespace PlayOrPay\Domain\Game;
 
-use PlayOrPay\Package\EnumFramework\Enum;
+use Insideone\Package\EnumFramework\Enum;
 
 class StoreId extends Enum
 {

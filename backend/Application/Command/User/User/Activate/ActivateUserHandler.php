@@ -25,7 +25,7 @@ class ActivateUserHandler implements CommandHandlerInterface
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
      */
-    public function __invoke(ActivateUserCommand $command)
+    public function __invoke(ActivateUserCommand $command): void
     {
         $user = $this->userRepo->get($command->getSteamId());
         $user->activate();

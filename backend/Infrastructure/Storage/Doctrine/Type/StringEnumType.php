@@ -9,7 +9,7 @@ abstract class StringEnumType extends StringType
 {
     use EnumTypeTrait;
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
             return null;

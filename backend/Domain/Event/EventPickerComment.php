@@ -5,11 +5,11 @@ namespace PlayOrPay\Domain\Event;
 use Assert\Assert;
 use DateTimeImmutable;
 use DomainException;
+use Insideone\Package\EnumFramework\AmbiguousValueException;
 use PlayOrPay\Domain\Contracts\Entity\OnUpdateEventListenerInterface;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\User\User;
-use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionException;
 
@@ -76,23 +76,13 @@ class EventPickerComment implements OnUpdateEventListenerInterface
             if ($gameReferenceType->equalTo(EventCommentGameReferenceType::REVIEW)
                 && $playedStatus->equalTo(EventPickPlayedStatus::NOT_PLAYED)
             ) {
-                throw new DomainException(
-                    sprintf("You can't review '%s' game", $referencedPick->getPlayedStatus()->getCodename())
-                );
+                throw new DomainException(sprintf("You can't review '%s' game", $referencedPick->getPlayedStatus()->getCodename()));
             }
 
             if ($gameReferenceType->equalTo(EventCommentGameReferenceType::REPICK)
                 && !$playedStatus->equalToOneOf(self::ALLOWED_REPICK_PLAY_STATUSES)
             ) {
-                throw new DomainException(
-                    sprintf(
-                        "You can't request a repick for '%s' played status. Played status must be one of these: %s",
-                        $playedStatus->getCodename(),
-                        implode(', ', array_map(function (int $rawPlayedStatus) {
-                            return (new EventPickPlayedStatus($rawPlayedStatus))->getCodename();
-                        }, self::ALLOWED_REPICK_PLAY_STATUSES))
-                    )
-                );
+                throw new DomainException(sprintf("You can't request a repick for '%s' played status. Played status must be one of these: %s", $playedStatus->getCodename(), implode(', ', array_map(function (int $rawPlayedStatus) { return (new EventPickPlayedStatus($rawPlayedStatus))->getCodename(); }, self::ALLOWED_REPICK_PLAY_STATUSES))));
             }
 
             $this->referencedGame = $referencedPick->getGame();
@@ -126,7 +116,7 @@ class EventPickerComment implements OnUpdateEventListenerInterface
         return $this->picker->getEvent();
     }
 
-    public function updateText(string $text)
+    public function updateText(string $text): void
     {
         $this->history[] = $this->text;
         $this->text = $text;
@@ -156,15 +146,15 @@ class EventPickerComment implements OnUpdateEventListenerInterface
     }
 
     /**
-     * @return EventPick
-     *
      * @throws NotFoundException
+     *
+     * @return EventPick
      */
     public function getPick(): EventPick
     {
         $pick = $this->findPick();
         if (!$pick) {
-            throw NotFoundException::forQuery(EventPick::class, ['comment' => (string) $this->uuid]);
+            throw NotFoundException::forQuery(EventPick::class, ['comment' => $this->uuid->toString()]);
         }
 
         return $pick;
@@ -178,6 +168,7 @@ class EventPickerComment implements OnUpdateEventListenerInterface
 
         $picker = $this->getPicker();
         $pick = $picker->findPickOfGame($this->referencedGame->getId());
+
         return $pick ? $pick : null;
     }
 
@@ -206,6 +197,6 @@ class EventPickerComment implements OnUpdateEventListenerInterface
 
     public function hasReferencedGame(): bool
     {
-        return !!$this->referencedGame;
+        return (bool) $this->referencedGame;
     }
 }

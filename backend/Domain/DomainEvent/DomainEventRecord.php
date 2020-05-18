@@ -47,11 +47,11 @@ class DomainEventRecord implements AggregateInterface
      * @param DomainEventInterface $event
      * @param User|null $actor
      *
-     * @return DomainEventRecord
-     *
      * @throws Exception
+     *
+     * @return DomainEventRecord
      */
-    public static function fromEvent(DomainEventInterface $event, ?User $actor)
+    public static function fromEvent(DomainEventInterface $event, ?User $actor): self
     {
         return new self(get_class($event), $actor, $event->jsonSerialize());
     }

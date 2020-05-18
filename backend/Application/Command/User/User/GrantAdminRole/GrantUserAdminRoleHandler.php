@@ -2,6 +2,7 @@
 
 namespace PlayOrPay\Application\Command\User\User\GrantAdminRole;
 
+use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PlayOrPay\Application\Command\CommandHandlerInterface;
@@ -27,12 +28,15 @@ class GrantUserAdminRoleHandler implements CommandHandlerInterface
     }
 
     /**
+     * @param GrantUserAdminRoleCommand $command
+     *
      * @throws NotFoundException
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UnallowedOperationException
+     * @throws EntityNotFoundException
      */
-    public function __invoke(GrantUserAdminRoleCommand $command)
+    public function __invoke(GrantUserAdminRoleCommand $command): void
     {
         $steamId = $command->getSteamId();
         $user = $this->userRepo->get($steamId);

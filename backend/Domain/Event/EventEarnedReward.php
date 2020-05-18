@@ -43,7 +43,7 @@ class EventEarnedReward
         return $this->reward->getReason();
     }
 
-    public function updateValue(int $value)
+    public function updateValue(int $value): void
     {
         Assert::that($value)->greaterOrEqualThan(1);
         $this->value = $value;
@@ -54,10 +54,10 @@ class EventEarnedReward
         return $reason->equalTo($this->getReason()) && $this->isForPick($pickUuid);
     }
 
-    public function isForPick(?UuidInterface $pickUuid)
+    public function isForPick(?UuidInterface $pickUuid): bool
     {
         if ($pickUuid) {
-            return $this->pick ? $this->pick->getUuid()->equals($pickUuid) : null;
+            return $this->pick ? $this->pick->getUuid()->equals($pickUuid) : false;
         }
 
         return $this->pick === null;

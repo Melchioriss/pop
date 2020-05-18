@@ -7,7 +7,7 @@ use PlayOrPay\Security\CommonSecurityHandler;
 
 class GetDomainEventRecordsActivitySecurityHandler extends CommonSecurityHandler
 {
-    public function __invoke(GetDomainEventRecordsActivityQuery $query)
+    public function __invoke(GetDomainEventRecordsActivityQuery $query): void
     {
         // for everyone
     }

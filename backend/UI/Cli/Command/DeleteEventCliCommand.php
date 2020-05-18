@@ -22,7 +22,7 @@ class DeleteEventCliCommand extends Command
         $this->commandBus = $commandBus;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('event:delete')
@@ -32,12 +32,14 @@ class DeleteEventCliCommand extends Command
             ]);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $ss = new SymfonyStyle($input, $output);
 
         $this->commandBus->handle(new DeleteEventCommand($input->getArgument('eventUuid')));
 
         $ss->success('OK');
+
+        return 0;
     }
 }

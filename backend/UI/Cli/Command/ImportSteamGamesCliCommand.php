@@ -20,7 +20,7 @@ class ImportSteamGamesCliCommand extends Command
         $this->commandBus = $commandBus;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('steam:games:import')
@@ -28,13 +28,14 @@ class ImportSteamGamesCliCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $ss = new SymfonyStyle($input, $output);
 
         $this->commandBus->handle(new ImportSteamGamesCommand());
 
         $ss->success('Games were successfully imported');
+
         return 0;
     }
 }

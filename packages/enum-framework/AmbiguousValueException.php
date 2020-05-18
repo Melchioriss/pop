@@ -1,6 +1,6 @@
 <?php
 
-namespace PlayOrPay\Package\EnumFramework;
+namespace Insideone\Package\EnumFramework;
 
 use Exception;
 

@@ -7,8 +7,8 @@ use Ramsey\Uuid\UuidInterface;
 
 class WrongParticipantException extends DomainException
 {
-    public static function becauseTheyDontBelongToEvent(UuidInterface $participantUuid, UuidInterface $eventUuid)
+    public static function becauseTheyDontBelongToEvent(UuidInterface $participantUuid, UuidInterface $eventUuid): self
     {
-        return new self(sprintf("Requested participant '%s' doesn't belong to event '%s'", $participantUuid, $eventUuid));
+        return new self(sprintf("Requested participant '%s' doesn't belong to event '%s'", $participantUuid->toString(), $eventUuid->toString()));
     }
 }

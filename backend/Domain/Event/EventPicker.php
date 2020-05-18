@@ -4,12 +4,12 @@ namespace PlayOrPay\Domain\Event;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use DomainException;
+use Insideone\Package\EnumFramework\AmbiguousValueException;
 use PlayOrPay\Domain\Exception\NotFoundException;
 use PlayOrPay\Domain\Game\Game;
 use PlayOrPay\Domain\Game\GameId;
 use PlayOrPay\Domain\Game\StoreId;
 use PlayOrPay\Domain\User\User;
-use PlayOrPay\Package\EnumFramework\AmbiguousValueException;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionException;
 
@@ -32,10 +32,10 @@ class EventPicker
     /** @var EventPickerType */
     private $type;
 
-    /** @var EventPick[] */
+    /** @var EventPick[]|ArrayCollection<int, EventPick> */
     private $picks;
 
-    /** @var EventPickerComment[] */
+    /** @var EventPickerComment[]|ArrayCollection<int, EventPickerComment> */
     private $comments;
 
     public function __construct(UuidInterface $uuid, EventParticipant $participant, User $user, EventPickerType $type)
@@ -100,15 +100,15 @@ class EventPicker
     /**
      * @param UuidInterface $pickUuid
      *
-     * @return EventPick
-     *
      * @throws NotFoundException
+     *
+     * @return EventPick
      */
     public function getPick(UuidInterface $pickUuid): EventPick
     {
         $pick = $this->findPick($pickUuid);
         if (!$pick) {
-            throw NotFoundException::forObject(EventPick::class, (string) $pickUuid);
+            throw NotFoundException::forObject(EventPick::class, $pickUuid->toString());
         }
 
         return $pick;
@@ -131,7 +131,7 @@ class EventPicker
         throw NotFoundException::forObject(EventPick::class, (string) $type);
     }
 
-    public function makePick(UuidInterface $pickUuid, EventPickType $type, Game $game)
+    public function makePick(UuidInterface $pickUuid, EventPickType $type, Game $game): EventPick
     {
         if ($this->getRestPickQuota() === 0) {
             throw new DomainException(sprintf("Picker '%s' has already done their allowed %d picks", $this->getUser()->getProfileName(), $this->getPickQuota()));
@@ -189,10 +189,11 @@ class EventPicker
      * @param UuidInterface|null $referencedPickUuid
      * @param EventCommentGameReferenceType|null $gameReferenceType
      *
-     * @return EventPickerComment
      * @throws AmbiguousValueException
      * @throws NotFoundException
      * @throws ReflectionException
+     *
+     * @return EventPickerComment
      */
     public function addComment(
         UuidInterface $uuid,
@@ -237,7 +238,7 @@ class EventPicker
     }
 
     /**
-     * @param int $gameId
+     * @param GameId $gameId
      *
      * @throws NotFoundException
      *
@@ -260,7 +261,7 @@ class EventPicker
 
     public function getPickQuota(): int
     {
-        return self::PICK_QUOTA[ (int)(string) $this->type ];
+        return self::PICK_QUOTA[(int) (string) $this->type];
     }
 
     public function getRestPickQuota(): int

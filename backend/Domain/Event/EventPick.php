@@ -150,7 +150,7 @@ class EventPick
         return $this->playedStatus->equalTo(EventPickPlayedStatus::COMPLETED);
     }
 
-    public function isBeaten(bool $strict = true)
+    public function isBeaten(bool $strict = true): bool
     {
         return $strict
             ? $this->playedStatus->equalTo(EventPickPlayedStatus::BEATEN)
@@ -165,7 +165,7 @@ class EventPick
         return $this->status->equalTo(new EventPickStatus(EventPickStatus::ACTIVE));
     }
 
-    public function isRejected()
+    public function isRejected(): bool
     {
         return $this->status->equalTo(new EventPickStatus(EventPickStatus::REJECTED));
     }

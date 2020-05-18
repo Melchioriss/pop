@@ -19,7 +19,7 @@ class GroupRemoteRepository
     /** @var ClientInterface */
     private $httpClient;
 
-    public function __construct(ClientInterface $httpClient )
+    public function __construct(ClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }
@@ -27,10 +27,10 @@ class GroupRemoteRepository
     /**
      * @param string $code
      *
-     * @return RemoteGroup
-     *
      * @throws GuzzleException
      * @throws RemoteNotFoundException
+     *
+     * @return RemoteGroup
      */
     public function getByCode(string $code): RemoteGroup
     {

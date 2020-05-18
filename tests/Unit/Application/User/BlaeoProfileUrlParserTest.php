@@ -1,12 +1,15 @@
 <?php
 
-namespace PlayOrPay\Tests\Unit\Application;
+namespace PlayOrPay\Tests\Unit\Application\User;
 
 use PHPUnit\Framework\TestCase;
 use PlayOrPay\Application\Command\User\User\SetBlaeoName\BlaeoProfileUrlParser;
 
 class BlaeoProfileUrlParserTest extends TestCase
 {
+    /**
+     * @return string[][]
+     */
     public function getCorrectProfileUrlCases(): array
     {
         return [
@@ -15,6 +18,9 @@ class BlaeoProfileUrlParserTest extends TestCase
         ];
     }
 
+    /**
+     * @return string[][]
+     */
     public function getIncorrectProfileUrlCases(): array
     {
         return [

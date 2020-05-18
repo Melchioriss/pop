@@ -39,7 +39,7 @@ class ChangePickGameHandler implements CommandHandlerInterface
      * @throws NotFoundException
      * @throws UnallowedOperationException
      */
-    public function __invoke(ChangePickGameCommand $command)
+    public function __invoke(ChangePickGameCommand $command): void
     {
         $game = $this->gameRepo->get((string) $command->gameId);
         $pick = $this->pickRepo->get($command->pickUuid);

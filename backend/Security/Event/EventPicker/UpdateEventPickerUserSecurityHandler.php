@@ -13,7 +13,7 @@ class UpdateEventPickerUserSecurityHandler extends CommonSecurityHandler
      *
      * @throws SecuriryException
      */
-    public function __invoke(UpdateEventPickerUserCommand $command)
+    public function __invoke(UpdateEventPickerUserCommand $command): void
     {
         $this->assertAdmin();
     }

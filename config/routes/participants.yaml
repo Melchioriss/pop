@@ -32,3 +32,10 @@ update_event_participant_blaeo_points:
     controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
     defaults:
         command: PlayOrPay\Application\Command\Event\EventParticipant\UpdateBlaeoPoints\UpdateEventParticipantBlaeoPointsCommand
+
+remove_event_participant:
+    methods: DELETE
+    path: /api/participants/{participantUuid}
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Event\EventParticipant\Delete\DeleteEventParticipantCommand

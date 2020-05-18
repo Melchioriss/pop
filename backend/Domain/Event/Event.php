@@ -305,9 +305,19 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface, Ident
     /** @return User[] */
     public function getUsers(): array
     {
-        return $this->participants->map(function (EventParticipant $participant) {
+        $users = $this->participants->map(function (EventParticipant $participant) {
             return $participant->getUser();
         })->toArray();
+
+        foreach ($this->participants as $participant) {
+            foreach ($participant->getPickers() as $picker) {
+                $user = $picker->getUser();
+                if (!in_array($user, $users))
+                    $users[] = $user;
+            }
+        }
+
+        return $users;
     }
 
     public function onUpdate(): void
@@ -438,10 +448,13 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface, Ident
      */
     public function getPotentialParticipants(): array
     {
-        $userCollection = new ArrayCollection($this->getUsers());
+        $participantUserCollection = new ArrayCollection();
+        foreach ($this->getParticipants() as $participant) {
+            $participantUserCollection->add($participant->getUser());
+        }
 
-        return array_filter($this->group->getMembers(), function (User $user) use ($userCollection) {
-            return !$userCollection->contains($user);
+        return array_filter($this->group->getMembers(), function (User $user) use ($participantUserCollection) {
+            return !$participantUserCollection->contains($user);
         });
     }
 

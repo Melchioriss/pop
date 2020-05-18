@@ -25,4 +25,8 @@ export default new class extends BaseApi {
     addPicker(participant, picker) {
         return this.axios.post(this.path(participant.uuid, 'pickers', picker.uuid), {userId: picker.user, type: picker.type});
     }
+
+    remove(participantUuid) {
+        return this.axios.delete(this.path(participantUuid));
+    }
 }

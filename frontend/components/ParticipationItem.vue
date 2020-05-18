@@ -53,6 +53,13 @@
                     >{{potentialAll7Reward.value}}</div>
                 </div>
 
+                <div v-if="isAdmin">
+                    <span
+                        @click="removeParticipant"
+                        class="edit-link edit-link--delete"
+                    >Remove participant</span>
+                </div>
+
             </div>
             <div class="participation__main-area">
 
@@ -673,6 +680,15 @@
                 potentialRewards[ this.rewardReasons.GAME_BEATEN_UNI ] = this.rewardsMap[reasonBeaten];
 
                 return potentialRewards;
+            },
+
+            removeParticipant() {
+                let confirmed = confirm('Are you sure you want to delete this participant?\n\n' + this.participantUser.profileName);
+
+                if (!confirmed)
+                    return false;
+
+                this.$store.dispatch('removeEventParticipant', {participantUuid: this.participant.uuid});
             }
         },
         created() {

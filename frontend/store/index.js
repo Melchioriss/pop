@@ -525,6 +525,13 @@ export default new Vuex.Store({
             return api.events.addParticipant(event, participantUuid, steamId);
         },
 
+        removeEventParticipant: function ({commit}, {participantUuid}) {
+            return api.participants.remove(participantUuid)
+                .then(() => {
+                    commit('removeParticipant', participantUuid);
+                });
+        },
+
         importEventPlaystats: function ({commit}, {event}) {
             return api.events.importPlaystats(event);
         },
@@ -653,6 +660,8 @@ export default new Vuex.Store({
         setParticipants: (state, participants) => state.participants = participants,
 
         setParticipant: (state, participant) => Vue.set(state.participants, participant.uuid, participant),
+
+        removeParticipant: (state, participantUuid) => Vue.delete(state.participants, participantUuid),
 
         setPickers: (state, pickers) => state.pickers = pickers,
 

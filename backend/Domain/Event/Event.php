@@ -312,8 +312,9 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface, Ident
         foreach ($this->participants as $participant) {
             foreach ($participant->getPickers() as $picker) {
                 $user = $picker->getUser();
-                if (!in_array($user, $users))
+                if (!in_array($user, $users)) {
                     $users[] = $user;
+                }
             }
         }
 

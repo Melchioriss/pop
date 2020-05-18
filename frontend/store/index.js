@@ -139,7 +139,7 @@ export default new Vuex.Store({
 
                     return userA.profileName.toLowerCase().localeCompare(userB.profileName.toLowerCase());
                 }
-                return a.totalRewardValue < b.totalRewardValue;
+                return a.totalRewardValue < b.totalRewardValue ? 1 : -1;
             });
             return sortedParticipants;
         },

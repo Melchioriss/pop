@@ -456,7 +456,7 @@
 
                     this.pickers[pickerType].comments.forEach(commentUuid => {
                         let comment = this.getComment(commentUuid);
-                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.REVIEW)
+                        if (comment.referencedGame && comment.gameReferenceType === this.GAME_REFERENCE_TYPE.REVIEW && games[comment.referencedGame])
                             games[comment.referencedGame].reviewExists = true;
                     });
 

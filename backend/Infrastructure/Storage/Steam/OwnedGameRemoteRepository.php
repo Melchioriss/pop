@@ -30,16 +30,15 @@ class OwnedGameRemoteRepository
     /**
      * @param GetOwnedGamesQuery $query
      *
-     * @throws GuzzleException
      * @throws Exception
      * @throws UnexpectedResponseException
+     * @throws GuzzleException
      *
      * @return OwnedGame[]
      */
     public function find(GetOwnedGamesQuery $query): array
     {
         $httpParams = [
-            'key'     => $this->steamApiKey,
             'steamid' => (string) $query->getSteamId(),
         ];
 
@@ -57,13 +56,13 @@ class OwnedGameRemoteRepository
 
         $response = $this->httpClient->request(
             Request::METHOD_GET,
-            "{$this->endpoint}?" . http_build_query($httpParams)
+            "{$this->endpoint}?" . http_build_query(['key' => $this->steamApiKey] + $httpParams)
         );
         $responseBody = $response->getBody()->getContents();
 
         $responseData = json_decode($responseBody, true);
         if (!array_key_exists('games', $responseData['response'])) {
-            throw UnexpectedResponseException::becauseFieldDoesntExist('games');
+            throw UnexpectedResponseException::becauseFieldDoesntExist('games', $httpParams);
         }
 
         $ownedGames = [];

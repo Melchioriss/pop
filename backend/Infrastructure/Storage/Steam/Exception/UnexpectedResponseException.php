@@ -6,8 +6,14 @@ use Exception;
 
 class UnexpectedResponseException extends Exception
 {
-    public static function becauseFieldDoesntExist(string $field): self
+    /**
+     * @param string $field
+     * @param array<string, mixed> $query
+     *
+     * @return UnexpectedResponseException
+     */
+    public static function becauseFieldDoesntExist(string $field, array $query): self
     {
-        return new self(sprintf("Expected '%s' field wasn't found in the response", $field));
+        return new self(sprintf("Expected '%s' field wasn't found in the response for query '%s'", $field, http_build_query($query)));
     }
 }

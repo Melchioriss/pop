@@ -64,20 +64,31 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
      */
     public function __invoke(ImportSteamPlayingStatesCommand $command): void
     {
-        if (!set_time_limit(0)) {
+        if (ini_get('max_execution_time') && !set_time_limit(0)) {
             throw new Exception("Can't prolog time limit");
         }
+
+        $problems = [];
 
         $event = $this->eventRepo->get($command->getEventUuid());
         foreach ($event->getParticipants() as $participant) {
             try {
-                $this->updateParticipantPlayingStates($participant);
+                $playerProblems = $this->updateParticipantPlayingStates($participant);
+                $problems = array_merge($problems, $playerProblems);
             } catch (Exception $e) {
+                $problems[] = $e;
+
                 continue;
             }
         }
 
         $this->eventRepo->save($event);
+
+        if ($problems) {
+            $complexMessage = implode('; ', array_map(function (Exception $e) { return $e->getMessage(); }, $problems));
+
+            throw new Exception($complexMessage, 0, count($problems) === 1 ? $problems[0] : null);
+        }
     }
 
     /**
@@ -86,13 +97,14 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
      * @throws GuzzleException
      * @throws UnexpectedResponseException
      *
-     * @return self
+     * @return Exception[]
      */
-    private function updateParticipantPlayingStates(EventParticipant $participant): self
+    private function updateParticipantPlayingStates(EventParticipant $participant): array
     {
-        return $this
-            ->updatePlaytime($participant)
-            ->updateAchievements($participant);
+        return array_merge(
+            $this->updatePlaytime($participant),
+            $this->updateAchievements($participant)
+        );
     }
 
     /**
@@ -101,41 +113,63 @@ class ImportSteamPlayingStatesHandler implements CommandHandlerInterface
      * @throws GuzzleException
      * @throws UnexpectedResponseException
      *
-     * @return self
+     * @return Exception[]
      */
-    private function updatePlaytime(EventParticipant $participant): self
+    private function updatePlaytime(EventParticipant $participant): array
     {
+        $problems = [];
+
         $unresolvedPlaytimeGames = $this->makeUnresolvedMap($participant->getGames($this->steamStore));
-        $this->importPlaytimeFromGetOwned($participant, $unresolvedPlaytimeGames);
-        $this->importPlaytimeFromRecentlyPlayed($participant, $unresolvedPlaytimeGames);
 
-        return $this;
-    }
-
-    /**
-     * @param EventParticipant $participant
-     *
-     *@throws UnexpectedResponseException
-     * @throws GuzzleException
-     *
-     * @return ImportSteamPlayingStatesHandler
-     */
-    private function updateAchievements(EventParticipant $participant): self
-    {
-        foreach ($participant->getGames($this->steamStore) as $game) {
-            $steamGameId = $game->getId()->getLocalId();
-            $userStatsQuery = new UserStatsQuery((int) (string) $participant->getUserSteamId(), (int) $steamGameId);
-            $achievementsState = $this->playerAchievementsRemoteRepo->find($userStatsQuery);
-
-            $totalGameAchievementsCount = $achievementsState->count();
-            if ($totalGameAchievementsCount) {
-                $this->updateGameAchievements($game, $achievementsState->count());
+        foreach ([
+            function () use ($participant, $unresolvedPlaytimeGames) {
+                $this->importPlaytimeFromGetOwned($participant, $unresolvedPlaytimeGames);
+            },
+            function () use ($participant, $unresolvedPlaytimeGames) {
+                $this->importPlaytimeFromRecentlyPlayed($participant, $unresolvedPlaytimeGames);
+            },
+        ] as $operation) {
+            try {
+                $operation();
+            } catch (Exception $e) {
+                $problems[] = $e;
             }
-
-            $participant->updateAchievementsForGame($game->getId(), $achievementsState->countAchieved());
         }
 
-        return $this;
+        return $problems;
+    }
+
+    /**
+     * @param EventParticipant $participant
+     *
+     * @throws UnexpectedResponseException
+     * @throws GuzzleException
+     *
+     * @return Exception[]
+     */
+    private function updateAchievements(EventParticipant $participant): array
+    {
+        $problems = [];
+        foreach ($participant->getGames($this->steamStore) as $game) {
+            try {
+                $steamGameId = $game->getId()->getLocalId();
+                $userStatsQuery = new UserStatsQuery((int) (string) $participant->getUserSteamId(), (int) $steamGameId);
+                $achievementsState = $this->playerAchievementsRemoteRepo->find($userStatsQuery);
+
+                $totalGameAchievementsCount = $achievementsState->count();
+                if ($totalGameAchievementsCount) {
+                    $this->updateGameAchievements($game, $achievementsState->count());
+                }
+
+                $participant->updateAchievementsForGame($game->getId(), $achievementsState->countAchieved());
+            } catch (Exception $e) {
+                $problems[] = $e;
+
+                continue;
+            }
+        }
+
+        return $problems;
     }
 
     /**

@@ -394,7 +394,10 @@
                 return this.participantUser.blaeoName ? this.BLAEO_USER_BASE_LINK + this.participantUser.blaeoName : '';
             },
             blaeoPoints: function () {
-                return this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ].value : null;
+                if (this.participant.rewards.global && this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ])
+                    return this.participant.rewards.global[ this.rewardReasons.BLAEO_POINTS ].value;
+
+                return null;
             },
             all7BeatenReward: function () {
                 return this.participant.rewards.global ? this.participant.rewards.global[ this.rewardReasons.ALL_PICKS_BEATEN ] : null;

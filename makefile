@@ -80,7 +80,7 @@ schema-validate: ## validate database schema
 
 .PHONY: enable_xdebug
 enable_xdebug:
-	docker-compose exec php sh -lc 'xon
+	docker-compose exec php sh -lc 'xon'
 
 .PHONY: disable_xdebug
 disable_xdebug:
@@ -184,3 +184,7 @@ enter:
 .PHONY: enter-database
 enter-database:
 	docker-compose exec mysql mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE)
+
+.PHONY: execute
+execute:
+	docker-compose exec php console $(command)

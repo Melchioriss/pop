@@ -35,19 +35,25 @@ class RecentlyPlayedRemoteRepository
      */
     public function findBySteamId(int $steamId): array
     {
+        $query = [
+            'steamId' => $steamId,
+        ];
+
         $response = $this->httpClient->request(
             Request::METHOD_GET,
-            $this->endpoint . '?' . http_build_query([
-                'key'     => $this->steamApiKey,
-                'steamId' => $steamId,
-            ])
+            $this->endpoint . '?' . http_build_query(['key' => $this->steamApiKey] + $query)
         );
 
         $responseContent = $response->getBody()->getContents();
         $responseData = json_decode($responseContent, true);
 
+        // no activity past two weeks
+        if (array_key_exists('total_count', $responseData['response']) && $responseData['response']['total_count'] === 0) {
+            return [];
+        }
+
         if (!array_key_exists('games', $responseData['response'])) {
-            throw UnexpectedResponseException::becauseFieldDoesntExist('games');
+            throw UnexpectedResponseException::becauseFieldDoesntExist('games', $query);
         }
 
         $recentlyPlayedGames = [];

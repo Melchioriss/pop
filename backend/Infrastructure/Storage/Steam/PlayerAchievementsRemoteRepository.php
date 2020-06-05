@@ -7,7 +7,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use PlayOrPay\Application\Query\Steam\UserStatsQuery;
 use PlayOrPay\Domain\Steam\PlayerAchievement;
 use PlayOrPay\Domain\Steam\PlayerAchievementsResponse;
-use PlayOrPay\Infrastructure\Storage\Steam\Exception\UnexpectedResponseException;
 use Symfony\Component\HttpFoundation\Request;
 
 class PlayerAchievementsRemoteRepository
@@ -31,7 +30,6 @@ class PlayerAchievementsRemoteRepository
      * @param UserStatsQuery $query
      *
      * @throws GuzzleException
-     * @throws UnexpectedResponseException
      *
      * @return PlayerAchievementsResponse
      */
@@ -50,17 +48,16 @@ class PlayerAchievementsRemoteRepository
         $responseContent = $response->getBody()->getContents();
         $responseData = json_decode($responseContent, true);
 
+        // special achievements-less case
         if (!empty($responseData['playerstats']['error'])
             && $responseData['playerstats']['error'] === 'Requested app has no stats') {
             return new PlayerAchievementsResponse([]);
         }
 
-        if (!array_key_exists('achievements', $responseData['playerstats'])) {
-            throw UnexpectedResponseException::becauseFieldDoesntExist('achievements');
-        }
-
         $achievements = [];
-        foreach ($responseData['playerstats']['achievements'] as $achievement) {
+
+        // ?? [] is for achievements-less games
+        foreach ($responseData['playerstats']['achievements'] ?? [] as $achievement) {
             $achievements[] = new PlayerAchievement(
                 $query->appId,
                 $achievement['achieved']

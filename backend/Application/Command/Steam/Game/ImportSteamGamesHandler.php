@@ -39,7 +39,7 @@ class ImportSteamGamesHandler implements CommandHandlerInterface
      */
     public function __invoke(ImportSteamGamesCommand $command): void
     {
-        set_time_limit(120);
+        set_time_limit(600);
 
         $steamStoreId = new StoreId(StoreId::STEAM);
 

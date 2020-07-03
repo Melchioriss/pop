@@ -351,7 +351,7 @@
 
                     this.$store.dispatch('setLastVisit', this.$cookie.get('event_'+this.uuid))
                         .then(() => {
-                            this.$cookie.set('event_'+this.uuid, this.$getDateNow(), { expires: '3M' })
+                            this.$cookie.set('event_'+this.uuid, this.$getDateNow(), { expires: '3M', sameSite: 'Lax' })
                         });
                 })
                 .catch(e => {

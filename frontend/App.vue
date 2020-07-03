@@ -105,7 +105,7 @@
         },
         methods: {
             setDarkMode(isDarkMode) {
-                this.$cookie.set('dark_mode', isDarkMode ? 'y' : 'n', { expires: '3M' });
+                this.$cookie.set('dark_mode', isDarkMode ? 'y' : 'n', { expires: '3M', sameSite: 'Lax' });
                 this.isDarkMode = isDarkMode;
             }
         },

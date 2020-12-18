@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
-    "dompurify": "^2.0.8",
+    "dompurify": "^2.0.17",
     "moment": "^2.24.0",
     "normalizr": "^3.5.0",
     "qs": "^6.7.0",

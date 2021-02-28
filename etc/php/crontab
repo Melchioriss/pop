@@ -1,2 +1,3 @@
+ 0 0 * * * cp $APP_DIR/var/pop.db $APP_DIR/var/pop.db.$(date '+%d')
 10 0 * * * console steam:games:import
-20 0 * * * console event:playing-states:update --active
+30 0 * * * console event:playing-states:update --active

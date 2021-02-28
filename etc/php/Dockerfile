@@ -1,4 +1,6 @@
-FROM jorge07/alpine-php:7.3.5-dev
+FROM jorge07/alpine-php:7.3-dev
+
+RUN apk add --no-cache --update php7-pdo_sqlite@cast sqlite@cast
 
 RUN sh -lc 'xoff'
 

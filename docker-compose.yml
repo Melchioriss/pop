@@ -16,14 +16,8 @@ services:
         COMPOSER_VERSION: 1.9.2
     environment:
         PHP_IDE_CONFIG: ${PHP_IDE_CONFIG}
-        DATABASE_HOST: ${MYSQL_HOST}
-        DATABASE_PORT: ${MYSQL_PORT}
-        DATABASE_NAME: ${MYSQL_DATABASE}
-        DATABASE_USER: ${MYSQL_USER}
-        DATABASE_PASS: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - .:$DOCKER_PHP_APP_DIR
-    depends_on: [ mysql ]
 
   frontend:
     image: node:12
@@ -35,15 +29,6 @@ services:
       - ./:/home/node/app
     expose: [8081]
     command: npm run container-start-${FRONTEND_ENV:-dev}
-
-  mysql:
-    image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    volumes:
-      - db_data:/var/lib/mysql
 
 volumes:
   db_data:

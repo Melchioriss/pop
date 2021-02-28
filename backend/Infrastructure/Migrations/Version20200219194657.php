@@ -9,9 +9,6 @@ use Doctrine\Migrations\AbstractMigration;
 use PlayOrPay\Domain\Event\EventReward;
 use PlayOrPay\Domain\Event\RewardReason;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20200219194657 extends AbstractMigration
 {
     const REWARDS = 'rewards';

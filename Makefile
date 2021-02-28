@@ -170,12 +170,12 @@ update: update-sources restart-frontend build migrate
 
 .PHONY: dump-database
 dump-database:
-	docker-compose exec mysql mysqldump -q -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE) 2>/dev/null >> $(to)
-	sed -i '1d' $(to)
+	docker-compose exec php sqlite3 ./var/pop.db .dump > $(to)
 
 .PHONY: import-database-dump
 import-database-dump:
-	docker exec -i $(shell docker-compose ps -q mysql) mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE) < $(from)
+	docker-compose run --rm php rm -f ./var/pop.db
+	docker exec -i $(shell docker-compose ps -q php) sqlite3 ./var/pop.db < $(from)
 
 .PHONY: enter
 enter:
@@ -183,8 +183,13 @@ enter:
 
 .PHONY: enter-database
 enter-database:
-	docker-compose exec mysql mysql -u$(MYSQL_USER) -p$(MYSQL_ROOT_PASSWORD) $(MYSQL_DATABASE)
+	docker-compose exec php sqlite3 ./var/pop.db
 
 .PHONY: execute
 execute:
 	docker-compose exec php console $(command)
+
+.PHONY: sqlite-dump
+sqlite-dump:
+	curl -s https://raw.githubusercontent.com/dumblob/mysql2sqlite/d14d22ad7029cdf4d11825ee3c96922e8fbb0122/mysql2sqlite \
+	| awk -f - $(from) > $(from)ite.sql

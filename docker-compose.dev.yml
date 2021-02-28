@@ -8,10 +8,6 @@ services:
       - "80:80"
       - "443:443"
 
-  mysql:
-    ports:
-      - "3306:3306"
-
   php:
     volumes:
       - ./etc/php/php.ini:/etc/php7/conf.d/90-php.ini:ro

@@ -1,9 +1,12 @@
 version: '3'
 
 services:
-  nginx:
+  caddy:
+    volumes:
+      - ./etc/caddy/Caddyfile.dev:/etc/caddy/Caddyfile
     ports:
       - "80:80"
+      - "443:443"
 
   mysql:
     ports:

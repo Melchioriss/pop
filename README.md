@@ -7,9 +7,7 @@ cp ./.env.dist ./.env
 
 # then edit .env to set up STEAM_API_KEY variable
 
-make from-scratch
-make import-pop
-make games
+make from-scratch import-pop games
 
 # then login into the site
 

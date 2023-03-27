@@ -32,6 +32,10 @@ build: build-docker composer-install
 composer-update:
 	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer update -vvv'
 
+.PHONY: npm
+npm:
+	docker-compose run --rm frontend npm $(cmd)
+
 .PHONY: composer-install
 composer-install:
 	docker-compose run --rm php sh -lc 'COMPOSER_MEMORY_LIMIT=-1 composer install -vvv'
@@ -94,6 +98,10 @@ restart_backend:
 .PHONY: restart_backend_again
 restart_backend_again:
 	docker-compose restart php
+
+.PHONY: restart
+restart:
+	docker-compose restart $(only)
 
 .PHONY: wait_for_it
 wait_for_it:

@@ -18,7 +18,7 @@ final class Version20200100000000 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'sqlite', 'Migration can only be executed safely on \'sqlite\'.');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `comments` (
               `uuid` char(36) NOT NULL
             ,  `picker_id` char(36) DEFAULT NULL
@@ -34,9 +34,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_5F9E962AA76ED395` FOREIGN KEY (`user_id`) REFERENCES `users` (`steam_id`)
             ,  CONSTRAINT `FK_5F9E962AE4A93D08` FOREIGN KEY (`referenced_game_id`) REFERENCES `games` (`complex_id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `content_blocks` (
               `code` varchar(255) NOT NULL
             ,  `content` longtext NOT NULL
@@ -44,9 +44,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  `updated_at` datetime DEFAULT NULL
             ,  PRIMARY KEY (`code`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `domain_event_records` (
               `uuid` varchar(255) NOT NULL
             ,  `actor_id` integer  DEFAULT NULL
@@ -56,9 +56,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  PRIMARY KEY (`uuid`)
             ,  CONSTRAINT `FK_8A5A010210DAF24A` FOREIGN KEY (`actor_id`) REFERENCES `users` (`steam_id`)
             );
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `earned_rewards` (
               `uuid` char(36) NOT NULL
             ,  `participant_id` char(36) DEFAULT NULL
@@ -70,9 +70,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_E7A06B2E466ACA1` FOREIGN KEY (`reward_id`) REFERENCES `rewards` (`reason`)
             ,  CONSTRAINT `FK_E7A06B2F54A307A` FOREIGN KEY (`pick_id`) REFERENCES `event_picks` (`uuid`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `event_pickers` (
               `uuid` char(36) NOT NULL
             ,  `participant_id` char(36) DEFAULT NULL
@@ -83,9 +83,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_7304B7CE9D1C3019` FOREIGN KEY (`participant_id`) REFERENCES `participants` (`uuid`)
             ,  CONSTRAINT `FK_7304B7CEA76ED395` FOREIGN KEY (`user_id`) REFERENCES `users` (`steam_id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `event_picks` (
               `uuid` char(36) NOT NULL
             ,  `picker_id` char(36) DEFAULT NULL
@@ -99,9 +99,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_3D51F9E48874902` FOREIGN KEY (`picker_id`) REFERENCES `event_pickers` (`uuid`)
             ,  CONSTRAINT `FK_3D51F9E4E48FD905` FOREIGN KEY (`game_id`) REFERENCES `games` (`complex_id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `events` (
               `uuid` char(36) NOT NULL
             ,  `group_id` integer  DEFAULT NULL
@@ -114,9 +114,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  PRIMARY KEY (`uuid`)
             ,  CONSTRAINT `FK_5387574AFE54D947` FOREIGN KEY (`group_id`) REFERENCES `steam_groups` (`id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `games` (
               `complex_id` varchar(255) NOT NULL
             ,  `name` varchar(255) NOT NULL
@@ -125,9 +125,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  `id_local_id` varchar(255) NOT NULL
             ,  PRIMARY KEY (`complex_id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `participants` (
               `uuid` char(36) NOT NULL
             ,  `event_id` char(36) DEFAULT NULL
@@ -140,25 +140,25 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_7169709271F7E88B` FOREIGN KEY (`event_id`) REFERENCES `events` (`uuid`)
             ,  CONSTRAINT `FK_71697092A76ED395` FOREIGN KEY (`user_id`) REFERENCES `users` (`steam_id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `rewards` (
               `reason` integer NOT NULL
             ,  `value` integer DEFAULT NULL
             ,  PRIMARY KEY (`reason`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `roles` (
               `name` varchar(255) NOT NULL
             ,  `abilities` json NOT NULL
             ,  PRIMARY KEY (`name`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `steam_group_members` (
               `group_id` integer  NOT NULL
             ,  `user_steam_id` integer  NOT NULL
@@ -166,9 +166,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_D04982DF1370AACA` FOREIGN KEY (`user_steam_id`) REFERENCES `users` (`steam_id`)
             ,  CONSTRAINT `FK_D04982DFFE54D947` FOREIGN KEY (`group_id`) REFERENCES `steam_groups` (`id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `steam_groups` (
               `id` integer  NOT NULL
             ,  `code` varchar(255) NOT NULL
@@ -176,9 +176,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  `logo_url` varchar(255) NOT NULL
             ,  PRIMARY KEY (`id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `user_roles` (
               `user` integer  NOT NULL
             ,  `role` varchar(255) NOT NULL
@@ -186,9 +186,9 @@ final class Version20200100000000 extends AbstractMigration
             ,  CONSTRAINT `FK_54FCD59F57698A6A` FOREIGN KEY (`role`) REFERENCES `roles` (`name`)
             ,  CONSTRAINT `FK_54FCD59F8D93D649` FOREIGN KEY (`user`) REFERENCES `users` (`steam_id`)
             )
-        ");
+        ');
 
-        $this->addSql("
+        $this->addSql('
             CREATE TABLE `users` (
               `steam_id` integer  NOT NULL
             ,  `created_at` datetime NOT NULL
@@ -209,7 +209,7 @@ final class Version20200100000000 extends AbstractMigration
             ,  `extra_rules` longtext COLLATE BINARY
             ,  PRIMARY KEY (`steam_id`)
             )
-        ");
+        ');
     }
 
     public function down(Schema $schema): void

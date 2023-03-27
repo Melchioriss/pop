@@ -80,12 +80,10 @@ abstract class FunctionalTest extends WebTestCase
         $connection = $this->em->getConnection();
         $connection->getConfiguration()->setSQLLogger(null);
 
-        $connection->prepare('SET FOREIGN_KEY_CHECKS = 0;')->execute();
-
         foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
             $connection->prepare("DELETE FROM {$tableName};")->execute();
         }
-        $connection->prepare('SET FOREIGN_KEY_CHECKS = 1;')->execute();
+
         $this->em->clear();
     }
 

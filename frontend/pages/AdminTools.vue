@@ -55,6 +55,41 @@
                 >{{updateGamesResult}}</div>
             </div>
 
+          <div class="tools__section">
+            <div class="tools__section-name">Manual Game Import</div>
+            <div class="form">
+              <div class="form__block">
+                <label for="group_code">Game ID:</label>
+                <input
+                    v-model="importedGameId"
+                    type="text"
+                    id="imported_game_id"
+                    class="input"
+                />
+              </div>
+            </div>
+
+            <div class="tools__process">
+              <button
+                  @click="importGame"
+                  type="button"
+                  class="button button--space-right"
+              >
+                Import
+              </button>
+              <loading-indicator
+                  v-if="isImportingGame"
+                  :no-margin="true"
+              >
+                importing...
+              </loading-indicator>
+            </div>
+
+            <div
+                v-if="importGameResult"
+                class="tools__result"
+            >{{ importGameResult }}</div>
+          </div>
         </div>
 
     </div>
@@ -75,7 +110,11 @@
                 isUpdatingGroup: false,
 
                 updateGamesResult: '',
-                isUpdatingGames: false
+                isUpdatingGames: false,
+
+                importedGameId: '',
+                isImportingGame: false,
+                importGameResult: '',
             };
         },
         computed: {
@@ -120,11 +159,24 @@
                     .then(() => {
                         this.updateGamesResult = 'Games updated.';
                     })
-                    .catch(e => {
-                        this.updateGamesResult = 'There was an error updating games, try again later. \n\rError text:\n\r' + e;
+                    .catch(error => {
+                        this.updateGamesResult = 'There was an error updating games, try again later. \n\rError text:\n\r' + error;
                     })
                     .finally(() => this.isUpdatingGames = false);
-            }
+            },
+
+          importGame() {
+            this.importGame.importGameResult = '';
+            this.isImportingGame = true;
+            this.$store.dispatch('importGame', this.importedGameId)
+              .then(() => {
+                  this.importGameResult = 'The game had been imported.'
+              })
+              .catch(error => {
+                  this.importGameResult = `The game was't imported: ${error}.`
+              })
+              .finally(() => this.isImportingGame = false);
+          }
         },
         created() {
             if (this.groupCode)
@@ -137,7 +189,7 @@
     @import "../assets/_colors";
 
     .tools{
-        
+
         &__section{
             width: 100%;
             margin-bottom: 20px;
@@ -153,7 +205,7 @@
             color: @color-cobalt;
             font-size: 18px;
             margin-bottom: 12px;
-            
+
             .dark-mode &{
                 color: @color-cobalt-light;
             }
@@ -175,5 +227,4 @@
             }
         }
     }
-
 </style>

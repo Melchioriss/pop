@@ -326,7 +326,6 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     public function removeRole(RoleName $roleName): self
     {
         // ignoring doesn't work, so I use func_get_args below
-        // @phpstan-ignore-next-line
         $this->roles->filter(
             function (Role $role) use ($roleName) {
                 [, $idx] = func_get_args();
@@ -346,7 +345,6 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
      */
     public function getRoles(): array
     {
-        /* @phpstan-ignore-next-line */
         return $this->roles->toArray();
     }
 

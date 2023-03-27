@@ -1,6 +1,11 @@
 FROM jorge07/alpine-php:7.3-dev
 
-RUN apk add --no-cache --update php7-pdo_sqlite@cast sqlite@cast
+RUN apk add --no-cache --update --force-broken-world  \
+    php7-pdo_sqlite@cast                              \
+    sqlite@cast                                       \
+    php7-simplexml                                    \
+    php7-tokenizer                                    \
+    php7-xmlwriter                                    #
 
 RUN sh -lc 'xoff'
 

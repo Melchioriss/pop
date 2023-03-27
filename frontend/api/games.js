@@ -13,4 +13,8 @@ export default new class extends BaseApi {
     import () {
         return this.axios.get('/api/execute/import_games');
     }
+
+    importById(id) {
+        return this.axios.post('/api/execute/import_game', { id });
+    }
 }

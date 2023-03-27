@@ -453,6 +453,14 @@ export default new Vuex.Store({
             })
         },
 
+        importGame: function ({ commit }, gameId) {
+            return new Promise((resolve, reject) => {
+                return api.games.importById(gameId)
+                    .then(() => resolve())
+                    .catch(error => reject(error.response.data.errors.detail))
+            })
+        },
+
         findGames: function ({commit}, {query, page}) {
             return new Promise((resolve, reject) => {
                 return api.games.getList(query, page)

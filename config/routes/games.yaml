@@ -5,6 +5,13 @@ import_games:
     defaults:
         command: PlayOrPay\Application\Command\Steam\Game\ImportSteamGamesCommand
 
+import_game:
+    methods: POST
+    path: /api/execute/import_game
+    controller: PlayOrPay\UI\Http\Rest\Controller\PassthroughCommand\PassthroughCommandController
+    defaults:
+        command: PlayOrPay\Application\Command\Steam\Game\ImportSteamGameCommand
+
 search_games:
     methods: GET
     path: /api/games

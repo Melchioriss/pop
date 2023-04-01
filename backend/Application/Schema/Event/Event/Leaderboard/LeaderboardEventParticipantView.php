@@ -7,6 +7,6 @@ class LeaderboardEventParticipantView
     /** @var LeaderboardEventPickView[] */
     public $picks;
 
-    /** @var int */
+    /** @var float */
     public $blaeoPoints;
 }

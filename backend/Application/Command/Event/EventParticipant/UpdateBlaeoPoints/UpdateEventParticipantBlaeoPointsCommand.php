@@ -11,10 +11,10 @@ class UpdateEventParticipantBlaeoPointsCommand
     /** @var UuidInterface */
     public $participantUuid;
 
-    /** @var int */
+    /** @var float */
     public $blaeoPoints;
 
-    public function __construct(string $participantUuid, int $blaeoPoints)
+    public function __construct(string $participantUuid, float $blaeoPoints)
     {
         Assert::that($blaeoPoints)->greaterOrEqualThan(0);
         $this->participantUuid = Uuid::fromString($participantUuid);

@@ -33,7 +33,7 @@ class EventEarnedRewardTest extends FunctionalTest
 
         $blaeoGamesReason = new RewardReason(RewardReason::BLAEO_GAMES);
 
-        $rewardedPoints = 10;
+        $rewardedPoints = 10.0;
 
         $this->authorizeAsAdmin();
 

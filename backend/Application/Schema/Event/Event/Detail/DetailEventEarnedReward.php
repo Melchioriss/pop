@@ -10,6 +10,6 @@ class DetailEventEarnedReward
     /** @var int */
     public $reason;
 
-    /** @var int */
+    /** @var float */
     public $value;
 }

@@ -6,6 +6,6 @@
         <id name="reason" type="reward_reason">
             <generator strategy="NONE" />
         </id>
-        <field name="value" type="integer" nullable="true" />
+        <field name="value" type="float" nullable="true" />
     </entity>
 </doctrine-mapping>

@@ -409,14 +409,17 @@ class Event implements OnUpdateEventListenerInterface, AggregateInterface, Ident
     /**
      * @param UuidInterface $participantUuid
      * @param EventReward $blaeoGamesReward
-     * @param int $blaeoPoins
+     * @param float $blaeoPoins
      *
      * @throws Exception
      *
      * @return Event
      */
-    public function updateParticipantBlaeoPoints(UuidInterface $participantUuid, EventReward $blaeoGamesReward, int $blaeoPoins): self
-    {
+    public function updateParticipantBlaeoPoints(
+        UuidInterface $participantUuid,
+        EventReward $blaeoGamesReward,
+        float $blaeoPoins
+    ): self {
         $participant = $this->getParticipant($participantUuid);
         $participant->updateBlaeoPoints($blaeoGamesReward, $blaeoPoins);
 

@@ -172,7 +172,7 @@ abstract class FunctionalTest extends WebTestCase
 
     /**
      * @param string $routeName
-     * @param array<string, string|int|bool> $params
+     * @param array<string, string|int|float|bool> $params
      * @param bool $shouldBeSuccessful
      *
      * @return Response

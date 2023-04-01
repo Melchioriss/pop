@@ -20,10 +20,10 @@ class EventEarnedReward
     /** @var EventReward */
     private $reward;
 
-    /** @var int */
+    /** @var float */
     private $value;
 
-    public function __construct(UuidInterface $uuid, EventParticipant $participant, ?EventPick $pick, EventReward $reward, ?int $value)
+    public function __construct(UuidInterface $uuid, EventParticipant $participant, ?EventPick $pick, EventReward $reward, ?float $value)
     {
         $this->uuid = $uuid;
         $this->participant = $participant;
@@ -43,7 +43,7 @@ class EventEarnedReward
         return $this->reward->getReason();
     }
 
-    public function updateValue(int $value): void
+    public function updateValue(float $value): void
     {
         Assert::that($value)->greaterOrEqualThan(1);
         $this->value = $value;
@@ -63,7 +63,7 @@ class EventEarnedReward
         return $this->pick === null;
     }
 
-    public function getValue(): int
+    public function getValue(): float
     {
         return $this->value;
     }

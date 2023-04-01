@@ -13,10 +13,10 @@ class EventReward implements AggregateInterface
     /** @var RewardReason */
     private $reason;
 
-    /** @var int|null */
+    /** @var float|null */
     private $value;
 
-    public function __construct(RewardReason $reason, ?int $value)
+    public function __construct(RewardReason $reason, ?float $value)
     {
         Assert::that($value)->nullOr()->greaterOrEqualThan(1);
 
@@ -24,7 +24,7 @@ class EventReward implements AggregateInterface
         $this->value = $value;
     }
 
-    public function getValue(): ?int
+    public function getValue(): ?float
     {
         return $this->value;
     }

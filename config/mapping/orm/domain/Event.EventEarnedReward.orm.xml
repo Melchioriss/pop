@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="PlayOrPay\Domain\Event\EventEarnedReward" table="earned_rewards">
         <id name="uuid" type="uuid" />
-        <field name="value" type="integer" />
+        <field name="value" type="float" />
         <many-to-one field="participant" target-entity="PlayOrPay\Domain\Event\EventParticipant" inversed-by="rewards">
             <join-column referenced-column-name="uuid" />
         </many-to-one>

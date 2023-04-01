@@ -277,13 +277,13 @@ class EventParticipant
 
     /**
      * @param EventReward $blaeoGamesReward
-     * @param int $value
+     * @param float $value
      *
      * @throws Exception
      *
      * @return EventParticipant
      */
-    public function updateBlaeoPoints(EventReward $blaeoGamesReward, int $value): self
+    public function updateBlaeoPoints(EventReward $blaeoGamesReward, float $value): self
     {
         Assert::lazy()
             ->that($value)->greaterOrEqualThan(0)
@@ -354,13 +354,13 @@ class EventParticipant
     /**
      * @param EventReward $reward
      * @param UuidInterface $pickUuid
-     * @param int|null $value
+     * @param float|null $value
      *
      * @throws Exception
      *
      * @return EventParticipant
      */
-    public function setupReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): self
+    public function setupReward(EventReward $reward, ?UuidInterface $pickUuid, ?float $value = null): self
     {
         $earnedReward = $this->findReward($reward->getReason(), $pickUuid);
         if ($earnedReward) {
@@ -379,13 +379,13 @@ class EventParticipant
     /**
      * @param EventReward $reward
      * @param UuidInterface|null $pickUuid
-     * @param int|null $value
+     * @param float|null $value
      *
      * @throws Exception
      *
      * @return EventParticipant
      */
-    public function addReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): self
+    public function addReward(EventReward $reward, ?UuidInterface $pickUuid, ?float $value = null): self
     {
         $reward = $this->makeReward($reward, $pickUuid, $value);
         $this->rewards->add($reward);
@@ -396,13 +396,13 @@ class EventParticipant
     /**
      * @param EventReward $reward
      * @param UuidInterface $pickUuid
-     * @param int|null $value
+     * @param float|null $value
      *
      * @throws Exception
      *
      * @return EventEarnedReward
      */
-    private function makeReward(EventReward $reward, ?UuidInterface $pickUuid, ?int $value = null): EventEarnedReward
+    private function makeReward(EventReward $reward, ?UuidInterface $pickUuid, ?float $value = null): EventEarnedReward
     {
         $pick = $pickUuid ? $this->getPick($pickUuid) : null;
 

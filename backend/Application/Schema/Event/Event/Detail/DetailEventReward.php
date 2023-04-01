@@ -7,6 +7,6 @@ class DetailEventReward
     /** @var int */
     public $reason;
 
-    /** @var int|null */
+    /** @var float|null */
     public $value;
 }

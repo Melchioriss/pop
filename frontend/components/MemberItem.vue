@@ -193,7 +193,10 @@
             },
 
             canEdit: function () {
-                return this.loggedUserIsAdmin || (this.loggedUserSteamId === this.user.steamId);
+                return this.loggedUserIsAdmin || (
+                    this.loggedUserSteamId === this.user.steamId &&
+                    this.user.active
+                );
             }
         },
         methods: {
@@ -298,7 +301,7 @@
             align-items: baseline;
             margin-bottom: 14px;
         }
-        
+
         &__name{
             width: 100%;
             font-size: 20px;

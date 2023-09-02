@@ -64,7 +64,7 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
     private $roles;
 
     /** @var bool */
-    private $active = true;
+    private $active;
 
     /** @var string|null */
     private $blaeoName;
@@ -83,6 +83,8 @@ class User implements UserInterface, SteamUserInterface, OnUpdateEventListenerIn
 
     public function __construct()
     {
+        // Activity should be set manually.
+        $this->active = false;
         $this->createdAt = new DateTimeImmutable();
         $this->roles = new ArrayCollection();
         $this->groups = new ArrayCollection();

@@ -97,13 +97,7 @@ export default new Vuex.Store({
         getMainGroup: (state) => state.groups[0],
 
         getSortedUsers: (state) => {
-            let sortedUsers = Object.values(state.users);
-
-            sortedUsers.sort((a, b) => {
-                return a.profileName.toLowerCase().localeCompare(b.profileName.toLowerCase());
-            });
-
-            return sortedUsers;
+            return state.users;
         },
 
         getUser: (state) => (userId) => state.users[userId] ? state.users[userId] : null,

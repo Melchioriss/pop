@@ -45,6 +45,7 @@ class GetAllUsersHandler implements QueryHandlerInterface
 
         $domainUsers = $this->userRepo->findBy([], [
             'active'  => Criteria::DESC,
+            'profileName' => Criteria::ASC,
             'steamId' => Criteria::ASC,
         ]);
 

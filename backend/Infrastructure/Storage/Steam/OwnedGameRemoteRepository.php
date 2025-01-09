@@ -7,7 +7,6 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use PlayOrPay\Application\Query\Steam\PlayerService\GetOwnedGamesQuery;
 use PlayOrPay\Domain\Steam\OwnedGame;
-use PlayOrPay\Infrastructure\Storage\Steam\Exception\UnexpectedResponseException;
 use Symfony\Component\HttpFoundation\Request;
 
 class OwnedGameRemoteRepository
@@ -31,7 +30,6 @@ class OwnedGameRemoteRepository
      * @param GetOwnedGamesQuery $query
      *
      * @throws Exception
-     * @throws UnexpectedResponseException
      * @throws GuzzleException
      *
      * @return OwnedGame[]
@@ -40,6 +38,7 @@ class OwnedGameRemoteRepository
     {
         $httpParams = [
             'steamid' => (string) $query->getSteamId(),
+            'skip_unvetted_apps' => 0,
         ];
 
         if ($query->appInfoIncluded()) {
@@ -62,7 +61,8 @@ class OwnedGameRemoteRepository
 
         $responseData = json_decode($responseBody, true);
         if (!array_key_exists('games', $responseData['response'])) {
-            throw UnexpectedResponseException::becauseFieldDoesntExist('games', $httpParams);
+            // it seems like it's possible to have just empty response with 200 OK answer.
+            return [];
         }
 
         $ownedGames = [];

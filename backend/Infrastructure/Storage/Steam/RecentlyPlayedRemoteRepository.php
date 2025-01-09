@@ -5,7 +5,6 @@ namespace PlayOrPay\Infrastructure\Storage\Steam;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use PlayOrPay\Domain\Steam\RecentlyPlayedGame;
-use PlayOrPay\Infrastructure\Storage\Steam\Exception\UnexpectedResponseException;
 use Symfony\Component\HttpFoundation\Request;
 
 class RecentlyPlayedRemoteRepository
@@ -29,7 +28,6 @@ class RecentlyPlayedRemoteRepository
      * @param int $steamId
      *
      * @throws GuzzleException
-     * @throws UnexpectedResponseException
      *
      * @return RecentlyPlayedGame[]
      */
@@ -53,7 +51,8 @@ class RecentlyPlayedRemoteRepository
         }
 
         if (!array_key_exists('games', $responseData['response'])) {
-            throw UnexpectedResponseException::becauseFieldDoesntExist('games', $query);
+            // it seems like it's possible to have just empty response with 200 OK answer.
+            return [];
         }
 
         $recentlyPlayedGames = [];

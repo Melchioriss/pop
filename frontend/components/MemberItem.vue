@@ -103,7 +103,7 @@
 
             <div class="member__rules-block">
                 <div class="member__rules-title" v-if="user.extraRules || canEdit">
-                    <span>Extra rules for picking (Eg: only SG wins, no EA, no MP, etc):</span>
+                    <span>Extra rules for picking:</span>
                     <span
                         v-if="canEdit"
                         @click="startEditingRules"
